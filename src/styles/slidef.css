@@ -1,0 +1,146 @@
+/* Enhanced Slider Styles */
+.slider-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    margin: 2rem 0;
+  }
+  
+  .slider {
+    display: flex;
+    position: relative;
+    height: 700px;
+    width: 100%;
+  }
+  
+  .slide {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    display: flex;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .slide.active {
+    opacity: 1;
+  }
+  
+  .image-section {
+    width: 60%;
+    height: auto;
+    overflow: hidden;
+  }
+  
+  .image-section img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  
+  .content-section {
+    width: 30%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+  }
+  
+  .slide-text {
+    font-size: 2rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #333;
+  }
+  
+  .slider-nav {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 1rem;
+    z-index: 10;
+  }
+  
+  .prev-btn,
+  .next-btn {
+    background-color: rgba(255, 255, 255, 0.7);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .prev-btn:hover,
+  .next-btn:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+    transform: scale(1.1);
+  }
+  
+  .navigation-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    z-index: 10;
+  }
+  
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .dot.active {
+    background-color: #fff;
+    transform: scale(1.2);
+  }
+  
+  /* Make the slider responsive */
+  @media (max-width: 768px) {
+    .slide {
+      flex-direction: column;
+      width: 100%;
+    }
+    
+    .image-section,
+    .content-section {
+      width: 100%;
+      height: auto;
+    }
+    
+    .image-section img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+
+    .slide-text {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+  }
+
+
+
+
+  
