@@ -16,7 +16,7 @@ const ProductList = () => {
     });
 
     const fetchProducts = () => {
-        axios.get('http://127.0.0.1:8000/api/products/')
+        axios.get('https://othy.pythonanywhere.com/api/products/')
             .then(response => {
                 setProducts(response.data);
                 setFilteredProducts(response.data);
@@ -39,7 +39,7 @@ const ProductList = () => {
     const handleDelete = (id) => {
         if (window.confirm('Are you sure you want to delete this product?')) {
             setLoading(true);
-            axios.delete(`http://127.0.0.1:8000/api/products/${id}/`)
+            axios.delete(`https://othy.pythonanywhere.com/api/products/${id}/`)
                 .then(() => {
                     // Refresh the product list after successful deletion
                     fetchProducts();
