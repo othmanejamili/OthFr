@@ -30,7 +30,7 @@ const UpdateProduct = () => {
         
         try {
             setLoading(true);
-            const response = await axios.get(`http://127.0.0.1:8000/api/products/${id}/`);
+            const response = await axios.get(`https://othy.pythonanywhere.com/api/products/${id}/`);
             const product = response.data;
 
             setFormData({
