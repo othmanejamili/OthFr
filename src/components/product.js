@@ -44,7 +44,7 @@ const Product = () => {
   const productCardsRef = useRef([]);
 
   const fetchProducts = () => {
-    axios.get('http://127.0.0.1:8000/api/products/')
+    axios.get('https://othy.pythonanywhere.com/api/products/')
       .then(response => {
         setProducts(response.data);
         setFilteredProducts(response.data);
