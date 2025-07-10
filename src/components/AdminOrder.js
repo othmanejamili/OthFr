@@ -30,7 +30,7 @@ const AdminOrders = () => {
         return;
       }
       
-      const response = await axios.get(`http://127.0.0.1:8000/api/orders/`, {
+      const response = await axios.get(`https://othy.pythonanywhere.com/api/orders/`, {
         headers: {
           'Authorization': `Token ${token}`,
           'Content-Type': 'application/json'
@@ -84,7 +84,7 @@ const AdminOrders = () => {
       }
       
       await axios.patch(
-        `http://127.0.0.1:8000/api/orders/${orderId}/`,
+        `https://othy.pythonanywhere.com/api/orders/${orderId}/`,
         { status: newStatus },
         {
           headers: {
