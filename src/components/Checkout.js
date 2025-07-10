@@ -68,7 +68,7 @@ const Checkout = () => {
       }
 
       if (!isAuthenticated && formData.phone_number) {
-        orderData.guest_phone_number = formData.phone_number; // Fixed: was guest_phone_numbre
+        orderData.guest_phone_numbre = formData.phone_number; 
       }
   
       console.log('Sending order data:', orderData);
