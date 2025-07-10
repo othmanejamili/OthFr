@@ -5,7 +5,7 @@ import axios from 'axios';
 export const AuthContext = createContext();
 
 // API URL - you can change this easily if needed
-const API_URL = 'http://127.0.0.1:8000/api';
+const API_URL = 'https://othy.pythonanywhere.com/api/';
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
