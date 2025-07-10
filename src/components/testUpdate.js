@@ -184,7 +184,7 @@ const UpdateProduct = () => {
         }
     
         try {
-           await axios.put(`http://127.0.0.1:8000/api/products/${id}/`, data, {
+           await axios.put(`https://othy.pythonanywhere.com/api/products/${id}/`, data, {
             headers: { "Content-Type": "multipart/form-data" }
           });
           
