@@ -37,7 +37,7 @@ const ProductDetail = () => {
     }
     
     // Fetch product details by ID
-    axios.get(`http://127.0.0.1:8000/api/products/${id}/`)
+    axios.get(`https://othy.pythonanywhere.com/api/products/${id}/`)
       .then(response => {
         console.log("Product data:", response.data); // Add this line for debugging
         
