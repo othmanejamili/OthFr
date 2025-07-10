@@ -21,7 +21,7 @@ const AdminOrderDetail = () => {
         setLoading(true);
         try {
           const token = localStorage.getItem('token');
-          const response = await axios.get(`http://127.0.0.1:8000/api/orders/${id}/`, {
+          const response = await axios.get(`https://othy.pythonanywhere.com/api/orders/${id}/`, {
             headers: {
               'Authorization': `Token ${token}`,
               'Content-Type': 'application/json'
@@ -48,7 +48,7 @@ const AdminOrderDetail = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.patch(
-        `http://127.0.0.1:8000/api/orders/${id}/`,
+        `https://othy.pythonanywhere.com/api/orders/${id}/`,
         { status: newStatus },
         {
           headers: {
@@ -76,7 +76,7 @@ const AdminOrderDetail = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.patch(
-        `http://127.0.0.1:8000/api/orders/${id}/`,
+        `https://othy.pythonanywhere.com/api/orders/${id}/`,
         { notes },
         {
           headers: {
