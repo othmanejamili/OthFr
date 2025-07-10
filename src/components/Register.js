@@ -140,7 +140,7 @@ const Register = () => {
     
     try {
       // Fixing the axios request format
-      const response = await axios.post('http://127.0.0.1:8000/api/users/', {
+      const response = await axios.post('https://othy.pythonanywhere.com/api/users/ {
         username: formData.username,
         first_name: formData.first_name,
         last_name: formData.last_name,
