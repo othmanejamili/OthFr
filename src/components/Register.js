@@ -140,18 +140,18 @@ const Register = () => {
     
     try {
       // Fixing the axios request format
-      const response = await axios.post('https://othy.pythonanywhere.com/api/users/ , {
-        username: formData.username,
-        first_name: formData.first_name,
-        last_name: formData.last_name,
-        phone_number: formData.phone_number,
-        email: formData.email,
-        password: formData.password,
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+    const response = await axios.post('https://othy.pythonanywhere.com/api/users/', {
+      username: formData.username,
+      first_name: formData.first_name,
+      last_name: formData.last_name,
+      phone_number: formData.phone_number,
+      email: formData.email,
+      password: formData.password,
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
       
       // Axios automatically parses JSON, so no need to call response.json()
       const data = response.data;
