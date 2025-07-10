@@ -74,7 +74,7 @@ const Checkout = () => {
       console.log('Sending order data:', orderData);
       
       const orderResponse = await axios.post(
-        'http://127.0.0.1:8000/api/orders/',
+        'https://othy.pythonanywhere.com/api/orders/',
         orderData,
         { headers }
       );
@@ -96,7 +96,7 @@ const Checkout = () => {
         console.log('Adding item to order:', orderItemData);
         
         return axios.post(
-          'http://127.0.0.1:8000/api/order-items/',
+          'https://othy.pythonanywhere.com/api/order-items/',
           orderItemData,
           { headers }
         );
