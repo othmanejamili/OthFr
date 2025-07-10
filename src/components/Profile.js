@@ -5,7 +5,7 @@ import { User, Clock, ShoppingBag, Star, Award, LogOut, AlertCircle, Settings, C
 import axios from 'axios';
 import '../styles/profile.css';
 
-const API_URL =  'http://localhost:8000/api';
+const API_URL =  'https://othy.pythonanywhere.com/api/';
 
 const Profile = () => {
   const [userData, setUserData] = useState(null);
