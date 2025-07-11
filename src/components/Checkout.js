@@ -23,7 +23,7 @@ const Checkout = () => {
   // Redirect if cart is empty
   useEffect(() => {
     if (items.length === 0) {
-      navigate('/product'); // Changed from '/products' to '/product' to match your routes
+      navigate('/product'); 
     }
   }, [items, navigate]);
 
@@ -68,8 +68,7 @@ const Checkout = () => {
       }
 
       if (!isAuthenticated && formData.phone_number) {
-        orderData.guest_phone_number = formData.phone_number; // Correct spelling
-        orderData.guest_phone_numbre = formData.phone_number; // Backend typo version
+        orderData.guest_phone_numbre = formData.phone_number; 
       }
   
       console.log('Sending order data:', orderData);
