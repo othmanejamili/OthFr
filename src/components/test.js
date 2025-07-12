@@ -30,7 +30,6 @@ const TestAddProduct = () => {
     const files = Array.from(e.target.files);
     setFormData({ ...formData, images: files });
     
-    // Clear previous previews before adding new ones
     setPreviewUrls([]);
     
     files.forEach(file => {
