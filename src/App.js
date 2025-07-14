@@ -21,6 +21,7 @@ import AdminOrderDetail from './components/AdminOrderDetail';
 import Register from './components/Register';
 import Profile from './components/Profile';
 import ForgotPassword from './components/ForgotPassword';
+import SeasonalCollections from './components/Collections';
 
 const MainLayout = ({ children }) => (
   <>
@@ -69,6 +70,13 @@ const AppRoutes = () => {
           <Product />
         </MainLayouts>
       } />
+
+      <Route path="/collection" element={
+        <MainLayouts>
+          <SeasonalCollections />
+        </MainLayouts>
+      } />
+
       
       <Route path="/product/:id" element={<ProductDetail />} />
       <Route path="/login" element={<Login />} />
