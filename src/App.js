@@ -22,6 +22,7 @@ import Register from './components/Register';
 import Profile from './components/Profile';
 import ForgotPassword from './components/ForgotPassword';
 import SeasonalCollections from './components/Collections';
+import CreateCollection from './components/CreateCollection';
 
 const MainLayout = ({ children }) => (
   <>
@@ -108,6 +109,13 @@ const AppRoutes = () => {
           <AdminDashboard />
         </ProtectedRoute>
       } />
+
+      <Route path="/admin/collections/add" element={
+        <ProtectedRoute requireAdmin={true}>
+          <CreateCollection />
+        </ProtectedRoute>
+      } />
+
       
       <Route path="/admin/products" element={
         <ProtectedRoute requireAdmin={true}>
