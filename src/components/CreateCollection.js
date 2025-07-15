@@ -19,7 +19,7 @@ const CreateCollection = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch('/api/products/'); // Adjust URL to your API endpoint
+                const response = await fetch('https://othy.pythonanywhere.com/api/products/'); // Adjust URL to your API endpoint
                 if (!response.ok) {
                     throw new Error('Failed to fetch products');
                 }
@@ -99,7 +99,7 @@ const CreateCollection = () => {
         
         try {
             // Call your Django API to create the collection
-            const response = await fetch('/api/collections/', {
+            const response = await fetch('https://othy.pythonanywhere.com/api/collections/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
