@@ -3,6 +3,7 @@ import {  useEffect, useRef } from 'react';
 import '../styles/Home.css';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Link } from 'react-router-dom';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -261,7 +262,7 @@ const Slider = () => {
                 <span className="brand-name-overlay">ECLIPSE</span>
             </h1>
             <p className="tagline">REDEFINING THE BOUNDARIES OF FASHION</p>
-            <button className="cta-button">EXPLORE NOW</button>
+            <Link to={'/product/'}><button className="cta-button">EXPLORE NOW</button></Link>
             </div>
             
             <div className="feature-cards">
