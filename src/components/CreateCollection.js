@@ -155,6 +155,9 @@ const CreateCollection = () => {
 
             const response = await axiosRequest('https://othy.pythonanywhere.com/api/collections/', {
                 method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`, // ✅ Send token in request
+                },
                 data: payload
             });
 
