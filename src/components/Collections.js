@@ -1,5 +1,6 @@
 import React from "react";
 import "../styles/coll/Collections.css";
+import { Link } from "lucide-react";
 
 const collections = [
   {
@@ -90,7 +91,7 @@ const SeasonalCollections = () => {
 
                 <div className="cards-footer">
                     <a href="#" className="explore-btn">
-                    <span>Explore Collection</span>
+                    <Link to={'/product/'}><span>Explore Collection</span></Link>
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
