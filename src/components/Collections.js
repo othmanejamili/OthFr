@@ -90,8 +90,8 @@ const SeasonalCollections = () => {
                 <div className="cards-description">{item.description}</div>
 
                 <div className="cards-footer">
-                    <a href="#" className="explore-btn">
-                    <Link to={'/product/'}><button>Explore Collection</button></Link>
+                    <a href="/product/" className="explore-btn">
+                    <button>Explore Collection</button>
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
