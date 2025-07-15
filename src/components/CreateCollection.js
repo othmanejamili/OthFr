@@ -92,35 +92,47 @@ const CreateCollection = () => {
     };
 
     const handleSubmit = async () => {
-        
         if (!validateForm()) return;
-        
+    
         setLoading(true);
-        
+    
         try {
-            // Call your Django API to create the collection
+            const token = localStorage.getItem('accessToken'); // or use your correct key
+    
+            if (!token) {
+                alert("You're not logged in. Please log in as admin.");
+                setLoading(false);
+                return;
+            }
+    
             const response = await fetch('https://othy.pythonanywhere.com/api/collections/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    // Add authentication headers if needed
-                    // 'Authorization': `Bearer ${token}`,
+                    'Authorization': `Bearer ${token}`, // Add the Bearer token
                 },
                 body: JSON.stringify({
                     name: formData.name,
                     description: formData.description,
-                    products: formData.selectedProducts.map(p => p.id) // Send product IDs
+                    products: formData.selectedProducts.map(p => p.id)
                 })
             });
-
+    
+            if (response.status === 401) {
+                alert("Unauthorized. Please make sure you are logged in as an admin.");
+                throw new Error("Unauthorized");
+            }
+    
             if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Server error:', errorData);
                 throw new Error('Failed to create collection');
             }
-
+    
             const result = await response.json();
             console.log("Collection created successfully:", result);
-            
-            // Reset form after successful submission
+    
+            // Reset form after success
             setFormData({
                 name: "",
                 description: "",
@@ -128,9 +140,8 @@ const CreateCollection = () => {
             });
             setSearchTerm("");
             setShowProductSelector(false);
-            
             alert("Collection created successfully!");
-            
+    
         } catch (error) {
             console.error("Error creating collection:", error);
             alert("Error creating collection. Please try again.");
@@ -138,6 +149,7 @@ const CreateCollection = () => {
             setLoading(false);
         }
     };
+    
 
     return (
         <div className="max-w-4xl mx-auto p-6 bg-white">
