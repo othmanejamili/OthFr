@@ -283,9 +283,9 @@ const CreateCollection = () => {
                                         </div>
                                         
                                         {/* Display product images if available */}
-                                        {product.image_list && product.image_list.length > 0 && (
+                                        {product.image && product.image.length > 0 && (
                                             <div className="mt-2 flex space-x-2">
-                                                {product.image_list.slice(0, 3).map((image, index) => (
+                                                {product.image.slice(0, 3).map((image, index) => (
                                                     <img
                                                         key={index}
                                                         src={image.image_url}
@@ -293,9 +293,9 @@ const CreateCollection = () => {
                                                         className="w-12 h-12 object-cover rounded border"
                                                     />
                                                 ))}
-                                                {product.image_list.length > 3 && (
+                                                {product.image.length > 3 && (
                                                     <div className="w-12 h-12 bg-gray-100 rounded border flex items-center justify-center text-xs text-gray-500">
-                                                        +{product.image_list.length - 3}
+                                                        +{product.image.length - 3}
                                                     </div>
                                                 )}
                                             </div>
