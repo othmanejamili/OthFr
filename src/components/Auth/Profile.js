@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from '../../context/AuthContext';
 import { User, Clock, ShoppingBag, Star, Award, LogOut, AlertCircle, Settings, Crown, TrendingUp, Calendar, Gift, Zap, ChevronRight, Eye, Download } from 'lucide-react';
 import axios from 'axios';
 import '../styles/profile.css';

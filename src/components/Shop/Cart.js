@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
+import { useCart } from '../../context/CartContext';
 import LuxuryCartItem from './LuxuryCartItem';
 import '../styles/Cart.css'; // Import the premium CSS
 

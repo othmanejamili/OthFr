@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import gsap from "gsap";
-import { useCart } from '../context/CartContext';
+import { useCart } from '../../context/CartContext';
 import '../styles/ProductDetail.css';
 
 const ProductDetail = () => {
