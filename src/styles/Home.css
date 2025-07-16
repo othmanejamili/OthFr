@@ -344,15 +344,15 @@
 }
 
 .collection-card {
-    position: relative;
-    border-radius: 15px;
-    height: auto;
-    overflow: hidden;
-    box-shadow:linear-gradient(45deg, #ff0000, #ff4500, #ff8c00, #ffd700);
-    cursor: pointer;
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.7s ease-out;
+  position: relative;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* fixed invalid shadow syntax */
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.7s ease-out;
+  height: auto; /* keeps flexibility */
 }
 
 .collection-card:hover {
@@ -361,10 +361,10 @@
 }
 
 .collection-image {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    transition: transform 0.6s ease;
+  display: block;
+  width: 100%;
+  height: auto; /* this ensures full image is shown */
+  object-fit: contain; /* instead of cover to prevent cutting */
 }
 
 .collection-card:hover .collection-image {
@@ -436,7 +436,7 @@
       height: auto;
     }
     .collection-image {
-        height: auto;
+      object-fit: contain;
     }
 
     .section-title {
