@@ -12,7 +12,7 @@ import { AuthProvider, AuthContext } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import Login from './components/Auth/Login';
 import AdminDashboard from './components/Auth/AdminDashboard';
-import CreateAdmin from './components/AUth/CreateAdmin';
+import CreateAdmin from './components/Auth/CreateAdmin';
 import LuxuryCart from './components/Shop/Cart';
 import Checkout from './components/Shop/Checkout';
 import CheckoutSuccess from './components/Shop/CheckoutSuccess';
