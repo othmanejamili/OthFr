@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 import ProductList from './components/Admin/productsList';
-import TestAddProduct from './components/Admin/productsList.js';
+import TestAddProduct from './components/Admin/test.js';
 import UpdateProduct from './components/Admin/testUpdate';
 import Home from './components/Home/Home';
 import NavBar from './components/Nav&Foo/navbar';

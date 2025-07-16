@@ -1,7 +1,7 @@
 import React,{ useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
-import '../styles/Home.css';
+import '../../styles/Home.css';
 
 const Footer = () => {
     const footerRef = useRef(null);

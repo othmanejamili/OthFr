@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useCallback} from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import '../styles/Form.css'
+import '../../styles/Form.css'
 
 const UpdateProduct = () => {
 

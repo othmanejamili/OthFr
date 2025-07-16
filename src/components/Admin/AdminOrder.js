@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import '../styles/order.css';
+import '../../styles/order.css';
 
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import gsap from "gsap";
-import '../styles/Navbar.css';
+import '../../styles/Navbar.css';
 
 const NavBar = () => {
   const navbarRef = useRef(null);

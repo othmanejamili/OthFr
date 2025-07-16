@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import ReactApexChart from 'react-apexcharts';
-import '../styles/AdminDashBord.css';
+import '../../styles/AdminDashBord.css';
 
 const AdminDashboard = () => {
   const { currentUser, logout } = useContext(AuthContext);

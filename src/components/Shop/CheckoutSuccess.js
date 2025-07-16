@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import '../styles/checkoutSeccuss.css'; // Make sure the filename matches
+import '../../styles/checkoutSeccuss.css'; // Make sure the filename matches
 
 const CheckoutSuccess = () => {
   const location = useLocation();

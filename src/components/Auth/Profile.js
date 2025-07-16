@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { User, Clock, ShoppingBag, Star, Award, LogOut, AlertCircle, Settings, Crown, TrendingUp, Calendar, Gift, Zap, ChevronRight, Eye, Download } from 'lucide-react';
 import axios from 'axios';
-import '../styles/profile.css';
+import '../../styles/profile.css';
 
 const API_URL =  'https://othy.pythonanywhere.com/api/';
 

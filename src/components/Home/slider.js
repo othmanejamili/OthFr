@@ -1,6 +1,6 @@
 // components/slider.jsx
 import {  useEffect, useRef } from 'react';
-import '../styles/Home.css';
+import '../../styles/Home.css';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Link } from 'react-router-dom';

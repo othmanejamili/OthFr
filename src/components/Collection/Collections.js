@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/coll/Collections.css";
+import "../../styles/coll/Collections.css";
 
 const collections = [
   {

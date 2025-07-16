@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import LuxuryCartItem from './LuxuryCartItem';
-import '../styles/Cart.css'; // Import the premium CSS
+import '../../styles/Cart.css'; // Import the premium CSS
 
 const LuxuryCart = () => {
   const { items, totalItems, totalAmount, clearCart } = useCart();
