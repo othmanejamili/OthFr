@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+
 import ProductList from './components/Admin/productsList';
 import TestAddProduct from './components/Admin/productsList.js';
 import UpdateProduct from './components/Admin/testUpdate';
@@ -11,7 +12,7 @@ import ProductDetail from './components/Product/detailsProduct';
 import { AuthProvider, AuthContext } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import Login from './components/Auth/Login';
-import AdminDashboard from './components/Auth/AdminDashboard';
+import AdminDashboard from './components/Admin/AdminDashboard';
 import CreateAdmin from './components/Auth/CreateAdmin';
 import LuxuryCart from './components/Shop/Cart';
 import Checkout from './components/Shop/Checkout';
