@@ -76,7 +76,7 @@ const ProductDetail = () => {
 
   // Fetch products with the same type
   const fetchSimilarProducts = (productType, currentProductId) => {
-    axios.get(`http://127.0.0.1:8000/api/products/`, {
+    axios.get(`https://othy.pythonanywhere.com/api/products/`, {
       params: {
         type: productType
       }
