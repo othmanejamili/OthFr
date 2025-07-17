@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { RotateCcw, Bell, Gift } from 'lucide-react';
 import '../../styles/Spinner/Spinner.css';
+
 const SpinToWinUnavailable = ({ 
   title = "Spin to Win!",
   message = "Prize wheel is temporarily unavailable" 
