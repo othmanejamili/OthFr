@@ -15,36 +15,42 @@ const GiftOutOfStock = ({ productName = "Premium Gift Set" }) => {
   };
 
   return (
-    <div className="out-of-stock-container">
-      <div className="gift-icon">
-        <Gift size={48} />
-      </div>
-      
-      <h2 className="title">Out of Stock</h2>
-      <p className="product-name">{productName}</p>
-      <p className="message">This item is currently unavailable</p>
-      
-      {!isNotified ? (
-        <div className="notify-section">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-            className="email-input"
-          />
-          <button onClick={handleNotifyMe} className="notify-btn">
-            <Bell size={16} />
-            Notify Me
-          </button>
+    <div className="contenet">
+        <div className="header">
+            <h1>This Part unavailable</h1>
+            <p>This item is currently unavailable</p>
         </div>
-      ) : (
-        <div className="success-message">
-          <div className="checkmark">✓</div>
-          <p>We'll notify you when it's back!</p>
+        <div className="out-of-stock-container">
+            <div className="gift-icon">
+                <Gift size={48} />
+            </div>
+            
+            <h2 className="title">Out of Stock</h2>
+            <p className="product-name">{productName}</p>
+            <p className="message">This item is currently unavailable</p>
+            
+            {!isNotified ? (
+                <div className="notify-section">
+                <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    className="email-input"
+                />
+                <button onClick={handleNotifyMe} className="notify-btn">
+                    <Bell size={16} />
+                    Notify Me
+                </button>
+                </div>
+            ) : (
+                <div className="success-message">
+                <div className="checkmark">✓</div>
+                <p>We'll notify you when it's back!</p>
+                </div>
+            )}
+        
         </div>
-      )}
-      
     </div>
   );
 };
