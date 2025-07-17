@@ -117,7 +117,7 @@ const NavBar = () => {
       { href: "/product", label: "Product" },
       { href: "/collection", label: "collections" },
       { href: "/gifts", label: "gifts" },
-      { href: "/Spinner", label: "Spinner" },
+      { href: "/spinner", label: "spinner" },
       { href: "/login", label: "Login" },
       { 
         href: "/cart", 

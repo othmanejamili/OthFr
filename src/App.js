@@ -25,6 +25,7 @@ import ForgotPassword from './components/Auth/ForgotPassword';
 import SeasonalCollections from './components/Collection/Collections';
 import CreateCollection from './components/Collection/CreateCollection';
 import GiftOutOfStock from './components/Gifts/Gifts';
+import SpinToWinUnavailable from './components/Spinner/spinner';
 
 const MainLayout = ({ children }) => (
   <>
@@ -86,6 +87,11 @@ const AppRoutes = () => {
         </MainLayouts>
       } />
 
+      <Route path="/spinner" element={
+        <MainLayouts>
+          <SpinToWinUnavailable />
+        </MainLayouts>
+      } />
       
       <Route path="/product/:id" element={<ProductDetail />} />
       <Route path="/login" element={<Login />} />
