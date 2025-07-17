@@ -116,7 +116,7 @@ const NavBar = () => {
       { href: "/", label: "Home" },
       { href: "/product", label: "Product" },
       { href: "/collection", label: "collections" },
-      { href: "/gifts", label: "Gifts" },
+      { href: "/gifts", label: "gifts" },
       { href: "/Spinner", label: "Spinner" },
       { href: "/login", label: "Login" },
       { 

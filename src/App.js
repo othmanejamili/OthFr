@@ -80,7 +80,7 @@ const AppRoutes = () => {
         </MainLayouts>
       } />
 
-      <Route path="/gift" element={
+      <Route path="/gifts" element={
         <MainLayouts>
           <GiftOutOfStock />
         </MainLayouts>
