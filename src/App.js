@@ -24,6 +24,7 @@ import Profile from './components/Auth/Profile';
 import ForgotPassword from './components/Auth/ForgotPassword';
 import SeasonalCollections from './components/Collection/Collections';
 import CreateCollection from './components/Collection/CreateCollection';
+import GiftOutOfStock from './components/Gifts/Gifts';
 
 const MainLayout = ({ children }) => (
   <>
@@ -76,6 +77,12 @@ const AppRoutes = () => {
       <Route path="/collection" element={
         <MainLayouts>
           <SeasonalCollections />
+        </MainLayouts>
+      } />
+
+      <Route path="/gift" element={
+        <MainLayouts>
+          <GiftOutOfStock />
         </MainLayouts>
       } />
 
