@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { RotateCcw, Bell, Gift } from 'lucide-react';
-import '../../styles/Spinner/Spinner.css';
+import '../../styles/Spinner/spinner.css';
 
 const SpinToWinUnavailable = ({ 
   title = "Spin to Win!",
