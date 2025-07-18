@@ -391,7 +391,7 @@ const Home = () => {
           </div>
 
           <div className="collection-card">
-            <img src="/images/cap.png" alt="Urban Collection" className="collection-image" />
+            <img src="/images/_.jpeg" alt="Urban Collection" className="collection-image" />
             <div className="collection-tag">Best Seller</div>
             <div className="collection-info">
               <h3>Urban Collection</h3>
@@ -504,6 +504,14 @@ const Home = () => {
 
           <div className="product-card">
             <img src="/images/product1.png" className="product-image" alt="product" />
+            <div className="product-info">
+              All New Design Hoodie
+            </div>
+
+          </div>
+
+          <div className="product-card">
+            <img src="/images/_.jpeg" className="product-image" alt="product" />
             <div className="product-info">
               All New Design Hoodie
             </div>
