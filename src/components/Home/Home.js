@@ -503,7 +503,7 @@ const Home = () => {
           </div>
 
           <div className="product-card">
-            <img src="/images/pr.png" className="product-image" alt="product" />
+            <img src="/images/pr.jpeg" className="product-image" alt="product" />
             <div className="product-info">
               All New Design Hoodie
             </div>
