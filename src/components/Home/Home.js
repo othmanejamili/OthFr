@@ -462,63 +462,7 @@ const Home = () => {
 
 
         <div className="collection-carousel">
-          <div className="product-card">
-            <img src="/images/slide1.png" className="product-image" alt="Green hoodie with graphic print" />
-            <div className="product-info">
-              All New Design Hoodie
-            </div>
-
-          </div>
-
-          <div className="product-card">
-            <img src="/images/slide2.png" className="product-image" alt="White Chicago hoodie" />
-            <div className="product-info">
-              All New Design Hoodie
-            </div>
-
-          </div>
-
-          <div className="product-card">
-            <img src="/images/slide3.png" className="product-image" alt="Black varsity jacket" />
-            <div className="product-info">
-              All New Design Hoodie
-            </div>
-
-          </div>
-
-          <div className="product-card">
-            <img src="/images/cap.png" className="product-image" alt="Red patchwork hoodie" />
-            <div className="product-info">
-              All New Design Hoodie
-            </div>
-
-          </div>
-
-          <div className="product-card">
-            <img src="/images/product2.png" className="product-image" alt="product" />
-            <div className="product-info">
-              All New Design Hoodie
-            </div>
-
-          </div>
-
-          <div className="product-card">
-            <img src="/images/product1.png" className="product-image" alt="product" />
-            <div className="product-info">
-              All New Design Hoodie
-            </div>
-
-          </div>
-
-          <div className="product-card">
-            <img src="/images/_.jpeg" className="product-image" alt="product" />
-            <div className="product-info">
-              All New Design Hoodie
-            </div>
-
-          </div>
-
-          <div className="product-card">
+        <div className="product-card">
             <img src="/images/autumn.jpeg" className="product-image" alt="product" />
             <div className="product-info">
               All New Design Hoodie
@@ -533,6 +477,48 @@ const Home = () => {
             </div>
 
           </div>
+
+          <div className="product-card">
+            <img src="/images/winter.jpeg" className="product-image" alt="Black varsity jacket" />
+            <div className="product-info">
+              All New Design Hoodie
+            </div>
+
+          </div>
+
+          <div className="product-card">
+            <img src="/images/product1.jpeg" className="product-image" alt="Red patchwork hoodie" />
+            <div className="product-info">
+              All New Design Hoodie
+            </div>
+
+          </div>
+
+          <div className="product-card">
+            <img src="/images/pro.jpeg" className="product-image" alt="product" />
+            <div className="product-info">
+              All New Design Hoodie
+            </div>
+
+          </div>
+
+          <div className="product-card">
+            <img src="/images/pr.png" className="product-image" alt="product" />
+            <div className="product-info">
+              All New Design Hoodie
+            </div>
+
+          </div>
+
+          <div className="product-card">
+            <img src="/images/_.jpeg" className="product-image" alt="product" />
+            <div className="product-info">
+              All New Design Hoodie
+            </div>
+
+          </div>
+
+
         </div>
       </section>
 
