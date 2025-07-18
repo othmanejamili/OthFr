@@ -517,6 +517,22 @@ const Home = () => {
             </div>
 
           </div>
+
+          <div className="product-card">
+            <img src="/images/autumn.jpeg" className="product-image" alt="product" />
+            <div className="product-info">
+              All New Design Hoodie
+            </div>
+
+          </div>
+
+          <div className="product-card">
+            <img src="/images/spring.jpeg" className="product-image" alt="product" />
+            <div className="product-info">
+              All New Design Hoodie
+            </div>
+
+          </div>
         </div>
       </section>
 
