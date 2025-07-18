@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 
 import ProductList from './components/Admin/productsList';
 import TestAddProduct from './components/Admin/test.js';
@@ -27,16 +27,6 @@ import CreateCollection from './components/Collection/CreateCollection';
 import GiftOutOfStock from './components/Gifts/Gifts';
 import SpinToWinUnavailable from './components/Spinner/spinner';
 
-const MainLayout = ({ children }) => (
-  <>
-    <NavBar />
-    {children}
-    <Footer />
-  </>
-);
-
-// Removed SimpleLayout as it's no longer needed
-
 // ProtectedRoute component to handle auth checks
 const ProtectedRoute = ({ children, requireAdmin }) => {
   const { isAuthenticated, currentUser } = useContext(AuthContext);
@@ -57,31 +47,25 @@ const AppRoutes = () => {
 
   return (
     <Routes>
-      {/* Routes that need navbar and footer */}
-      <Route path="/*" element={
-        <MainLayout>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/product" element={<Product />} />
-            <Route path="/product/:id" element={<ProductDetail />} />
-            <Route path="/collection" element={<SeasonalCollections />} />
-            <Route path="/gifts" element={<GiftOutOfStock />} />
-            <Route path="/spinner" element={<SpinToWinUnavailable />} />
-            <Route path="/cart" element={<LuxuryCart />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/checkout/success" element={<CheckoutSuccess />} />
-            
-            {/* Protected user routes */}
-            <Route path="/profile/:userId" element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            } />
-          </Routes>
-        </MainLayout>
+      {/* Public routes with navbar and footer */}
+      <Route path="/" element={<Home />} />
+      <Route path="/product" element={<Product />} />
+      <Route path="/product/:id" element={<ProductDetail />} />
+      <Route path="/collection" element={<SeasonalCollections />} />
+      <Route path="/gifts" element={<GiftOutOfStock />} />
+      <Route path="/spinner" element={<SpinToWinUnavailable />} />
+      <Route path="/cart" element={<LuxuryCart />} />
+      <Route path="/checkout" element={<Checkout />} />
+      <Route path="/checkout/success" element={<CheckoutSuccess />} />
+      
+      {/* Protected user routes */}
+      <Route path="/profile/:userId" element={
+        <ProtectedRoute>
+          <Profile />
+        </ProtectedRoute>
       } />
       
-      {/* Auth routes without layout */}
+      {/* Auth routes without navbar/footer */}
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/admin/login" element={<Login />} />
@@ -142,16 +126,30 @@ const AppRoutes = () => {
   );
 };
 
+const AppContent = () => {
+  const location = useLocation();
+  
+  // Routes that should NOT have navbar/footer
+  const noLayoutRoutes = ['/login', '/forgot-password', '/admin/login', '/register'];
+  const shouldShowLayout = !noLayoutRoutes.includes(location.pathname);
+  
+  return (
+    <>
+      {shouldShowLayout && <NavBar />}
+      <AppRoutes />
+      {shouldShowLayout && <Footer />}
+    </>
+  );
+};
+
 const App = () => {
   return (
     <AuthProvider>
       <CartProvider>
         <Router>
-          <AppRoutes />
+          <AppContent />
         </Router>
       </CartProvider>
     </AuthProvider>
   );
 };
-
-export default App;
