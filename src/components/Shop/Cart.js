@@ -142,7 +142,7 @@ const LuxuryCart = () => {
               <p className="text-sm">
                 For personalized assistance with your order, our dedicated concierge team is available at{" "}
                 <a href="mailto:support@example.com" className="font-medium text-black hover:text-black">
-                  support@OJ.com
+                  support@oj.com
                 </a>
               </p>
             </div>
