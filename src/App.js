@@ -64,35 +64,15 @@ const AppRoutes = () => {
     <Routes>
       {/* Public routes */}
       <MainLayout>
-        <Route path="/" element={
-          
-            <Home />
-          
-        } />
+        <Route path="/" element={<Home />} />
         
-        <Route path="/product" element={
-      
-            <Product />
-        
-        } />
+        <Route path="/product" element={<Product />} />
 
-        <Route path="/collection" element={
-      
-            <SeasonalCollections />
-        
-        } />
+        <Route path="/collection" element={<SeasonalCollections />} />
 
-        <Route path="/gifts" element={
-      
-            <GiftOutOfStock />
-        
-        } />
+        <Route path="/gifts" element={<GiftOutOfStock />} />
 
-        <Route path="/spinner" element={
-      
-            <SpinToWinUnavailable />
-        
-        } />
+        <Route path="/spinner" element={<SpinToWinUnavailable />} />
       </MainLayout>
       
       <Route path="/product/:id" element={<ProductDetail />} />
