@@ -35,7 +35,7 @@ const MainLayout = ({ children }) => (
   </>
 );
 
-const MainLayouts = ({ children }) => (
+con= ({ children }) => (
   <>
     <NavBar />
     {children}
@@ -63,35 +63,37 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* Public routes */}
-      <Route path="/" element={
-        <MainLayout>
-          <Home />
-        </MainLayout>
-      } />
+      <MainLayout>
+        <Route path="/" element={
+          
+            <Home />
+          
+        } />
+        
+        <Route path="/product" element={
       
-      <Route path="/product" element={
-        <MainLayouts>
-          <Product />
-        </MainLayouts>
-      } />
+            <Product />
+        
+        } />
 
-      <Route path="/collection" element={
-        <MainLayouts>
-          <SeasonalCollections />
-        </MainLayouts>
-      } />
+        <Route path="/collection" element={
+      
+            <SeasonalCollections />
+        
+        } />
 
-      <Route path="/gifts" element={
-        <MainLayouts>
-          <GiftOutOfStock />
-        </MainLayouts>
-      } />
+        <Route path="/gifts" element={
+      
+            <GiftOutOfStock />
+        
+        } />
 
-      <Route path="/spinner" element={
-        <MainLayouts>
-          <SpinToWinUnavailable />
-        </MainLayouts>
-      } />
+        <Route path="/spinner" element={
+      
+            <SpinToWinUnavailable />
+        
+        } />
+      </MainLayout>
       
       <Route path="/product/:id" element={<ProductDetail />} />
       <Route path="/login" element={<Login />} />
