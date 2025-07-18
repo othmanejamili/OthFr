@@ -63,17 +63,21 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* Public routes */}
-      <MainLayout>
-        <Route path="/" element={<Home />} />
+      <Route path='/*' element={
+            <MainLayout>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                
+                <Route path="/product" element={<Product />} />
         
-        <Route path="/product" element={<Product />} />
-
-        <Route path="/collection" element={<SeasonalCollections />} />
-
-        <Route path="/gifts" element={<GiftOutOfStock />} />
-
-        <Route path="/spinner" element={<SpinToWinUnavailable />} />
-      </MainLayout>
+                <Route path="/collection" element={<SeasonalCollections />} />
+        
+                <Route path="/gifts" element={<GiftOutOfStock />} />
+        
+                <Route path="/spinner" element={<SpinToWinUnavailable />} />
+              </Routes>
+            </MainLayout>
+      }/>
       
       <Route path="/product/:id" element={<ProductDetail />} />
       <Route path="/login" element={<Login />} />
