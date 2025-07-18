@@ -35,12 +35,7 @@ const MainLayout = ({ children }) => (
   </>
 );
 
-con= ({ children }) => (
-  <>
-    <NavBar />
-    {children}
-  </>
-);
+// Removed SimpleLayout as it's no longer needed
 
 // ProtectedRoute component to handle auth checks
 const ProtectedRoute = ({ children, requireAdmin }) => {
@@ -62,46 +57,35 @@ const AppRoutes = () => {
 
   return (
     <Routes>
-      {/* Public routes */}
-      <Route path='/*' element={
-            <MainLayout>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                
-                <Route path="/product" element={<Product />} />
-        
-                <Route path="/collection" element={<SeasonalCollections />} />
-        
-                <Route path="/gifts" element={<GiftOutOfStock />} />
-        
-                <Route path="/spinner" element={<SpinToWinUnavailable />} />
-              </Routes>
-            </MainLayout>
-      }/>
+      {/* Routes that need navbar and footer */}
+      <Route path="/*" element={
+        <MainLayout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/product" element={<Product />} />
+            <Route path="/product/:id" element={<ProductDetail />} />
+            <Route path="/collection" element={<SeasonalCollections />} />
+            <Route path="/gifts" element={<GiftOutOfStock />} />
+            <Route path="/spinner" element={<SpinToWinUnavailable />} />
+            <Route path="/cart" element={<LuxuryCart />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/checkout/success" element={<CheckoutSuccess />} />
+            
+            {/* Protected user routes */}
+            <Route path="/profile/:userId" element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            } />
+          </Routes>
+        </MainLayout>
+      } />
       
-      <Route path="/product/:id" element={<ProductDetail />} />
+      {/* Auth routes without layout */}
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/admin/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-
-      {/* Cart and Checkout Routes */}
-      <Route path="/cart" element={<LuxuryCart />} />
-      
-      <Route path="/checkout" element={
-          <Checkout />
-      } />
-      
-      <Route path="/checkout/success" element={
-            <CheckoutSuccess />
-      } />
-
-      {/* Protected user routes */}
-      <Route path="/profile/:userId" element={
-        <ProtectedRoute>
-          <Profile />
-        </ProtectedRoute>
-      } />
       
       {/* Protected Admin Routes */}
       <Route path="/admin/dashboard" element={
@@ -116,7 +100,6 @@ const AppRoutes = () => {
         </ProtectedRoute>
       } />
 
-      
       <Route path="/admin/products" element={
         <ProtectedRoute requireAdmin={true}>
           <ProductList />
@@ -129,7 +112,7 @@ const AppRoutes = () => {
         </ProtectedRoute>
       } />
       
-      <Route path="/admin/products/updute/:id" element={
+      <Route path="/admin/products/update/:id" element={
         <ProtectedRoute requireAdmin={true}>
           <UpdateProduct />
         </ProtectedRoute>
