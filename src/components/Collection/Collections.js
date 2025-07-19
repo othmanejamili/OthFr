@@ -1,3 +1,4 @@
+import { ChevronRight } from "lucide-react";
 import React from "react";
 import "../../styles/coll/Collections.css";
 
@@ -91,9 +92,7 @@ const SeasonalCollections = () => {
                 <div className="cards-footer">
                     <a href="/product" className="explore-btn">
                     <span>Explore Collection</span>
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
+                    <ChevronRight size={24} strokeWidth={2} />
                     </a>
                     <div className="dots">
                     <div className="dot"></div>
