@@ -13,17 +13,17 @@ const EnhancedSlider = () => {
   const slides = [
     {
       id: 1,
-      image: "/images/slide1.png",
+      image: "../../../build/images/slide1.png",
       text: "Crafted with care, made for the rare."
     },
     {
       id: 2,
-      image: "/images/slide2.png",
+      image: "../../../build/images/slide2.png",
       text: "Elevate your style with our exclusive collection."
     },
     {
       id: 3,
-      image: "/images/slide3.png",
+      image: "../../../build/images/slide3.png",
       text: "Designed for comfort, crafted for expression."
     }
   ];
