@@ -2,6 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import '../../styles/slidef.css';
+import slide1 from './images/slide1.png';
+import slide2 from './images/slide2.png';
+import slide3 from './images/slide3.png';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,17 +16,17 @@ const EnhancedSlider = () => {
   const slides = [
     {
       id: 1,
-      image: "../../../build/images/slide1.png",
+      image: slide1,
       text: "Crafted with care, made for the rare."
     },
     {
       id: 2,
-      image: "../../../build/images/slide2.png",
+      image:  slide2,
       text: "Elevate your style with our exclusive collection."
     },
     {
       id: 3,
-      image: "../../../build/images/slide3.png",
+      image:  slide3,
       text: "Designed for comfort, crafted for expression."
     }
   ];
