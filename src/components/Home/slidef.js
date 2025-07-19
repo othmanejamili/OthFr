@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import '../../styles/slidef.css';
-import slide1 from './images/slide1.png';
-import slide2 from './images/slide2.png';
-import slide3 from './images/slide3.png';
+import slide1 from '../../../build/images/slide1.png';
+import slide2 from '../../../build/images/slide2.png';
+import slide3 from '../../../build/images/slide3.png';
 
 gsap.registerPlugin(ScrollTrigger);
 
