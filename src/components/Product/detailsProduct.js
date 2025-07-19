@@ -4,6 +4,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import gsap from "gsap";
 import { useCart } from '../../context/CartContext';
 import '../../styles/ProductDetail.css';
+import { ShoppingBag } from "lucide-react";
 
 const ProductDetail = () => {
   // Changed from productId to id to match the route parameter name
@@ -426,9 +427,7 @@ const ProductDetail = () => {
             >
               {addedToCart ? (
                 <>
-                  <svg className="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
+                <ShoppingBag />
                   Added to Cart!
                 </>
               ) : (
