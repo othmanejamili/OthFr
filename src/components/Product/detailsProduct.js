@@ -4,7 +4,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import gsap from "gsap";
 import { useCart } from '../../context/CartContext';
 import '../../styles/ProductDetail.css';
-import { Minus, ShoppingBag, ShoppingCart } from "lucide-react";
+import { Minus, Plus, ShoppingBag, ShoppingCart } from "lucide-react";
 
 const ProductDetail = () => {
   // Changed from productId to id to match the route parameter name
