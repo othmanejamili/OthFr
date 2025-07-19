@@ -4,7 +4,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import gsap from "gsap";
 import { useCart } from '../../context/CartContext';
 import '../../styles/ProductDetail.css';
-$
+
 const ProductDetail = () => {
   // Changed from productId to id to match the route parameter name
   const { id } = useParams();
