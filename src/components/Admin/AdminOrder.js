@@ -328,7 +328,7 @@ const AdminOrders = () => {
                             {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                           </span>
                         </td>
-                        <td>${(order.total_amount || 0)}</td>
+                        <td>DH{(order.total_amount || 0)}</td>
                         <td>{order.items?.length || 0}</td>
                         <td>
                           <div className="order-actions">

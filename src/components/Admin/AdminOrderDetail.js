@@ -240,7 +240,7 @@ const AdminOrderDetail = () => {
                 </div>
                 <div className="summary-row">
                   <span>Total Amount:</span>
-                  <span className="total-amount">${calculateTotalWithAdditions()}</span>
+                  <span className="total-amount">DH{calculateTotalWithAdditions()}</span>
                 </div>
               </div>
             </div>
@@ -348,10 +348,10 @@ const AdminOrderDetail = () => {
                             </div>
                         </div>
                         </td>
-                        <td>${(item.price_at_purchase || 0)}</td>
+                        <td>DH{(item.price_at_purchase || 0)}</td>
                         <td>{item.quantity || 0}</td>
                         <td>
-                        ${((item.price_at_purchase || 0) * (item.quantity || 0))}
+                        DH{((item.price_at_purchase || 0) * (item.quantity || 0))}
                         </td>
                     </tr>
                     ))
@@ -367,20 +367,20 @@ const AdminOrderDetail = () => {
                   <tr>
                     <td colSpan="3" className="subtotal-label">Subtotal</td>
                     <td className="subtotal-value">
-                      ${order.items?.reduce((sum, item) => sum + ((item.price_at_purchase || 0) * (item.quantity || 0)), 0)}
+                      DH{order.items?.reduce((sum, item) => sum + ((item.price_at_purchase || 0) * (item.quantity || 0)), 0)}
                     </td>
                   </tr>
                   <tr>
                     <td colSpan="3" className="shipping-label">Shipping</td>
-                    <td className="shipping-value">${order.shipping_cost ? order.shipping_cost : '0.00'}</td>
+                    <td className="shipping-value">DH{order.shipping_cost ? order.shipping_cost : '0.00'}</td>
                   </tr>
                   <tr>
                     <td colSpan="3" className="tax-label">Tax</td>
-                    <td className="tax-value">${order.tax ? order.tax : '0.00'}</td>
+                    <td className="tax-value">DH{order.tax ? order.tax : '0.00'}</td>
                   </tr>
                   <tr className="total-row">
                     <td colSpan="3" className="total-label">Total</td>
-                    <td className="total-value">${calculateTotalWithAdditions()}</td>
+                    <td className="total-value">DH{calculateTotalWithAdditions()}</td>
                   </tr>
                 </tfoot>
               </table>
