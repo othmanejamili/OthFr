@@ -397,7 +397,7 @@ const ProductDetail = () => {
               disabled={quantity <= 1}
               aria-label="Decrease quantity"
             >
-              <Minus className="btn-icon" />
+              <Minus size={18} />
             </button>
             <input
               type="number"
@@ -410,7 +410,7 @@ const ProductDetail = () => {
               onClick={() => adjustQuantity(1)}
               aria-label="Increase quantity"
             >
-            <Plus className="btn-icon"/>
+            <Plus size={18}/>
             </button>
           </div>
 
