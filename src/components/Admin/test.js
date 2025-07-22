@@ -210,11 +210,11 @@ const TestAddProduct = () => {
             value={formData.type}
             onChange={handleChange}
           >
-            <option value="">Select type</option>
-            <option value="clothing">Clothing</option>
-            <option value="accessories">Accessories</option>
-            <option value="electronics">Electronics</option>
-            <option value="home">Home Goods</option>
+            <option value="">Select Clothing type</option>
+            <option value="summer">Summer</option>
+            <option value="winter">Winter</option>
+            <option value="Spring">Spring</option>
+            <option value="autumn">Autumn</option>
           </select>
           {errors.type && <p className="error-text">{errors.type}</p>}
         </div>
