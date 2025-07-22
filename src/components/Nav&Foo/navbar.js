@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import gsap from "gsap";
 import '../../styles/Navbar.css';
 import { ShoppingBag } from 'lucide-react';
@@ -152,7 +152,7 @@ const NavBar = () => {
       
       <div className={`Navbar ${scrolled ? 'scrolled' : ''}`} ref={navbarRef}>
         <div className="logo">
-          <img src='/images/logo.png' alt="Logo" />
+          <Link to={'/'}><img src='/images/logo.png' alt="Logo" /></Link>
         </div>
         
         {/* Hamburger Menu Toggle Button */}
