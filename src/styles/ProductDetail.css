@@ -1236,6 +1236,7 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   padding: 2rem;
+  width: auto;
 }
 
 .share-option {
@@ -1284,19 +1285,19 @@
 .share-option.whatsapp {
   background: white;
   color: black;
-  box-shadow: 0 4px 12px var(--primary-color);
+  box-shadow: 0 4px 12px #FF5722;
 }
 
 .share-option.whatsapp:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px var(--primary-color);
-  background: var(--primary-color);
+  box-shadow: 0 8px 20px #FF5722;
+  background: #FF5722;
 }
 
 .share-option.email {
   background: white;
   color: black;
-  box-shadow: 0 4px 12px rgba(234, 67, 53, 0.3);
+  box-shadow: 0 4px 12px #FF5722;
 }
 
 .share-option.email:hover {
