@@ -586,6 +586,10 @@ const ProductDetail = () => {
       {/* Share Modal */}
       {showShareModal && (
         <div className="share-modal-overlay" onClick={closeShareModal}>
+          <Share2 
+                      className="share-modal" 
+                      ref={shareModalRef}
+                      onClick={(e) => e.stopPropagation()}>
           <div 
             className="share-modal" 
             ref={shareModalRef}
@@ -660,6 +664,7 @@ const ProductDetail = () => {
               </div>
             </div>
           </div>
+          </Share2>
         </div>
       )}
     </div>
