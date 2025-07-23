@@ -1257,51 +1257,51 @@
 
 /* Individual Platform Styles */
 .share-option.facebook {
-  background: linear-gradient(135deg, #1877f2 0%, #1565c0 100%);
-  color: white;
-  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.3);
+  background: white;
+  color: black;
+  box-shadow: 0 4px 12px #FF5722;
 }
 
 .share-option.facebook:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(24, 119, 242, 0.4);
-  background: linear-gradient(135deg, #2d88ff 0%, #1976d2 100%);
+  box-shadow: 0 8px 20px #FF5722;
+  background: #FF5722;
 }
 
 .share-option.twitter {
-  background: linear-gradient(135deg, #1da1f2 0%, #0d8bd9 100%);
-  color: white;
-  box-shadow: 0 4px 12px rgba(29, 161, 242, 0.3);
+  background: white;
+  color: black;
+  box-shadow: 0 4px 12px #FF5722;
 }
 
 .share-option.twitter:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(29, 161, 242, 0.4);
-  background: linear-gradient(135deg, #42b0ff 0%, #1e9bef 100%);
+  box-shadow: 0 8px 20px #FF5722;
+  background: #FF5722;
 }
 
 .share-option.whatsapp {
-  background: linear-gradient(135deg, #25d366 0%, #20ba5a 100%);
-  color: white;
-  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+  background: white;
+  color: var(--primary-color);
+  box-shadow: 0 4px 12px var(--primary-color);
 }
 
 .share-option.whatsapp:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
-  background: linear-gradient(135deg, #48e17a 0%, #2bc866 100%);
+  box-shadow: 0 8px 20px var(--primary-color);
+  background: var(--primary-color);
 }
 
 .share-option.email {
-  background: linear-gradient(135deg, #ea4335 0%, #d23f31 100%);
-  color: white;
+  background: white;
+  color: black;
   box-shadow: 0 4px 12px rgba(234, 67, 53, 0.3);
 }
 
 .share-option.email:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(234, 67, 53, 0.4);
-  background: linear-gradient(135deg, #f26356 0%, #e94b3c 100%);
+  box-shadow: 0 8px 20px var(--primary-color);
+  background: var(--primary-color);
 }
 
 /* Hover effect ripple */
@@ -1319,7 +1319,7 @@
 }
 
 .share-option:hover::before {
-  width: 300px;
+  width: auto;
   height: 300px;
 }
 
@@ -1542,7 +1542,7 @@
   height: 20px;
   border: 2px solid transparent;
   border-top: 2px solid currentColor;
-  border-radius: 80%;
+  border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
