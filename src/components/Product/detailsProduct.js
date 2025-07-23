@@ -591,7 +591,7 @@ const ProductDetail = () => {
             className="share-modal" 
             ref={shareModalRef}
             onClick={(e) => e.stopPropagation()}
-          ><Share2 />
+          >
             <div className="share-modal-header">
               <h3>Share this product</h3>
               <button 
