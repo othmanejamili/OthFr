@@ -584,79 +584,93 @@ const ProductDetail = () => {
       </div>
 
       {/* Share Modal */}
-      {showShareModal && (
-        <div className="share-modal-overlay" onClick={closeShareModal}>
-          <div 
-            className="share-modal" 
-            ref={shareModalRef}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="share-modal-header">
-              <h3>Share this product</h3>
+{showShareModal && (
+  <div className="share-modal-overlay" onClick={closeShareModal}>
+    <div 
+      className="share-modal" 
+      ref={shareModalRef}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="share-modal-header">
+        <h3>Share this product</h3>
+        <button 
+          className="close-modal-btn"
+          onClick={closeShareModal}
+          aria-label="Close share modal"
+        >
+          <X size={20} />
+        </button>
+      </div>
 
-              <div className="sharImageModel">
-              {product.images && product.images.map((image, index) => (
-              <img
-                key={index}
-                src={image.image_url}
-                alt={`${product.name} thumbnail ${index + 1}`}
-                className={`thumbnail ${index === activeImageIndex ? 'active' : ''}`}
-                onClick={() => changeImage(index)}
-                ref={(el) => (thumbnailsRef.current[index] = el)}
-              />
-            ))}
-              </div>
-
-              <button 
-                className="close-modal-btn"
-                onClick={closeShareModal}
-                aria-label="Close share modal"
-              >
-                <X size={20} />
-              </button>
-            </div>
-            
-            <div className="share-options">
-              <button 
-                className="share-option facebook"
-                onClick={() => handleShare('facebook')}
-              >
-                <Facebook size={20} />
-                
-              </button>
-              
-              <button 
-                className="share-option twitter"
-                onClick={() => handleShare('twitter')}
-              >
-                <X size={20} />
-                
-              </button>
-              
-              <button 
-                className="share-option whatsapp"
-                onClick={() => handleShare('whatsapp')}
-              >
-                <MessageCircle size={20} />
-                
-              </button>
-              
-              <button 
-                className="share-option email"
-                onClick={() => handleShare('email')}
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                  <polyline points="22,6 12,13 2,6"></polyline>
-                </svg>
-                
-              </button>
-            </div>
-            
-            
-          </div>
+      {/* Product Preview Section */}
+      <div className="share-product-preview">
+        <div className="share-product-image">
+          <img
+            src={product.images?.[activeImageIndex]?.image_url || product.images?.[0]?.image_url}
+            alt={product.name}
+            className="share-modal-product-img"
+          />
         </div>
-      )}
+        <div className="share-product-info">
+          <h4 className="share-product-name">{product.name}</h4>
+          <p className="share-product-price">DH {product.price}</p>
+        </div>
+      </div>
+      
+      {/* Social Share Options - Horizontal Layout */}
+      <div className="share-options-horizontal">
+        <h5 className="share-options-title">Share on social media</h5>
+        <div className="social-icons-row">
+          <button 
+            className="share-option facebook"
+            onClick={() => handleShare('facebook')}
+            title="Share on Facebook"
+          >
+            <Facebook size={24} />
+          </button>
+          
+          <button 
+            className="share-option twitter"
+            onClick={() => handleShare('twitter')}
+            title="Share on Twitter/X"
+          >
+            <X size={24} />
+          </button>
+          
+          <button 
+            className="share-option whatsapp"
+            onClick={() => handleShare('whatsapp')}
+            title="Share on WhatsApp"
+          >
+            <MessageCircle size={24} />
+          </button>
+          
+          <button 
+            className="share-option email"
+            onClick={() => handleShare('email')}
+            title="Share via Email"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+          </button>
+
+          <button 
+            className="share-option copy-link"
+            onClick={() => handleCopyLink()}
+            title="Copy Link"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 };
