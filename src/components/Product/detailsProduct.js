@@ -4,10 +4,9 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import gsap from "gsap";
 import { useCart } from '../../context/CartContext';
 import '../../styles/ProductDetail.css';
-import { Minus, Plus, ShoppingBag, ShoppingCart } from "lucide-react";
+import { Minus, Plus, ShoppingBag, ShoppingCart, Share2, Copy, Facebook, Twitter, MessageCircle, X } from "lucide-react";
 
 const ProductDetail = () => {
-  // Changed from productId to id to match the route parameter name
   const { id } = useParams();
   const navigate = useNavigate();
   const { addItem } = useCart();
@@ -19,6 +18,8 @@ const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState("description");
   const [similarProducts, setSimilarProducts] = useState([]);
   const [addedToCart, setAddedToCart] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
   
   // Refs for animations
   const productDetailRef = useRef(null);
@@ -27,9 +28,10 @@ const ProductDetail = () => {
   const productInfoRef = useRef(null);
   const thumbnailsRef = useRef([]);
   const mainImageRef = useRef(null);
+  const shareModalRef = useRef(null);
 
   useEffect(() => {
-    console.log("Product ID from params:", id); // Add this line for debugging
+    console.log("Product ID from params:", id);
     
     if (!id) {
       setError("No product ID provided");
@@ -40,7 +42,7 @@ const ProductDetail = () => {
     // Fetch product details by ID
     axios.get(`https://othy.pythonanywhere.com/api/products/${id}/`)
       .then(response => {
-        console.log("Product data:", response.data); // Add this line for debugging
+        console.log("Product data:", response.data);
         
         // Create a normalized product object with images array for compatibility
         const productData = {
@@ -62,18 +64,17 @@ const ProductDetail = () => {
         // Initialize animations after product is loaded
         setTimeout(() => {
           animateProductDetails();
-          // Add the animate-in class for CSS animations
           if (containerRef.current) {
             containerRef.current.classList.add('animate-in');
           }
         }, 100);
       })
       .catch(error => {
-        console.error("Error fetching product:", error); // Add this line for debugging
+        console.error("Error fetching product:", error);
         setError(error.message);
         setLoading(false);
       });
-  }, [id]); // Changed from productId to id
+  }, [id]);
 
   // Fetch products with the same type
   const fetchSimilarProducts = (productType, currentProductId) => {
@@ -83,10 +84,8 @@ const ProductDetail = () => {
       }
     })
       .then(response => {
-        // Filter out the current product
         const filtered = response.data.filter(prod => prod.id !== currentProductId);
         
-        // Normalize similar products data to match component expectations
         const normalizedProducts = filtered.map(prod => ({
           ...prod,
           images: prod.image_list?.map(item => ({
@@ -95,7 +94,6 @@ const ProductDetail = () => {
           })) || []
         }));
         
-        // Limit to 4 similar products
         setSimilarProducts(normalizedProducts.slice(0, 4));
       })
       .catch(error => {
@@ -105,58 +103,26 @@ const ProductDetail = () => {
 
   // Animation for product details on load
   const animateProductDetails = () => {
-    // Reset any previous animations
     gsap.set([imageGalleryRef.current, productInfoRef.current?.children], { 
       clearProps: "all" 
     });
     
-    // Animate the main image container
     gsap.fromTo(imageGalleryRef.current, 
-      { 
-        opacity: 0, 
-        x: -30 
-      },
-      { 
-        opacity: 1, 
-        x: 0, 
-        duration: 0.8,
-        ease: "power2.out"
-      }
+      { opacity: 0, x: -30 },
+      { opacity: 1, x: 0, duration: 0.8, ease: "power2.out" }
     );
     
-    // Animate thumbnails
     const thumbnails = thumbnailsRef.current.filter(Boolean);
     gsap.fromTo(thumbnails, 
-      { 
-        opacity: 0, 
-        y: 20 
-      },
-      { 
-        opacity: 1, 
-        y: 0, 
-        duration: 0.5,
-        stagger: 0.1,
-        ease: "power2.out",
-        delay: 0.3
-      }
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: "power2.out", delay: 0.3 }
     );
     
-    // Animate product info with staggered effect
     if (productInfoRef.current) {
       const productInfoElements = productInfoRef.current.children;
       gsap.fromTo(productInfoElements, 
-        { 
-          opacity: 0, 
-          y: 20 
-        },
-        { 
-          opacity: 1, 
-          y: 0, 
-          duration: 0.5,
-          stagger: 0.1,
-          ease: "power2.out",
-          delay: 0.5
-        }
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: "power2.out", delay: 0.5 }
       );
     }
   };
@@ -165,21 +131,11 @@ const ProductDetail = () => {
   const changeImage = (index) => {
     if (index === activeImageIndex) return;
     
-    // Get the main image element
     const mainImage = mainImageRef.current;
     
-    // Animate image change
     gsap.fromTo(mainImage,
-      { 
-        opacity: 0.7,
-        scale: 0.98
-      },
-      { 
-        opacity: 1,
-        scale: 1,
-        duration: 0.3,
-        ease: "power2.out"
-      }
+      { opacity: 0.7, scale: 0.98 },
+      { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }
     );
     
     setActiveImageIndex(index);
@@ -223,7 +179,6 @@ const ProductDetail = () => {
 
   // Handle Add to Cart with animation
   const handleAddToCart = () => {
-    // Add to cart animation
     const addToCartButton = document.querySelector('.add-to-cart-button');
     
     gsap.to(addToCartButton, {
@@ -232,26 +187,20 @@ const ProductDetail = () => {
       yoyo: true,
       repeat: 1,
       onComplete: () => {
-        // Create success message
         const successMessage = document.createElement('div');
         successMessage.className = 'cart-success-message';
         successMessage.textContent = `${product.name} (${quantity}) added to cart!`;
         
         document.querySelector('.product-detail-page').appendChild(successMessage);
         
-        // Animate success message
         gsap.fromTo(successMessage, 
-          { 
-            opacity: 0, 
-            y: -20 
-          },
+          { opacity: 0, y: -20 },
           { 
             opacity: 1, 
             y: 0, 
             duration: 0.5,
             ease: "power2.out",
             onComplete: () => {
-              // Remove success message after delay
               setTimeout(() => {
                 gsap.to(successMessage, {
                   opacity: 0,
@@ -269,23 +218,19 @@ const ProductDetail = () => {
       }
     });
     
-    // Add the product to the cart context
     if (product) {
       const itemToAdd = {
         id: product.id,
         name: product.name,
-        price: parseFloat(product.price.replace(/[^0-9.-]+/g,"")), // Convert price string to number
+        price: parseFloat(product.price.replace(/[^0-9.-]+/g,"")),
         quantity: quantity,
         image: product.images && product.images.length > 0 ? product.images[0].image_url : null
       };
       
       addItem(itemToAdd);
       setAddedToCart(true);
-      
-      // Optional: Reset quantity after adding to cart
       setQuantity(1);
       
-      // After a delay, reset the "added to cart" state
       setTimeout(() => {
         setAddedToCart(false);
       }, 3000);
@@ -295,6 +240,89 @@ const ProductDetail = () => {
   // Navigate to cart
   const goToCart = () => {
     navigate('/cart');
+  };
+
+  // Share functionality
+  const getProductUrl = () => {
+    return window.location.href;
+  };
+
+  const getShareText = () => {
+    return `Check out this amazing product: ${product.name} - ${product.price}`;
+  };
+
+  const handleShare = (platform) => {
+    const url = encodeURIComponent(getProductUrl());
+    const text = encodeURIComponent(getShareText());
+    const imageUrl = product.images && product.images.length > 0 
+      ? encodeURIComponent(product.images[0].image_url) 
+      : '';
+
+    let shareUrl = '';
+
+    switch (platform) {
+      case 'facebook':
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+        break;
+      case 'twitter':
+        shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+        break;
+      case 'whatsapp':
+        shareUrl = `https://wa.me/?text=${text}%20${url}`;
+        break;
+      case 'email':
+        shareUrl = `mailto:?subject=${encodeURIComponent(product.name)}&body=${text}%20${url}`;
+        break;
+      default:
+        return;
+    }
+
+    if (platform === 'email') {
+      window.location.href = shareUrl;
+    } else {
+      window.open(shareUrl, '_blank', 'width=600,height=400');
+    }
+    
+    setShowShareModal(false);
+  };
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(getProductUrl());
+      setCopySuccess(true);
+      setTimeout(() => {
+        setCopySuccess(false);
+        setShowShareModal(false);
+      }, 1500);
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+    }
+  };
+
+  const openShareModal = () => {
+    setShowShareModal(true);
+    setTimeout(() => {
+      if (shareModalRef.current) {
+        gsap.fromTo(shareModalRef.current,
+          { opacity: 0, scale: 0.8 },
+          { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }
+        );
+      }
+    }, 10);
+  };
+
+  const closeShareModal = () => {
+    if (shareModalRef.current) {
+      gsap.to(shareModalRef.current, {
+        opacity: 0,
+        scale: 0.8,
+        duration: 0.2,
+        ease: "power2.in",
+        onComplete: () => setShowShareModal(false)
+      });
+    } else {
+      setShowShareModal(false);
+    }
   };
 
   if (loading) return (
@@ -324,7 +352,7 @@ const ProductDetail = () => {
         <span className="current">{product.name}</span>
       </div>
       
-      {/* Main product layout - Image left, Info right */}
+      {/* Main product layout */}
       <div className="product-detail-container" ref={containerRef}>
         {/* Product Images Gallery */}
         <div className="product-gallery" ref={imageGalleryRef}>
@@ -381,11 +409,21 @@ const ProductDetail = () => {
             ))}
           </div>
         </div>
-        
 
         {/* Product Info Section */}
         <div className="product-info" ref={productInfoRef}>
-          <h1>{product.name}</h1>
+          <div className="product-header">
+            <h1>{product.name}</h1>
+            <button 
+              className="share-button"
+              onClick={openShareModal}
+              aria-label="Share this product"
+            >
+              <Share2 size={20} />
+              Share
+            </button>
+          </div>
+          
           <p className="description">{product.description}</p>
           <p className="price">{product.price}</p>
           <p className="description">Points : {product.points_reward}</p>
@@ -410,7 +448,7 @@ const ProductDetail = () => {
               onClick={() => adjustQuantity(1)}
               aria-label="Increase quantity"
             >
-            <Plus size={18}/>
+              <Plus size={18}/>
             </button>
           </div>
 
@@ -422,7 +460,7 @@ const ProductDetail = () => {
             >
               {addedToCart ? (
                 <>
-                <ShoppingBag />
+                  <ShoppingBag />
                   Added to Cart!
                 </>
               ) : (
@@ -441,7 +479,7 @@ const ProductDetail = () => {
               className="view-cart-button"
               onClick={goToCart}
             >
-            <ShoppingCart size={18} strokeWidth={2} />
+              <ShoppingCart size={18} strokeWidth={2} />
               View Cart
             </button>
           </div>
@@ -513,7 +551,7 @@ const ProductDetail = () => {
         </div>
       </div>
       
-      {/* Similar Products of Same Type */}
+      {/* Similar Products */}
       <div className="similar-products">
         <h2>Similar Products</h2>
         <div className="similar-products-grid">
@@ -544,6 +582,94 @@ const ProductDetail = () => {
           )}
         </div>
       </div>
+
+      {/* Share Modal */}
+      {showShareModal && (
+        <div className="share-modal-overlay" onClick={closeShareModal}>
+          <div 
+            className="share-modal" 
+            ref={shareModalRef}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="share-modal-header">
+              <h3>Share this product</h3>
+              <button 
+                className="close-modal-btn"
+                onClick={closeShareModal}
+                aria-label="Close share modal"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="share-options">
+              <button 
+                className="share-option facebook"
+                onClick={() => handleShare('facebook')}
+              >
+                <Facebook size={20} />
+                Facebook
+              </button>
+              
+              <button 
+                className="share-option twitter"
+                onClick={() => handleShare('twitter')}
+              >
+                <Twitter size={20} />
+                Twitter
+              </button>
+              
+              <button 
+                className="share-option whatsapp"
+                onClick={() => handleShare('whatsapp')}
+              >
+                <MessageCircle size={20} />
+                WhatsApp
+              </button>
+              
+              <button 
+                className="share-option email"
+                onClick={() => handleShare('email')}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+                Email
+              </button>
+            </div>
+            
+            <div className="copy-link-section">
+              <div className="copy-link-input">
+                <input 
+                  type="text" 
+                  value={getProductUrl()} 
+                  readOnly 
+                  className="link-input"
+                />
+                <button 
+                  className={`copy-btn ${copySuccess ? 'copied' : ''}`}
+                  onClick={copyToClipboard}
+                >
+                  {copySuccess ? (
+                    <>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <polyline points="20,6 9,17 4,12"></polyline>
+                      </svg>
+                      Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={16} />
+                      Copy
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
