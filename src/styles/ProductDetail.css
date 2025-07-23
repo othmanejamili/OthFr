@@ -1529,27 +1529,18 @@
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .share-modal {
-    background: #1f2937;
+    background: #FFF;
   }
   
   .share-modal-header {
-    background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
-    border-bottom-color: #374151;
+    background: #FFF;
+    border-bottom-color: black;
   }
-  
-  .share-modal-header h3 {
-    color: #f9fafb;
-  }
+
   
   .share-product-preview {
-    background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+    background: #FFF;
   }
   
-  .share-product-name {
-    color: #f9fafb;
-  }
-  
-  .share-options-title {
-    color: #f9fafb;
-  }
+
 }
