@@ -1253,6 +1253,7 @@
   text-decoration: none;
   position: relative;
   overflow: hidden;
+  width: auto;
 }
 
 /* Individual Platform Styles */
@@ -1282,7 +1283,7 @@
 
 .share-option.whatsapp {
   background: white;
-  color: var(--primary-color);
+  color: black;
   box-shadow: 0 4px 12px var(--primary-color);
 }
 
