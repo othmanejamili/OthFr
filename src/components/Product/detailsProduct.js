@@ -608,15 +608,15 @@ const ProductDetail = () => {
                 onClick={() => handleShare('facebook')}
               >
                 <Facebook size={20} />
-                Facebook
+                
               </button>
               
               <button 
                 className="share-option twitter"
                 onClick={() => handleShare('twitter')}
               >
-                <Twitter size={20} />
-                Twitter
+                <X size={20} />
+                
               </button>
               
               <button 
@@ -624,7 +624,7 @@ const ProductDetail = () => {
                 onClick={() => handleShare('whatsapp')}
               >
                 <MessageCircle size={20} />
-                WhatsApp
+                
               </button>
               
               <button 
@@ -635,7 +635,7 @@ const ProductDetail = () => {
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                   <polyline points="22,6 12,13 2,6"></polyline>
                 </svg>
-                Email
+                
               </button>
             </div>
             
