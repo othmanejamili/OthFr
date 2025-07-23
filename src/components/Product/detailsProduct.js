@@ -593,6 +593,20 @@ const ProductDetail = () => {
           >
             <div className="share-modal-header">
               <h3>Share this product</h3>
+
+              <div className="sharImageModel">
+              {product.images && product.images.map((image, index) => (
+              <img
+                key={index}
+                src={image.image_url}
+                alt={`${product.name} thumbnail ${index + 1}`}
+                className={`thumbnail ${index === activeImageIndex ? 'active' : ''}`}
+                onClick={() => changeImage(index)}
+                ref={(el) => (thumbnailsRef.current[index] = el)}
+              />
+            ))}
+              </div>
+
               <button 
                 className="close-modal-btn"
                 onClick={closeShareModal}
@@ -639,34 +653,7 @@ const ProductDetail = () => {
               </button>
             </div>
             
-            <div className="copy-link-section">
-              <div className="copy-link-input">
-                <input 
-                  type="text" 
-                  value={getProductUrl()} 
-                  readOnly 
-                  className="link-input"
-                />
-                <button 
-                  className={`copy-btn ${copySuccess ? 'copied' : ''}`}
-                  onClick={copyToClipboard}
-                >
-                  {copySuccess ? (
-                    <>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <polyline points="20,6 9,17 4,12"></polyline>
-                      </svg>
-                      Copied!
-                    </>
-                  ) : (
-                    <>
-                      <Copy size={16} />
-                      Copy
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
+            
           </div>
         </div>
       )}
