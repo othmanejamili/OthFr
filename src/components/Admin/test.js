@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-import axios from "axios";
-// Assuming you have the Form.css file in your project
+import React, { useState, useRef } from "react";
 
 const TestAddProduct = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +14,9 @@ const TestAddProduct = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [previewUrls, setPreviewUrls] = useState([]);
+  
+  // Add ref for file input to properly reset it
+  const fileInputRef = useRef(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,8 +31,10 @@ const TestAddProduct = () => {
     const files = Array.from(e.target.files);
     setFormData({ ...formData, images: files });
     
+    // Clear previous previews
     setPreviewUrls([]);
     
+    // Generate new previews
     files.forEach(file => {
       const reader = new FileReader();
       reader.onload = () => {
@@ -72,6 +75,8 @@ const TestAddProduct = () => {
     if (!validateForm()) return;
 
     setLoading(true);
+    
+    // Create FormData object
     const data = new FormData();
     data.append("name", formData.name);
     data.append("description", formData.description);
@@ -80,151 +85,202 @@ const TestAddProduct = () => {
     data.append("type", formData.type);
     data.append("points_reward", formData.points_reward);
     
+    // Append each image file
     for (let i = 0; i < formData.images.length; i++) {
       data.append("images", formData.images[i]);
     }
 
     try {
-         await axios.post(`https://othy.pythonanywhere.com/api/products/`, data, {
-        headers: { "Content-Type": "multipart/form-data" }
-      });
-
-      setMessage({
-        text: "Product added successfully!",
-        type: "success"
-      });
-
-      setFormData({ name: "", description: "", price: "", type: "", size: "", points_reward: "", images: [] });
-      setPreviewUrls([]);
+      console.log("Submitting form data...");
+      console.log("Images to upload:", formData.images.length);
       
-    } catch (error) {
-      console.log("Error:", error);
+      // Simulate API call - replace with your actual axios call
+      const response = await fetch(`https://othy.pythonanywhere.com/api/products/`, {
+        method: 'POST',
+        body: data
+      });
 
-      if (error.response) {
-        const serverError = error.response.data;
+      if (!response.ok) {
+        const serverError = await response.json();
         setMessage({
-          text: serverError.message || "Server error. Please try again.",
+          text: serverError.message || `Server error: ${response.status}. Please try again.`,
           type: "error"
         });
-
+        
         if (serverError.errors) {
           setErrors(serverError.errors);
         }
-      } else if (error.request) {
-        setMessage({
-          text: "No response from server. Please check your connection.",
-          type: "error"  
-        });
       } else {
+        const responseData = await response.json();
+        console.log("Success response:", responseData);
+
         setMessage({
-          text: "Failed to add product. Please try again.",
-          type: "error"
+          text: "Product added successfully!",
+          type: "success"
         });
+
+        // Reset form completely
+        handleReset();
       }
+      
+    } catch (error) {
+      console.log("Error details:", error);
+
+      setMessage({
+        text: "Failed to add product. Please check your connection and try again.",
+        type: "error"
+      });
     } finally {
       setLoading(false);
     }
   };
 
   const handleReset = () => {
-    setFormData({ name: "", description: "", price: "", type: "", size: "", points_reward: "", images: [] });
+    setFormData({ 
+      name: "", 
+      description: "", 
+      price: "", 
+      type: "", 
+      size: "", 
+      points_reward: "", 
+      images: [] 
+    });
     setPreviewUrls([]);
     setErrors({});
     setMessage({ text: "", type: "" });
+    
+    // Clear the file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   return (
-    <div className="container">
-      <h2>Add Product</h2>
+    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
+      <h2 style={{ textAlign: 'center', marginBottom: '30px' }}>Add Product</h2>
+      
       {message.text && (
-        <div className={`alert ${message.type === "success" ? "alert-success" : "alert-error"}`}>
+        <div style={{
+          padding: '12px',
+          marginBottom: '20px',
+          borderRadius: '4px',
+          backgroundColor: message.type === "success" ? '#d4edda' : '#f8d7da',
+          color: message.type === "success" ? '#155724' : '#721c24',
+          border: `1px solid ${message.type === "success" ? '#c3e6cb' : '#f5c6cb'}`
+        }}>
           {message.text}
         </div>
       )}
-      <form onSubmit={handleSubmit} noValidate>
-        <div className="form-group">
-          <label htmlFor="name">Name</label>
+      
+      <form onSubmit={handleSubmit}>
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Name</label>
           <input
-            id="name"
             name="name"
-            className={`form-input ${errors.name ? "error" : ""}`}
+            style={{
+              width: '100%',
+              padding: '8px',
+              border: `1px solid ${errors.name ? '#dc3545' : '#ccc'}`,
+              borderRadius: '4px'
+            }}
             placeholder="Enter product name"
             value={formData.name}
             onChange={handleChange}
           />
-          {errors.name && <p className="error-text">{errors.name}</p>}
+          {errors.name && <p style={{ color: '#dc3545', fontSize: '14px', margin: '5px 0' }}>{errors.name}</p>}
         </div>
 
-        <div className="form-group">
-          <label htmlFor="description">Description</label>
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Description</label>
           <textarea
-            id="description"
             name="description"
             rows="3"
-            className={`form-textarea ${errors.description ? "error" : ""}`}
+            style={{
+              width: '100%',
+              padding: '8px',
+              border: `1px solid ${errors.description ? '#dc3545' : '#ccc'}`,
+              borderRadius: '4px',
+              resize: 'vertical'
+            }}
             placeholder="Enter product description"
             value={formData.description}
             onChange={handleChange}
           />
-          {errors.description && <p className="error-text">{errors.description}</p>}
+          {errors.description && <p style={{ color: '#dc3545', fontSize: '14px', margin: '5px 0' }}>{errors.description}</p>}
         </div>
 
-        <div className="form-group">
-          <label htmlFor="price">Price</label>
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Price</label>
           <input
-            id="price"
             name="price"
             type="number"
             min="0.01"
             step="0.01"
-            className={`form-input ${errors.price ? "error" : ""}`}
+            style={{
+              width: '100%',
+              padding: '8px',
+              border: `1px solid ${errors.price ? '#dc3545' : '#ccc'}`,
+              borderRadius: '4px'
+            }}
             placeholder="0.00"
             value={formData.price}
             onChange={handleChange}
           />
-          {errors.price && <p className="error-text">{errors.price}</p>}
+          {errors.price && <p style={{ color: '#dc3545', fontSize: '14px', margin: '5px 0' }}>{errors.price}</p>}
         </div>
 
-        <div className="form-group">
-          <label htmlFor="points_reward">Points</label>
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Points</label>
           <input
-            id="points_reward"
             name="points_reward"
             type="number"
             min="0"
             step="0.5"
-            className={`form-input ${errors.points_reward ? "error" : ""}`}
+            style={{
+              width: '100%',
+              padding: '8px',
+              border: `1px solid ${errors.points_reward ? '#dc3545' : '#ccc'}`,
+              borderRadius: '4px'
+            }}
             placeholder="0.00"
             value={formData.points_reward}
             onChange={handleChange}
           />
-          {errors.points_reward && <p className="error-text">{errors.points_reward}</p>}
+          {errors.points_reward && <p style={{ color: '#dc3545', fontSize: '14px', margin: '5px 0' }}>{errors.points_reward}</p>}
         </div>
 
-        <div className="form-group">
-          <label htmlFor="type">Type</label>
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Type</label>
           <select
-            id="type"
             name="type"
-            className={`form-select ${errors.type ? "error" : ""}`}
+            style={{
+              width: '100%',
+              padding: '8px',
+              border: `1px solid ${errors.type ? '#dc3545' : '#ccc'}`,
+              borderRadius: '4px'
+            }}
             value={formData.type}
             onChange={handleChange}
           >
             <option value="">Select Clothing type</option>
             <option value="summer">Summer</option>
             <option value="winter">Winter</option>
-            <option value="Spring">Spring</option>
+            <option value="spring">Spring</option>
             <option value="autumn">Autumn</option>
           </select>
-          {errors.type && <p className="error-text">{errors.type}</p>}
+          {errors.type && <p style={{ color: '#dc3545', fontSize: '14px', margin: '5px 0' }}>{errors.type}</p>}
         </div>
 
-        <div className="form-group">
-          <label htmlFor="size">Size</label>
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Size</label>
           <select
-            id="size"
             name="size"
-            className={`form-select ${errors.size ? "error" : ""}`}
+            style={{
+              width: '100%',
+              padding: '8px',
+              border: `1px solid ${errors.size ? '#dc3545' : '#ccc'}`,
+              borderRadius: '4px'
+            }}
             value={formData.size}
             onChange={handleChange}
           >
@@ -234,47 +290,63 @@ const TestAddProduct = () => {
             <option value="L">Large</option>
             <option value="XL">Extra Large</option>
           </select>
-          {errors.size && <p className="error-text">{errors.size}</p>}
+          {errors.size && <p style={{ color: '#dc3545', fontSize: '14px', margin: '5px 0' }}>{errors.size}</p>}
         </div>
 
-        <div className="form-group">
-          <label className="form-label">Product Images</label>
-          <div className="file-upload-area">
-            <div>
-              <svg className="file-upload-icon" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <div className="file-upload-text">
-                <label htmlFor="file-upload" className="file-upload-button">
-                  <span>Upload files</span>
-                  <input 
-                    id="file-upload" 
-                    name="file-upload" 
-                    type="file" 
-                    style={{ display: 'none' }} 
-                    multiple 
-                    accept="image/*"
-                    onChange={handleFileChange}
-                  />
-                </label>
-                <p>or drag and drop</p>
-              </div>
-              <p className="file-upload-helper">PNG, JPG, GIF up to 10MB</p>
-            </div>
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Product Images</label>
+          <div style={{
+            border: `2px dashed ${errors.images ? '#dc3545' : '#ccc'}`,
+            borderRadius: '8px',
+            padding: '40px',
+            textAlign: 'center',
+            backgroundColor: '#f8f9fa'
+          }}>
+            <input 
+              ref={fileInputRef}
+              type="file" 
+              multiple 
+              accept="image/*"
+              onChange={handleFileChange}
+              style={{
+                display: 'block',
+                margin: '0 auto',
+                padding: '10px',
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+                backgroundColor: 'white'
+              }}
+            />
+            <p style={{ margin: '10px 0 0 0', color: '#666', fontSize: '14px' }}>
+              Select multiple images (PNG, JPG, GIF)
+            </p>
           </div>
-          {errors.images && <p className="error-text">{errors.images}</p>}
+          {errors.images && <p style={{ color: '#dc3545', fontSize: '14px', margin: '5px 0' }}>{errors.images}</p>}
 
           {previewUrls.length > 0 && (
-            <div className="preview-container">
-              <p className="preview-title">Image previews:</p>
-              <div className="preview-grid">
+            <div style={{ marginTop: '20px' }}>
+              <p style={{ fontWeight: 'bold', marginBottom: '10px' }}>Image previews:</p>
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', 
+                gap: '10px' 
+              }}>
                 {previewUrls.map((url, index) => (
-                  <div key={index} className="preview-item">
+                  <div key={index} style={{ textAlign: 'center' }}>
                     <img 
                       src={url} 
                       alt={`Preview ${index + 1}`} 
-                      className="preview-image"
+                      style={{
+                        width: '100%',
+                        height: '150px',
+                        objectFit: 'cover',
+                        borderRadius: '4px',
+                        border: '1px solid #ddd'
+                      }}
                     />
+                    <p style={{ fontSize: '12px', margin: '5px 0', color: '#666' }}>
+                      Image {index + 1}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -282,28 +354,34 @@ const TestAddProduct = () => {
           )}
         </div>
 
-        <div className="button-container">
+        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
           <button
             type="submit"
             disabled={loading}
-            className="button-primary"
+            style={{
+              padding: '12px 24px',
+              backgroundColor: loading ? '#ccc' : '#007bff',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              fontSize: '16px'
+            }}
           >
-            {loading ? (
-              <span>
-                <svg className="spinner" width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Processing...
-              </span>
-            ) : (
-              "Add Product"
-            )}
+            {loading ? "Processing..." : "Add Product"}
           </button>
           <button
             type="button"
             onClick={handleReset}
-            className="button-secondary"
+            style={{
+              padding: '12px 24px',
+              backgroundColor: '#6c757d',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '16px'
+            }}
           >
             Reset
           </button>
