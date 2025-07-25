@@ -381,7 +381,7 @@ const Home = () => {
         <h2 className="section-title">New Collection</h2>
         <div className="collections-grid">
           <div className="collection-card">
-            <img src="/images/slide1.png" alt="Summer Essentials" className="collection-image" />
+            <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458292/Photoroom_20250203_011430_e7wddp.png" alt="Summer Essentials" className="collection-image" />
             <div className="collection-tag">New Arrival</div>
             <div className="collection-info">
               <h3>Summer Essentials</h3>
@@ -391,7 +391,7 @@ const Home = () => {
           </div>
 
           <div className="collection-card">
-            <img src="/images/cap.png" alt="Urban Collection" className="collection-image" />
+            <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458676/Photoroom_20250220_163337_qzpux7.png" alt="Urban Collection" className="collection-image" />
             <div className="collection-tag">Best Seller</div>
             <div className="collection-info">
               <h3>Urban Collection</h3>
@@ -401,7 +401,7 @@ const Home = () => {
           </div>
 
           <div className="collection-card">
-            <img src="/images/slide3.png" alt="Traditional Series" className="collection-image" />
+            <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458540/Photoroom_20250722_151619_d1v8el.png" alt="Traditional Series" className="collection-image" />
             <div className="collection-tag">Limited Edition</div>
             <div className="collection-info">
               <h3>Traditional Series</h3>
@@ -463,7 +463,7 @@ const Home = () => {
 
         <div className="collection-carousel">
         <div className="product-card">
-            <img src="/images/autumn.jpeg" className="product-image" alt="product" />
+            <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458765/autumn_smhg3v.jpg" className="product-image" alt="product" />
             <div className="product-info">
               All New Design Hoodie
             </div>
@@ -471,7 +471,7 @@ const Home = () => {
           </div>
 
           <div className="product-card">
-            <img src="/images/spring.jpeg" className="product-image" alt="product" />
+            <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458868/sstyle_me_m2u4ed.jpg" className="product-image" alt="product" />
             <div className="product-info">
               All New Design Hoodie
             </div>
@@ -479,7 +479,7 @@ const Home = () => {
           </div>
 
           <div className="product-card">
-            <img src="/images/winter.jpeg" className="product-image" alt="Black varsity jacket" />
+            <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458444/__1_hjei4x.jpg" className="product-image" alt="Black varsity jacket" />
             <div className="product-info">
               All New Design Hoodie
             </div>
@@ -487,7 +487,7 @@ const Home = () => {
           </div>
 
           <div className="product-card">
-            <img src="/images/product1.jpeg" className="product-image" alt="Red patchwork hoodie" />
+            <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458940/product1_s1e6gq.jpg" className="product-image" alt="Red patchwork hoodie" />
             <div className="product-info">
               All New Design Hoodie
             </div>
@@ -495,7 +495,7 @@ const Home = () => {
           </div>
 
           <div className="product-card">
-            <img src="/images/pro.jpeg" className="product-image" alt="product" />
+            <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458981/Lewis_hamilton_style_ljy3iq.jpg" className="product-image" alt="product" />
             <div className="product-info">
               All New Design Hoodie
             </div>
@@ -511,7 +511,7 @@ const Home = () => {
           </div>
 
           <div className="product-card">
-            <img src="/images/_.jpeg" className="product-image" alt="product" />
+            <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753459033/__nicgq4.jpg" className="product-image" alt="product" />
             <div className="product-info">
               All New Design Hoodie
             </div>

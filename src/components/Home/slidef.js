@@ -13,17 +13,17 @@ const EnhancedSlider = () => {
   const slides = [
     {
       id: 1,
-      image: "/images/slide1.png",
+      image: "https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458292/Photoroom_20250203_011430_e7wddp.png",
       text: "Crafted with care, made for the rare."
     },
     {
       id: 2,
-      image: "/images/slide2.png",
+      image: "https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458540/Photoroom_20250722_151619_d1v8el.png",
       text: "Elevate your style with our exclusive collection."
     },
     {
       id: 3,
-      image: "/images/slide3.png",
+      image: "https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458577/Photoroom_20250722_151545_rmaahv.png",
       text: "Designed for comfort, crafted for expression."
     }
   ];

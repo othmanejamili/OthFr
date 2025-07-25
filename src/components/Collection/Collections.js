@@ -8,7 +8,7 @@ const collections = [
     title: "Summer Escape",
     subtitle: "Endless possibilities",
     description: "Dive into vibrant textures and refreshing palettes that capture the essence of warm adventures.",
-    img: "/images/_.jpeg",
+    img: "https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753459033/__nicgq4.jpg",
     accent: "summer-accent",
     background: "summer-bg",
     icon: (
@@ -20,7 +20,7 @@ const collections = [
     title: "Winter Serenity",
     subtitle: "Cozy elegance",
     description: "Embrace sophisticated warmth with textures that whisper comfort and timeless style.",
-    img: "/images/winter.jpeg",
+    img: "https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458444/__1_hjei4x.jpg",
     accent: "winter-accent",
     background: "winter-bg",
     icon: (
@@ -32,7 +32,7 @@ const collections = [
     title: "Spring Awakening",
     subtitle: "Fresh beginnings",
     description: "Celebrate renewal with soft pastels and organic forms that breathe life into every space.",
-    img: "/images/spring.jpeg",
+    img: "https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458868/sstyle_me_m2u4ed.jpg",
     accent: "spring-accent",
     background: "spring-bg",
     icon: (
@@ -44,7 +44,7 @@ const collections = [
     title: "Autumn Harmony",
     subtitle: "Golden moments",
     description: "Rich earth tones and luxurious textures that capture the poetry of changing seasons.",
-    img: "/images/autumn.jpeg",
+    img: "https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458765/autumn_smhg3v.jpg",
     accent: "autumn-accent",
     background: "autumn-bg",
     icon: (
