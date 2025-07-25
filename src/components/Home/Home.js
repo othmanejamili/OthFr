@@ -503,7 +503,7 @@ const Home = () => {
           </div>
 
           <div className="product-card">
-            <img src="/images/pr.jpeg" className="product-image" alt="product" />
+            <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753457493/Photoroom_20250722_151656_cp8xwn.png" className="product-image" alt="product" />
             <div className="product-info">
               All New Design Hoodie
             </div>
