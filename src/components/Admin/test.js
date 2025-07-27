@@ -70,7 +70,7 @@ const TestAddProduct = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-
+  
     setLoading(true);
     const data = new FormData();
     data.append("name", formData.name);
@@ -80,33 +80,38 @@ const TestAddProduct = () => {
     data.append("type", formData.type);
     data.append("points_reward", formData.points_reward);
     
-    for (let i = 0; i < formData.images.length; i++) {
-      data.append("images", formData.images[i]);
-    }
-
+    // IMPORTANT: Append each image with the same key name "images"
+    // This creates multiple entries with the same key, which Django can handle
+    formData.images.forEach((image, index) => {
+      data.append("images", image);
+    });
+  
     try {
-         await axios.post(`https://othy.pythonanywhere.com/api/products/`, data, {
-        headers: { "Content-Type": "multipart/form-data" }
+      const response = await axios.post(`https://othy.pythonanywhere.com/api/products/`, data, {
+        headers: { 
+          "Content-Type": "multipart/form-data" 
+        }
       });
-
+  
       setMessage({
         text: "Product added successfully!",
         type: "success"
       });
-
+  
       setFormData({ name: "", description: "", price: "", type: "", size: "", points_reward: "", images: [] });
       setPreviewUrls([]);
       
     } catch (error) {
       console.log("Error:", error);
-
+      console.log("Error response:", error.response?.data);
+  
       if (error.response) {
         const serverError = error.response.data;
         setMessage({
           text: serverError.message || "Server error. Please try again.",
           type: "error"
         });
-
+  
         if (serverError.errors) {
           setErrors(serverError.errors);
         }
