@@ -380,7 +380,7 @@ const Home = () => {
       <section className="collections-section" ref={collectionsSectionRef}>
         <h2 className="section-title">New Collection</h2>
         <div className="collections-grid">
-          <div className="collection-card">
+          <Link to={'/product/1'}><div className="collection-card">
             <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458292/Photoroom_20250203_011430_e7wddp.png" alt="Summer Essentials" className="collection-image" />
             <div className="collection-tag">New Arrival</div>
             <div className="collection-info">
@@ -388,7 +388,7 @@ const Home = () => {
               <p>Light and breathable pieces for warm days</p>
               <div className="collection-price">From 299.99DH</div>
             </div>
-          </div>
+          </div></Link>
 
           <div className="collection-card">
             <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458676/Photoroom_20250220_163337_qzpux7.png" alt="Urban Collection" className="collection-image" />
