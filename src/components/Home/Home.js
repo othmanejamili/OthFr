@@ -391,7 +391,7 @@ const Home = () => {
             </div>
           </div></Link>
 
-          <div className="collection-card">
+          <Link to={'/product/21'}><div className="collection-card">
             <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458676/Photoroom_20250220_163337_qzpux7.png" alt="Urban Collection" className="collection-image" />
             <div className="collection-tag">Best Seller</div>
             <div className="collection-info">
@@ -399,9 +399,9 @@ const Home = () => {
               <p>Modern streetwear with a traditional twist</p>
               <div className="collection-price">From 149.99DH</div>
             </div>
-          </div>
+          </div></Link>
 
-          <div className="collection-card">
+          <Link to={'/product/4'}><div className="collection-card">
             <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458540/Photoroom_20250722_151619_d1v8el.png" alt="Traditional Series" className="collection-image" />
             <div className="collection-tag">Limited Edition</div>
             <div className="collection-info">
@@ -409,7 +409,7 @@ const Home = () => {
               <p>Handcrafted with authentic Moroccan designs</p>
               <div className="collection-price">From 199.99DH</div>
             </div>
-          </div>
+          </div></Link>
         </div>
       </section>
 
