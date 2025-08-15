@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Slider from "./slider";
 import EnhancedSlider from "./slidef";
+import { Link } from 'react-router-dom';
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
