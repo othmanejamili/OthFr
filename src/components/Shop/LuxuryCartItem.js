@@ -1,6 +1,6 @@
 import React from 'react';
 import { useCart } from '../../context/CartContext';
-import '../../styles/Cart.css';
+import '../../styles/Cart.css'; 
 
 const LuxuryCartItem = ({ item, index }) => {
   const { removeItem, updateQuantity } = useCart();
@@ -57,7 +57,7 @@ const LuxuryCartItem = ({ item, index }) => {
             </div>
           )}
         </div>
-        
+        s
         {/* Quantity Controls */}
         <div className="text-center mt-4 md:mt-0">
           <div className="luxury-quantity-controls mx-auto">
