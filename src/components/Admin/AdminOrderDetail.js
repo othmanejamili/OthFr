@@ -344,7 +344,7 @@ const AdminOrderDetail = () => {
                         )}
 
                             <div className="product-name">
-                            {item.product.name || 'Unknown Product'}
+                            {item.product?.name || 'Unknown Product'}
                             </div>
                         </div>
                         </td>
