@@ -17,7 +17,7 @@ const LuxuryCartItem = ({ item, index }) => {
     Math.round((1 - item.price / item.originalPrice) * 100) : 0;
 
   return (
-    <div className="luxury-item" style={{ animationDelay: `${index * 0.1}s` }}>
+    <div className="luxury-item" style={{ animationDelay: `DHD{index * 0.1}s` }}>
       <div className="md:grid md:grid-cols-6 gap-6 items-center">
         {/* Product Image and Details */}
         <div className="md:col-span-3 flex items-center space-x-5">
@@ -50,10 +50,10 @@ const LuxuryCartItem = ({ item, index }) => {
         
         {/* Price */}
         <div className="text-center mt-4 md:mt-0">
-          <div className="luxury-price">${item.price.toFixed(2)}</div>
+          <div className="luxury-price">DHD{item.price.toFixed(2)}</div>
           {hasDiscount && (
             <div className="text-gray-400 line-through text-sm mt-1">
-              ${item.originalPrice.toFixed(2)}
+              DHD{item.originalPrice.toFixed(2)}
             </div>
           )}
         </div>
@@ -90,11 +90,11 @@ const LuxuryCartItem = ({ item, index }) => {
         
         {/* Total and Remove button */}
         <div className="text-right flex flex-col items-end mt-4 md:mt-0">
-          <span className="luxury-total">${(item.price * item.quantity).toFixed(2)}</span>
+          <span className="luxury-total">DHD{(item.price * item.quantity).toFixed(2)}</span>
           
           {hasDiscount && (
             <span className="text-gray-400 line-through text-sm">
-              ${(item.originalPrice * item.quantity).toFixed(2)}
+              DHD{(item.originalPrice * item.quantity).toFixed(2)}
             </span>
           )}
           
