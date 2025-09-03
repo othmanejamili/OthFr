@@ -28,13 +28,6 @@ const LuxuryCartItem = ({ item, index }) => {
           <div>
             <h3 className="luxury-product-title">{item.name}</h3>
             <p className="luxury-product-desc">{item.description}</p>
-            
-            <button 
-              onClick={() => removeItem(item.id)}
-              className="luxury-remove-btn mt-2 md:hidden"
-            >
-              Remove
-            </button>
           </div>
         </div>
         
