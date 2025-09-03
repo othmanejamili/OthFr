@@ -29,12 +29,6 @@ const LuxuryCartItem = ({ item, index }) => {
             <h3 className="luxury-product-title">{item.name}</h3>
             <p className="luxury-product-desc">{item.description}</p>
             
-            {hasDiscount && (
-              <div className="mt-1">
-                <span className="luxury-savings text-xs">Save {discountPercentage}%</span>
-              </div>
-            )}
-            
             <button 
               onClick={() => removeItem(item.id)}
               className="luxury-remove-btn mt-2 md:hidden"
@@ -53,7 +47,7 @@ const LuxuryCartItem = ({ item, index }) => {
             </div>
           )}
         </div>
-        s
+        
         {/* Quantity Controls */}
         <div className="text-center mt-4 md:mt-0">
           <div className="luxury-quantity-controls mx-auto">
