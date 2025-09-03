@@ -20,10 +20,7 @@ const LuxuryCart = () => {
     navigate('/product');
   };
 
-  // Calculate savings (example - you can customize this logic)
-  const originalTotal = items.reduce((sum, item) => sum + (item.originalPrice || item.price * 1.2) * item.quantity, 0);
-  const savings = originalTotal - totalAmount;
-  const hasSavings = savings > 0;
+
 
   // If cart is empty, show elegant empty state
   if (items.length === 0) {

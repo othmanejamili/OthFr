@@ -11,10 +11,6 @@ const LuxuryCartItem = ({ item, index }) => {
     }
   };
 
-  // Calculate item discount if original price exists
-  const hasDiscount = item.originalPrice && item.originalPrice > item.price;
-  const discountPercentage = hasDiscount ? 
-    Math.round((1 - item.price / item.originalPrice) * 100) : 0;
 
   return (
     <div className="luxury-item" style={{ animationDelay: `DHD{index * 0.1}s` }}>
@@ -92,11 +88,7 @@ const LuxuryCartItem = ({ item, index }) => {
         <div className="text-right flex flex-col items-end mt-4 md:mt-0">
           <span className="luxury-total">DHD{(item.price * item.quantity).toFixed(2)}</span>
           
-          {hasDiscount && (
-            <span className="text-gray-400 line-through text-sm">
-              DHD{(item.originalPrice * item.quantity).toFixed(2)}
-            </span>
-          )}
+
           
           <button 
             onClick={() => removeItem(item.id)}
