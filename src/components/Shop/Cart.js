@@ -89,12 +89,7 @@ const LuxuryCart = () => {
                 <span>Calculated at checkout</span>
               </div>
               
-              {hasSavings && (
-                <div className="luxury-summary-row" style={{ color: '#e6c656' }}>
-                  <span>Your Savings</span>
-                  <span>-DHD{savings.toFixed(2)}</span>
-                </div>
-              )}
+
               
               <div className="luxury-divider"></div>
               
@@ -104,11 +99,7 @@ const LuxuryCart = () => {
                   <span>DHD{totalAmount.toFixed(2)}</span>
                 </div>
                 
-                {hasSavings && (
-                  <div className="text-right mt-2">
-                    <span className="luxury-savings">You Save DHD{savings.toFixed(2)}</span>
-                  </div>
-                )}
+
               </div>
             </div>
           </div>
