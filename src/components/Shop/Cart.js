@@ -9,7 +9,7 @@ const LuxuryCart = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    document.title = `Your Luxury Cart (${totalItems})`;
+    document.title = `Your Luxury Cart (DHD{totalItems})`;
   }, [totalItems]);
 
   const handleCheckout = () => {
@@ -76,7 +76,7 @@ const LuxuryCart = () => {
               
               <div className="luxury-summary-row">
                 <span>Subtotal ({totalItems} items)</span>
-                <span>${totalAmount.toFixed(2)}</span>
+                <span>DHD{totalAmount.toFixed(2)}</span>
               </div>
               
               <div className="luxury-summary-row">
@@ -92,7 +92,7 @@ const LuxuryCart = () => {
               {hasSavings && (
                 <div className="luxury-summary-row" style={{ color: '#e6c656' }}>
                   <span>Your Savings</span>
-                  <span>-${savings.toFixed(2)}</span>
+                  <span>-DHD{savings.toFixed(2)}</span>
                 </div>
               )}
               
@@ -101,12 +101,12 @@ const LuxuryCart = () => {
               <div className="luxury-summary-total">
                 <div className="flex justify-between">
                   <span>Total</span>
-                  <span>${totalAmount.toFixed(2)}</span>
+                  <span>DHD{totalAmount.toFixed(2)}</span>
                 </div>
                 
                 {hasSavings && (
                   <div className="text-right mt-2">
-                    <span className="luxury-savings">You Save ${savings.toFixed(2)}</span>
+                    <span className="luxury-savings">You Save DHD{savings.toFixed(2)}</span>
                   </div>
                 )}
               </div>

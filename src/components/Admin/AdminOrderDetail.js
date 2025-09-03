@@ -12,10 +12,6 @@ const AdminOrderDetail = () => {
   const [status, setStatus] = useState('');
   const [notes, setNotes] = useState('');
 
-
-
-
-
   useEffect(() => {
     const fetchOrderDetails = async () => {
         setLoading(true);
