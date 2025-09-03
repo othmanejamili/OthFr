@@ -41,11 +41,6 @@ const LuxuryCartItem = ({ item, index }) => {
         {/* Price */}
         <div className="text-center mt-4 md:mt-0">
           <div className="luxury-price">DHD{item.price.toFixed(2)}</div>
-          {hasDiscount && (
-            <div className="text-gray-400 line-through text-sm mt-1">
-              DHD{item.originalPrice.toFixed(2)}
-            </div>
-          )}
         </div>
         
         {/* Quantity Controls */}
