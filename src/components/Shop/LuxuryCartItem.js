@@ -24,7 +24,7 @@ const LuxuryCartItem = ({ item, index }) => {
               className="luxury-image h-full w-full object-cover" 
             />
           </div>
-          
+           
           <div>
             <h3 className="luxury-product-title">{item.name}</h3>
             <p className="luxury-product-desc">{item.description}</p>
@@ -47,7 +47,7 @@ const LuxuryCartItem = ({ item, index }) => {
               -
             </button>
             <input 
-              type="text" 
+              type="text"
               value={item.quantity}
               onChange={(e) => {
                 const newQty = parseInt(e.target.value);
@@ -69,9 +69,6 @@ const LuxuryCartItem = ({ item, index }) => {
         {/* Total and Remove button */}
         <div className="text-right flex flex-col items-end mt-4 md:mt-0">
           <span className="luxury-total">DHD{(item.price * item.quantity).toFixed(2)}</span>
-          
-
-          
           <button 
             onClick={() => removeItem(item.id)}
             className="luxury-remove-btn mt-3 hidden md:flex"

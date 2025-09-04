@@ -9,7 +9,7 @@ const LuxuryCart = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    document.title = `Your Luxury Cart (DHD{totalItems})`;
+    document.title = `Your Cart (DHD{totalItems})`;
   }, [totalItems]);
 
   const handleCheckout = () => {
@@ -19,7 +19,6 @@ const LuxuryCart = () => {
   const handleContinueShopping = () => {
     navigate('/product');
   };
-
 
 
   // If cart is empty, show elegant empty state
