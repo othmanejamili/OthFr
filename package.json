@@ -19,7 +19,6 @@
     "react-i18next": "^15.7.3",
     "react-router-dom": "^7.4.1",
     "react-scripts": "^5.0.1",
-    "typescript": "^5.9.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
