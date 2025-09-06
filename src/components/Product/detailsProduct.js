@@ -4,6 +4,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import gsap from "gsap";
 import { useCart } from '../../context/CartContext';
 import '../../styles/ProductDetail.css';
+import ProductComments from "./ProductComment";
 import { Minus, Plus, ShoppingBag, ShoppingCart, Share2, Copy, Facebook, Twitter, MessageCircle, X } from "lucide-react";
 
 const ProductDetail = () => {
@@ -523,7 +524,7 @@ const ProductDetail = () => {
                 </tr>
               )) || (
                 <tr>
-                  <td colSpan="2">No specifications available</td>
+                  <td colSpan="2"><ProductComments /> </td>
                 </tr>
               )}
             </tbody>
