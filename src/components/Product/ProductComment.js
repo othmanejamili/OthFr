@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../crud/context/AuthContext';
 import { Star, MessageCircle, User } from 'lucide-react';
-import './Comment.css'; // You'll need to create this CSS file
 
 const ProductComments = ({ productId }) => {
   const { currentUser, isAuthenticated } = useContext(AuthContext);
