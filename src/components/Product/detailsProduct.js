@@ -101,7 +101,7 @@ const ProductDetail = () => {
       });
   };
 
-  // Animation for product details on load
+  // Animation for product details on loade
   const animateProductDetails = () => {
     gsap.set([imageGalleryRef.current, productInfoRef.current?.children], { 
       clearProps: "all" 
