@@ -12,10 +12,18 @@ const ProductComments = ({ productId }) => {
   const [success, setSuccess] = useState(false);
   
   const [formData, setFormData] = useState({
-    username: isAuthenticated && currentUser ? currentUser.name : '',
+    username: isAuthenticated && currentUser ? currentUser.name || '' : '',
     content: '',
     rating: 5
   });
+
+  // Update username when authentication state changes
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      username: isAuthenticated && currentUser ? currentUser.name || '' : ''
+    }));
+  }, [isAuthenticated, currentUser]);
 
   // Fetch existing comments
   useEffect(() => {
@@ -59,13 +67,11 @@ const ProductComments = ({ productId }) => {
       return;
     }
 
-    // Validation
-    if (!formData.content.trim()) {
+    // Validation with safer null checking
+    if (!formData.content || !formData.content.trim()) {
       setError("Please write a comment.");
       return;
     }
-
-
 
     setIsLoading(true);
     setError(null);
@@ -79,7 +85,7 @@ const ProductComments = ({ productId }) => {
       };
 
       const commentData = {
-        username: formData.username.trim(),
+        username: (formData.username || '').trim() || (currentUser?.name || 'Anonymous'),
         content: formData.content.trim(),
         rating: parseInt(formData.rating),
         product_id: productId
@@ -96,7 +102,6 @@ const ProductComments = ({ productId }) => {
       
       // Reset form
       setFormData({
-        username: currentUser ? currentUser.name : '',
         content: '',
         rating: 5
       });
@@ -164,9 +169,6 @@ const ProductComments = ({ productId }) => {
         <div className="add-comment-form">
           <h4>Write a Review</h4>
           <form onSubmit={handleSubmit}>
-
-
-
             <div className="form-group">
               <label htmlFor="rating">Rating</label>
               <div className="rating-input">
@@ -192,7 +194,7 @@ const ProductComments = ({ productId }) => {
               <button
                 type="submit"
                 className="submit-comment-btn"
-                disabled={isLoading || !formData.content.trim()}
+                disabled={isLoading || !formData.content || !formData.content.trim()}
               >
                 {isLoading ? 'Submitting...' : 'Submit Review'}
               </button>
