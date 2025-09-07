@@ -33,9 +33,25 @@ const ProductComments = ({ productId }) => {
         const response = await axios.get(
           `https://othy.pythonanywhere.com/api/comments/${productId}`
         );
-        setComments(response.data);
+        
+        // Ensure we always set an array
+        const commentsData = response.data;
+        if (Array.isArray(commentsData)) {
+          setComments(commentsData);
+        } else if (commentsData && Array.isArray(commentsData.comments)) {
+          // Handle case where API returns { comments: [...] }
+          setComments(commentsData.comments);
+        } else if (commentsData && Array.isArray(commentsData.data)) {
+          // Handle case where API returns { data: [...] }
+          setComments(commentsData.data);
+        } else {
+          console.warn("API returned unexpected data format:", commentsData);
+          setComments([]);
+        }
+        
       } catch (err) {
         console.error("Error fetching comments:", err);
+        setComments([]); // Ensure comments is always an array even on error
       } finally {
         setLoadingComments(false);
       }
@@ -154,13 +170,16 @@ const ProductComments = ({ productId }) => {
     ));
   };
 
+  // Additional safety check before rendering
+  const safeComments = Array.isArray(comments) ? comments : [];
+
   return (
     <div className="product-comments-section">
       {/* Comments Header */}
       <div className="comments-header">
         <div className="comments-title">
           <MessageCircle size={24} />
-          <h3>Customer Reviews ({comments.length})</h3>
+          <h3>Customer Reviews ({safeComments.length})</h3>
         </div>
       </div>
 
@@ -225,7 +244,7 @@ const ProductComments = ({ productId }) => {
           <div className="loading-comments">
             <div className="loading-spinner">Loading reviews...</div>
           </div>
-        ) : comments.length === 0 ? (
+        ) : safeComments.length === 0 ? (
           <div className="no-comments">
             <MessageCircle size={48} className="no-comments-icon" />
             <h4>No reviews yet</h4>
@@ -233,7 +252,7 @@ const ProductComments = ({ productId }) => {
           </div>
         ) : (
           <div className="comments-grid">
-            {comments.map((comment, index) => (
+            {safeComments.map((comment, index) => (
               <div key={comment.id || index} className="comment-card">
                 <div className="comment-header">
                   <div className="user-info">
