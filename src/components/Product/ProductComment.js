@@ -65,10 +65,7 @@ const ProductComments = ({ productId }) => {
       return;
     }
 
-    if (!formData.username.trim()) {
-      setError("Username is required.");
-      return;
-    }
+
 
     setIsLoading(true);
     setError(null);
