@@ -101,33 +101,63 @@ const ProductComments = ({ productId }) => {
     try {
       const token = localStorage.getItem('token');
       
+      // Debug: Check all auth-related items in localStorage
+      console.log("=== DEBUGGING AUTH ===");
+      console.log("Token:", token);
+      console.log("All localStorage keys:", Object.keys(localStorage));
+      console.log("Current user:", currentUser);
+      console.log("Is authenticated:", isAuthenticated);
+      console.log("Product ID:", productId);
+      
       if (!token) {
         setError("Authentication token not found. Please log in again.");
         setIsLoading(false);
         return;
       }
 
+      // Try different header formats - Django might expect different format
       const headers = {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json',
       };
 
-      // Match your Django serializer fields - remove username since user is set in perform_create
+      // Try different data formats
       const commentData = {
         content: formData.content.trim(),
         rating: parseInt(formData.rating),
-        product: productId  // Use 'product' not 'product_id' to match your Django model
+        product: parseInt(productId)  // Ensure it's an integer
       };
 
-      console.log("Sending comment data:", commentData);
+      console.log("=== REQUEST DATA ===");
+      console.log("URL:", 'https://othy.pythonanywhere.com/api/comments/');
+      console.log("Headers:", headers);
+      console.log("Data:", commentData);
 
+      // First, let's try to make a simple GET request to check if auth works
+      console.log("=== TESTING AUTH WITH GET REQUEST ===");
+      try {
+        const testResponse = await axios.get('https://othy.pythonanywhere.com/api/comments/', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json',
+          }
+        });
+        console.log("GET request successful:", testResponse.status);
+      } catch (testError) {
+        console.log("GET request failed:", testError.response?.status, testError.response?.data);
+      }
+
+      // Now try the POST request
+      console.log("=== MAKING POST REQUEST ===");
       const response = await axios.post(
         'https://othy.pythonanywhere.com/api/comments/',
         commentData,
         { headers }
       );
 
-      console.log("Comment created successfully:", response.data);
+      console.log("=== SUCCESS ===");
+      console.log("Response:", response.data);
 
       // Add new comment to the beginning of the list
       setComments(prev => [response.data, ...prev]);
@@ -143,30 +173,66 @@ const ProductComments = ({ productId }) => {
       setTimeout(() => setSuccess(false), 3000);
 
     } catch (err) {
-      console.error("Comment submission error:", err);
-      console.error("Error response:", err.response?.data);
+      console.error("=== ERROR DETAILS ===");
+      console.error("Full error:", err);
+      console.error("Response status:", err.response?.status);
+      console.error("Response data:", err.response?.data);
+      console.error("Response headers:", err.response?.headers);
+      console.error("Request config:", err.config);
       
       if (err.response?.status === 401) {
-        // Handle expired/invalid token
-        const errorDetail = err.response?.data?.detail;
+        // Try alternative token formats
+        const token = localStorage.getItem('token');
+        console.log("=== TRYING ALTERNATIVE AUTH FORMATS ===");
         
-        if (errorDetail && errorDetail.includes('token not valid')) {
-          // Token is expired or invalid
-          localStorage.removeItem('token');
-          setError("Your session has expired. Please log in again.");
+        // Try Token format (Django default)
+        try {
+          const altHeaders = {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${token}`,
+            'Accept': 'application/json',
+          };
           
-          // Optionally redirect to login page after a short delay
+          console.log("Trying Token format:", altHeaders);
+          
+          const altResponse = await axios.post(
+            'https://othy.pythonanywhere.com/api/comments/',
+            {
+              content: formData.content.trim(),
+              rating: parseInt(formData.rating),
+              product: parseInt(productId)
+            },
+            { headers: altHeaders }
+          );
+          
+          console.log("Token format worked!", altResponse.data);
+          
+          // Success with Token format
+          setComments(prev => [altResponse.data, ...prev]);
+          setFormData(prev => ({ ...prev, content: '', rating: 5 }));
+          setSuccess(true);
+          setTimeout(() => setSuccess(false), 3000);
+          
+        } catch (altErr) {
+          console.log("Token format also failed:", altErr.response?.data);
+          
+          // Handle expired/invalid token
+          localStorage.removeItem('token');
+          setError("Authentication failed. Your session may have expired. Please log in again.");
+          
           setTimeout(() => {
-            window.location.href = '/login'; // Adjust path as needed
+            window.location.href = '/login';
           }, 2000);
-        } else {
-          setError("Authentication failed. Please log in again to post a review.");
         }
       } else if (err.response?.status === 400) {
         // Handle validation errors
         const errorData = err.response.data;
+        console.log("Validation error details:", errorData);
+        
         if (typeof errorData === 'object') {
-          const errorMessages = Object.values(errorData).flat().join(' ');
+          const errorMessages = Object.entries(errorData)
+            .map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`)
+            .join(' | ');
           setError(errorMessages || "Please check your input and try again.");
         } else {
           setError("Invalid data. Please check your input.");
@@ -176,7 +242,7 @@ const ProductComments = ({ productId }) => {
           err.response.data.error ||
           err.response.data.detail ||
           err.response.data.message ||
-          "Failed to submit comment."
+          `Server error: ${err.response.status}`
         );
       } else if (err.request) {
         setError("Network error. Please check your connection.");
