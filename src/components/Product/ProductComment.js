@@ -101,11 +101,6 @@ const ProductComments = ({ productId }) => {
     try {
       const token = localStorage.getItem('token');
       
-      // Debug logging
-      console.log("Token from localStorage:", token);
-      console.log("Current user:", currentUser);
-      console.log("Is authenticated:", isAuthenticated);
-      
       if (!token) {
         setError("Authentication token not found. Please log in again.");
         return;
@@ -122,9 +117,6 @@ const ProductComments = ({ productId }) => {
         rating: parseInt(formData.rating),
         product_id: productId
       };
-
-      console.log("Sending comment data:", commentData);
-      console.log("Request headers:", headers);
 
       const response = await axios.post(
         'https://othy.pythonanywhere.com/api/comments/',
@@ -146,13 +138,25 @@ const ProductComments = ({ productId }) => {
 
     } catch (err) {
       console.error("Comment submission error:", err);
-      console.error("Error response:", err.response?.data);
-      console.error("Error status:", err.response?.status);
       
       if (err.response?.status === 401) {
-        setError("Your session has expired. Please log in again.");
-        // Optionally, you could trigger a logout here
-        // logout(); // if you have a logout function available
+        // Handle expired/invalid token
+        const errorDetail = err.response?.data?.detail;
+        
+        if (errorDetail && errorDetail.includes('token not valid')) {
+          // Token is expired or invalid
+          localStorage.removeItem('token'); // Clear the invalid token
+          setError("Your session has expired. Please log in again.");
+          
+          // Optionally redirect to login page after a short delay
+          setTimeout(() => {
+            window.location.href = '/login'; // Adjust path as needed
+            // Or if you're using React Router:
+            // navigate('/login');
+          }, 2000);
+        } else {
+          setError("Authentication failed. Please log in again.");
+        }
       } else if (err.response?.data) {
         setError(
           err.response.data.error ||
