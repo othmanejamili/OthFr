@@ -41,7 +41,7 @@ const ProductDetail = () => {
     }
     
     // Fetch product details by ID
-    axios.get(`https://othy.pythonanywhere.com/api/${id}/`)
+    axios.get(`https://othy.pythonanywhere.com/api/products/${id}/`)
       .then(response => {
         console.log("Product data:", response.data);
         
