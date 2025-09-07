@@ -241,7 +241,7 @@ const ProductComments = ({ productId }) => {
                       <User size={16} />
                     </div>
                     <div className="user-details">
-                      <h5 className="username">{comment.username}</h5>
+                      <h5 className="username">{comment.user_details?.username || comment.username || 'Anonymous'}</h5>
                       <div className="comment-rating">
                         {renderStars(comment.rating)}
                       </div>

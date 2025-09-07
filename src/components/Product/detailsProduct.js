@@ -524,7 +524,7 @@ const ProductDetail = () => {
                 </tr>
               )) || (
                 <tr>
-                  <td colSpan="2"><ProductComments /> </td>
+                  <td colSpan="2"><ProductComments productId={product.id} /></td>
                 </tr>
               )}
             </tbody>
