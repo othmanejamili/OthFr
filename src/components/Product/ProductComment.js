@@ -167,21 +167,8 @@ const ProductComments = ({ productId }) => {
         <div className="add-comment-form">
           <h4>Write a Review</h4>
           <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="username">Display Name</label>
-              <div className="input-with-icon">
-                <User size={18} className="input-icon" />
-                <input
-                  type="text"
-                  id="username"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  placeholder="Your name"
-                  required
-                />
-              </div>
-            </div>
+
+
 
             <div className="form-group">
               <label htmlFor="rating">Rating</label>
