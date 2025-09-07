@@ -99,70 +99,113 @@ const ProductComments = ({ productId }) => {
     setError(null);
 
     try {
-      const token = localStorage.getItem('token');
+      // Check for token in multiple possible locations
+      const token = localStorage.getItem('token') || 
+                   localStorage.getItem('access_token') || 
+                   localStorage.getItem('authToken') ||
+                   localStorage.getItem('accessToken');
+      
+      // Also check if token might be stored in user object
+      const userData = localStorage.getItem('user');
+      let tokenFromUser = null;
+      if (userData) {
+        try {
+          const parsedUser = JSON.parse(userData);
+          tokenFromUser = parsedUser.token || parsedUser.access_token || parsedUser.authToken;
+        } catch (e) {
+          console.log("Could not parse user data:", e);
+        }
+      }
+
+      const finalToken = token || tokenFromUser;
       
       // Debug: Check all auth-related items in localStorage
       console.log("=== DEBUGGING AUTH ===");
-      console.log("Token:", token);
-      console.log("All localStorage keys:", Object.keys(localStorage));
+      console.log("Token from 'token':", localStorage.getItem('token'));
+      console.log("Token from 'access_token':", localStorage.getItem('access_token'));
+      console.log("Token from 'authToken':", localStorage.getItem('authToken'));
+      console.log("Token from 'accessToken':", localStorage.getItem('accessToken'));
+      console.log("User data:", userData);
+      console.log("Token from user object:", tokenFromUser);
+      console.log("Final token:", finalToken);
       console.log("Current user:", currentUser);
       console.log("Is authenticated:", isAuthenticated);
       console.log("Product ID:", productId);
       
-      if (!token) {
-        setError("Authentication token not found. Please log in again.");
+      if (!finalToken) {
+        setError("Authentication token not found. Please log in again to submit reviews.");
         setIsLoading(false);
         return;
       }
 
-      // Try different header formats - Django might expect different format
-      const headers = {
+      // Try different authentication methods
+      const authHeaders = [
+        { 'Authorization': `Bearer ${finalToken}` },  // JWT style
+        { 'Authorization': `Token ${finalToken}` },   // Django Token style
+        { 'X-Auth-Token': finalToken },               // Custom header
+        { 'Authentication': finalToken }              // Alternative
+      ];
+
+      const baseHeaders = {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
         'Accept': 'application/json',
       };
 
-      // Try different data formats
       const commentData = {
         content: formData.content.trim(),
         rating: parseInt(formData.rating),
-        product: parseInt(productId)  // Ensure it's an integer
+        product: parseInt(productId)
       };
 
       console.log("=== REQUEST DATA ===");
       console.log("URL:", 'https://othy.pythonanywhere.com/api/comments/');
-      console.log("Headers:", headers);
       console.log("Data:", commentData);
 
-      // First, let's try to make a simple GET request to check if auth works
-      console.log("=== TESTING AUTH WITH GET REQUEST ===");
-      try {
-        const testResponse = await axios.get('https://othy.pythonanywhere.com/api/comments/', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Accept': 'application/json',
-          }
-        });
-        console.log("GET request successful:", testResponse.status);
-      } catch (testError) {
-        console.log("GET request failed:", testError.response?.status, testError.response?.data);
+      // Try each authentication method
+      let response = null;
+      let lastError = null;
+
+      for (let i = 0; i < authHeaders.length; i++) {
+        const headers = { ...baseHeaders, ...authHeaders[i] };
+        
+        console.log(`=== TRYING AUTH METHOD ${i + 1} ===`);
+        console.log("Headers:", headers);
+
+        try {
+          response = await axios.post(
+            'https://othy.pythonanywhere.com/api/comments/',
+            commentData,
+            { headers }
+          );
+          
+          console.log(`=== SUCCESS WITH METHOD ${i + 1} ===`);
+          console.log("Response:", response.data);
+          break; // Success, exit loop
+          
+        } catch (err) {
+          console.log(`Method ${i + 1} failed:`, err.response?.status, err.response?.data);
+          lastError = err;
+          continue; // Try next method
+        }
       }
 
-      // Now try the POST request
-      console.log("=== MAKING POST REQUEST ===");
-      const response = await axios.post(
-        'https://othy.pythonanywhere.com/api/comments/',
-        commentData,
-        { headers }
-      );
+      if (!response) {
+        // All methods failed
+        console.error("=== ALL AUTH METHODS FAILED ===");
+        console.error("Last error:", lastError.response?.data);
+        
+        if (lastError.response?.status === 401) {
+          setError("Authentication failed. You may need to log in again.");
+        } else {
+          setError("Failed to submit comment. Please try logging in again.");
+        }
+        return;
+      }
 
-      console.log("=== SUCCESS ===");
-      console.log("Response:", response.data);
-
-      // Add new comment to the beginning of the list
+      // Success! Add comment to list
       setComments(prev => [response.data, ...prev]);
       
-      // Reset form but keep the username for authenticated users
+      // Reset form
       setFormData(prev => ({
         ...prev,
         content: '',
@@ -173,59 +216,12 @@ const ProductComments = ({ productId }) => {
       setTimeout(() => setSuccess(false), 3000);
 
     } catch (err) {
-      console.error("=== ERROR DETAILS ===");
+      console.error("=== UNEXPECTED ERROR ===");
       console.error("Full error:", err);
       console.error("Response status:", err.response?.status);
       console.error("Response data:", err.response?.data);
-      console.error("Response headers:", err.response?.headers);
-      console.error("Request config:", err.config);
       
-      if (err.response?.status === 401) {
-        // Try alternative token formats
-        const token = localStorage.getItem('token');
-        console.log("=== TRYING ALTERNATIVE AUTH FORMATS ===");
-        
-        // Try Token format (Django default)
-        try {
-          const altHeaders = {
-            'Content-Type': 'application/json',
-            'Authorization': `Token ${token}`,
-            'Accept': 'application/json',
-          };
-          
-          console.log("Trying Token format:", altHeaders);
-          
-          const altResponse = await axios.post(
-            'https://othy.pythonanywhere.com/api/comments/',
-            {
-              content: formData.content.trim(),
-              rating: parseInt(formData.rating),
-              product: parseInt(productId)
-            },
-            { headers: altHeaders }
-          );
-          
-          console.log("Token format worked!", altResponse.data);
-          
-          // Success with Token format
-          setComments(prev => [altResponse.data, ...prev]);
-          setFormData(prev => ({ ...prev, content: '', rating: 5 }));
-          setSuccess(true);
-          setTimeout(() => setSuccess(false), 3000);
-          
-        } catch (altErr) {
-          console.log("Token format also failed:", altErr.response?.data);
-          
-          // Handle expired/invalid token
-          localStorage.removeItem('token');
-          setError("Authentication failed. Your session may have expired. Please log in again.");
-          
-          setTimeout(() => {
-            window.location.href = '/login';
-          }, 2000);
-        }
-      } else if (err.response?.status === 400) {
-        // Handle validation errors
+      if (err.response?.status === 400) {
         const errorData = err.response.data;
         console.log("Validation error details:", errorData);
         
@@ -237,17 +233,8 @@ const ProductComments = ({ productId }) => {
         } else {
           setError("Invalid data. Please check your input.");
         }
-      } else if (err.response?.data) {
-        setError(
-          err.response.data.error ||
-          err.response.data.detail ||
-          err.response.data.message ||
-          `Server error: ${err.response.status}`
-        );
-      } else if (err.request) {
-        setError("Network error. Please check your connection.");
       } else {
-        setError("Something went wrong. Please try again.");
+        setError("Something went wrong. Please try logging in again.");
       }
     } finally {
       setIsLoading(false);
