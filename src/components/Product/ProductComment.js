@@ -103,6 +103,7 @@ const ProductComments = ({ productId }) => {
       
       if (!token) {
         setError("Authentication token not found. Please log in again.");
+        setIsLoading(false);
         return;
       }
 
@@ -111,12 +112,14 @@ const ProductComments = ({ productId }) => {
         'Authorization': `Bearer ${token}`
       };
 
+      // Match your Django serializer fields - remove username since user is set in perform_create
       const commentData = {
-        username: (formData.username || '').trim() || (currentUser?.name || 'Anonymous'),
         content: formData.content.trim(),
         rating: parseInt(formData.rating),
-        product_id: productId
+        product: productId  // Use 'product' not 'product_id' to match your Django model
       };
+
+      console.log("Sending comment data:", commentData);
 
       const response = await axios.post(
         'https://othy.pythonanywhere.com/api/comments/',
@@ -124,20 +127,24 @@ const ProductComments = ({ productId }) => {
         { headers }
       );
 
+      console.log("Comment created successfully:", response.data);
+
       // Add new comment to the beginning of the list
       setComments(prev => [response.data, ...prev]);
       
-      // Reset form
-      setFormData({
+      // Reset form but keep the username for authenticated users
+      setFormData(prev => ({
+        ...prev,
         content: '',
         rating: 5
-      });
+      }));
       
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
 
     } catch (err) {
       console.error("Comment submission error:", err);
+      console.error("Error response:", err.response?.data);
       
       if (err.response?.status === 401) {
         // Handle expired/invalid token
@@ -145,17 +152,24 @@ const ProductComments = ({ productId }) => {
         
         if (errorDetail && errorDetail.includes('token not valid')) {
           // Token is expired or invalid
-          localStorage.removeItem('token'); // Clear the invalid token
+          localStorage.removeItem('token');
           setError("Your session has expired. Please log in again.");
           
           // Optionally redirect to login page after a short delay
           setTimeout(() => {
             window.location.href = '/login'; // Adjust path as needed
-            // Or if you're using React Router:
-            // navigate('/login');
           }, 2000);
         } else {
-          setError("Authentication failed. Please log in again.");
+          setError("Authentication failed. Please log in again to post a review.");
+        }
+      } else if (err.response?.status === 400) {
+        // Handle validation errors
+        const errorData = err.response.data;
+        if (typeof errorData === 'object') {
+          const errorMessages = Object.values(errorData).flat().join(' ');
+          setError(errorMessages || "Please check your input and try again.");
+        } else {
+          setError("Invalid data. Please check your input.");
         }
       } else if (err.response?.data) {
         setError(
