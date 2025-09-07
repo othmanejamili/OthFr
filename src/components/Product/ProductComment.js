@@ -31,7 +31,7 @@ const ProductComments = ({ productId }) => {
       try {
         setLoadingComments(true);
         const response = await axios.get(
-          `https://othy.pythonanywhere.com/api/comments/${productId}`
+          `https://othy.pythonanywhere.com/api/comments/product/${productId}`
         );
         setComments(response.data);
       } catch (err) {
