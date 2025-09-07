@@ -101,9 +101,19 @@ const ProductComments = ({ productId }) => {
     try {
       const token = localStorage.getItem('token');
       
+      // Debug logging
+      console.log("Token from localStorage:", token);
+      console.log("Current user:", currentUser);
+      console.log("Is authenticated:", isAuthenticated);
+      
+      if (!token) {
+        setError("Authentication token not found. Please log in again.");
+        return;
+      }
+
       const headers = {
         'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` })
+        'Authorization': `Bearer ${token}`
       };
 
       const commentData = {
@@ -112,6 +122,9 @@ const ProductComments = ({ productId }) => {
         rating: parseInt(formData.rating),
         product_id: productId
       };
+
+      console.log("Sending comment data:", commentData);
+      console.log("Request headers:", headers);
 
       const response = await axios.post(
         'https://othy.pythonanywhere.com/api/comments/',
@@ -133,8 +146,14 @@ const ProductComments = ({ productId }) => {
 
     } catch (err) {
       console.error("Comment submission error:", err);
+      console.error("Error response:", err.response?.data);
+      console.error("Error status:", err.response?.status);
       
-      if (err.response?.data) {
+      if (err.response?.status === 401) {
+        setError("Your session has expired. Please log in again.");
+        // Optionally, you could trigger a logout here
+        // logout(); // if you have a logout function available
+      } else if (err.response?.data) {
         setError(
           err.response.data.error ||
           err.response.data.detail ||
