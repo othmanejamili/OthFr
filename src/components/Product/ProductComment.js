@@ -44,6 +44,12 @@ const ProductComments = ({ productId }) => {
         } else if (commentsData && Array.isArray(commentsData.data)) {
           // Handle case where API returns { data: [...] }
           setComments(commentsData.data);
+        } else if (commentsData && typeof commentsData === 'object' && commentsData.id) {
+          // Handle case where API returns a single comment object
+          setComments([commentsData]);
+        } else if (commentsData === null || commentsData === undefined) {
+          // Handle null/undefined response
+          setComments([]);
         } else {
           console.warn("API returned unexpected data format:", commentsData);
           setComments([]);
