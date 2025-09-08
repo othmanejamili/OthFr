@@ -22,7 +22,14 @@ export const AuthProvider = ({ children }) => {
       if (token && userData) {
         try {
           const parsedUser = JSON.parse(userData);
-          setCurrentUser(parsedUser);
+          
+          // *** FIX 1: Add token to currentUser object ***
+          const userWithToken = {
+            ...parsedUser,
+            token: token // Make token accessible to components
+          };
+          
+          setCurrentUser(userWithToken);
           setIsAuthenticated(true);
           
           // Set default auth header for all axios requests
@@ -65,8 +72,14 @@ export const AuthProvider = ({ children }) => {
       
       const { token, user_id, username: user, is_admin } = response.data;
       
-      // Store auth data
-      const userData = { id: user_id, username: user, isAdmin: is_admin };
+      // *** FIX 2: Store userData with additional fields expected by components ***
+      const userData = { 
+        id: user_id, 
+        username: user, 
+        name: user, // Add name field for components that expect it
+        isAdmin: is_admin,
+        token: token // Store token in user object too
+      };
       
       if (rememberMe) {
         localStorage.setItem('token', token);
@@ -130,6 +143,12 @@ export const AuthProvider = ({ children }) => {
     
     setCurrentUser(null);
     setIsAuthenticated(false);
+  };
+  
+  // *** FIX 3: Add a helper function to get the current token ***
+  const getToken = () => {
+    if (currentUser?.token) return currentUser.token;
+    return localStorage.getItem('token') || sessionStorage.getItem('token');
   };
   
   // PASSWORD RESET FUNCTIONS WITH IMPROVED ERROR HANDLING
@@ -366,6 +385,7 @@ export const AuthProvider = ({ children }) => {
         createAdmin,
         checkApiStatus,
         validateToken,
+        getToken, // *** FIX 4: Expose getToken function ***
         isAuthenticated,
         isAdmin: currentUser?.isAdmin,
         // Password reset functions
