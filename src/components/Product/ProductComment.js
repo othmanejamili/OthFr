@@ -107,20 +107,21 @@ const ProductComments = ({ productId }) => {
       console.log('=== COMMENT SUBMISSION DEBUG ===');
       console.log('Token found:', token ? 'Yes' : 'No');
       console.log('Token preview:', token ? `${token.substring(0, 10)}...` : 'None');
-      console.log('Comment data:', commentData);
+      console.log('Base comment data:', baseCommentData);
+      console.log('Comment data with user:', commentDataWithUser);
       console.log('Current user:', currentUser);
       console.log('Is authenticated:', isAuthenticated);
 
-      // *** FIXED: Try different authentication formats properly ***
+      // *** TRY MULTIPLE DATA FORMATS WITH TOKEN FORMAT ONLY ***
       let response = null;
       let lastError = null;
 
-      // Method 1: Try with 'Token' format (Django REST framework default)
+      // Method 1: Try with Token format + user ID (most likely to work)
       try {
-        console.log('Trying Token format...');
+        console.log('Trying Token format with user ID...');
         response = await axios.post(
           'https://othy.pythonanywhere.com/api/comments/',
-          commentData,
+          commentDataWithUser,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -129,73 +130,52 @@ const ProductComments = ({ productId }) => {
             }
           }
         );
-        console.log('SUCCESS with Token format');
+        console.log('SUCCESS with Token format + user ID');
       } catch (err) {
-        console.log('Token format failed with status:', err.response?.status);
-        console.log('Token format error:', err.response?.data);
+        console.log('Token + user ID failed with status:', err.response?.status);
+        console.log('Token + user ID error:', err.response?.data);
         lastError = err;
 
-        // Method 2: Try with 'Bearer' format
+        // Method 2: Try with Token format + base data (let server set user from token)
         try {
-          console.log('Trying Bearer format...');
+          console.log('Trying Token format with base data...');
           response = await axios.post(
             'https://othy.pythonanywhere.com/api/comments/',
-            commentData,
+            baseCommentData,
             {
               headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Token ${token}`
               }
             }
           );
-          console.log('SUCCESS with Bearer format');
+          console.log('SUCCESS with Token format + base data');
         } catch (err2) {
-          console.log('Bearer format failed with status:', err2.response?.status);
-          console.log('Bearer format error:', err2.response?.data);
+          console.log('Token + base data failed with status:', err2.response?.status);
+          console.log('Token + base data error:', err2.response?.data);
           lastError = err2;
 
-          // Method 3: Try with just the token (no prefix)
+          // Method 3: Try with Token format + alternative field names
           try {
-            console.log('Trying raw token format...');
+            console.log('Trying Token format with alternative fields...');
             response = await axios.post(
               'https://othy.pythonanywhere.com/api/comments/',
-              commentData,
+              commentDataAlt,
               {
                 headers: {
                   'Content-Type': 'application/json',
                   'Accept': 'application/json',
-                  'Authorization': token
+                  'Authorization': `Token ${token}`
                 }
               }
             );
-            console.log('SUCCESS with raw token format');
+            console.log('SUCCESS with Token format + alternative fields');
           } catch (err3) {
-            console.log('Raw token format failed with status:', err3.response?.status);
-            console.log('Raw token format error:', err3.response?.data);
+            console.log('Token + alt fields failed with status:', err3.response?.status);
+            console.log('Token + alt fields error:', err3.response?.data);
             lastError = err3;
-
-            // Method 4: Try with 'JWT' format (in case it's a JWT token)
-            try {
-              console.log('Trying JWT format...');
-              response = await axios.post(
-                'https://othy.pythonanywhere.com/api/comments/',
-                commentData,
-                {
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Authorization': `JWT ${token}`
-                  }
-                }
-              );
-              console.log('SUCCESS with JWT format');
-            } catch (err4) {
-              console.log('JWT format also failed with status:', err4.response?.status);
-              console.log('JWT format error:', err4.response?.data);
-              lastError = err4;
-              throw err4; // Throw the last error if all methods fail
-            }
+            throw err3; // All Token format attempts failed
           }
         }
       }
