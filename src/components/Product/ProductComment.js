@@ -29,7 +29,6 @@ const ProductComments = ({ productId }) => {
     const fetchComments = async () => {
       try {
         setLoadingComments(true);
-        // *** FIX 1: Correct API endpoint ***
         const response = await axios.get(
           `https://othy.pythonanywhere.com/api/comments/?product_id=${productId}`
         );
@@ -38,7 +37,6 @@ const ProductComments = ({ productId }) => {
         if (Array.isArray(commentsData)) {
           setComments(commentsData);
         } else if (commentsData && Array.isArray(commentsData.results)) {
-          // Handle paginated response
           setComments(commentsData.results);
         } else {
           console.warn("API returned unexpected data format:", commentsData);
@@ -84,14 +82,12 @@ const ProductComments = ({ productId }) => {
     setError(null);
 
     try {
-      // *** FIX 2: Use the getToken function or fallback methods ***
+      // Get token with multiple fallback methods
       let token = null;
       
-      // Try getToken function first (if available)
       if (getToken) {
         token = getToken();
       } else {
-        // Fallback to manual token retrieval
         token = currentUser?.token || 
                 localStorage.getItem('token') || 
                 sessionStorage.getItem('token');
@@ -110,16 +106,18 @@ const ProductComments = ({ productId }) => {
 
       console.log('=== COMMENT SUBMISSION DEBUG ===');
       console.log('Token found:', token ? 'Yes' : 'No');
+      console.log('Token preview:', token ? `${token.substring(0, 10)}...` : 'None');
       console.log('Comment data:', commentData);
       console.log('Current user:', currentUser);
       console.log('Is authenticated:', isAuthenticated);
 
-      // *** FIX 3: Try both Token and Bearer authentication ***
+      // *** FIXED: Try different authentication formats properly ***
       let response = null;
       let lastError = null;
 
-      // First try with Token format (Django REST framework default)
+      // Method 1: Try with 'Token' format (Django REST framework default)
       try {
+        console.log('Trying Token format...');
         response = await axios.post(
           'https://othy.pythonanywhere.com/api/comments/',
           commentData,
@@ -133,11 +131,13 @@ const ProductComments = ({ productId }) => {
         );
         console.log('SUCCESS with Token format');
       } catch (err) {
-        console.log('Token format failed, trying Bearer...');
+        console.log('Token format failed with status:', err.response?.status);
+        console.log('Token format error:', err.response?.data);
         lastError = err;
 
-        // If Token format fails, try Bearer format
+        // Method 2: Try with 'Bearer' format
         try {
+          console.log('Trying Bearer format...');
           response = await axios.post(
             'https://othy.pythonanywhere.com/api/comments/',
             commentData,
@@ -151,9 +151,52 @@ const ProductComments = ({ productId }) => {
           );
           console.log('SUCCESS with Bearer format');
         } catch (err2) {
-          console.log('Bearer format also failed');
+          console.log('Bearer format failed with status:', err2.response?.status);
+          console.log('Bearer format error:', err2.response?.data);
           lastError = err2;
-          throw err2; // Throw the last error
+
+          // Method 3: Try with just the token (no prefix)
+          try {
+            console.log('Trying raw token format...');
+            response = await axios.post(
+              'https://othy.pythonanywhere.com/api/comments/',
+              commentData,
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json',
+                  'Authorization': token
+                }
+              }
+            );
+            console.log('SUCCESS with raw token format');
+          } catch (err3) {
+            console.log('Raw token format failed with status:', err3.response?.status);
+            console.log('Raw token format error:', err3.response?.data);
+            lastError = err3;
+
+            // Method 4: Try with 'JWT' format (in case it's a JWT token)
+            try {
+              console.log('Trying JWT format...');
+              response = await axios.post(
+                'https://othy.pythonanywhere.com/api/comments/',
+                commentData,
+                {
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': `JWT ${token}`
+                  }
+                }
+              );
+              console.log('SUCCESS with JWT format');
+            } catch (err4) {
+              console.log('JWT format also failed with status:', err4.response?.status);
+              console.log('JWT format error:', err4.response?.data);
+              lastError = err4;
+              throw err4; // Throw the last error if all methods fail
+            }
+          }
         }
       }
 
@@ -176,24 +219,49 @@ const ProductComments = ({ productId }) => {
 
     } catch (err) {
       console.error('=== COMMENT SUBMISSION ERROR ===');
-      console.error('Full error:', err);
+      console.error('Final error:', err);
       console.error('Response status:', err.response?.status);
       console.error('Response data:', err.response?.data);
       
+      // Enhanced error handling
       if (err.response?.status === 401) {
-        setError("Authentication failed. Please log in again.");
+        const errorDetail = err.response?.data?.detail || err.response?.data?.error || '';
+        if (errorDetail.includes('token not valid') || errorDetail.includes('token_not_valid')) {
+          setError("Your session has expired. Please log in again.");
+          // Optionally trigger logout to clear invalid token
+          // logout();
+        } else {
+          setError("Authentication failed. Please log in again.");
+        }
       } else if (err.response?.status === 400) {
         const errorData = err.response.data;
+        console.log('400 error details:', errorData);
+        
         if (typeof errorData === 'object') {
-          const errorMessages = Object.entries(errorData)
-            .map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`)
-            .join(' | ');
-          setError(errorMessages || "Please check your input and try again.");
+          // Handle field-specific errors
+          const errorMessages = [];
+          
+          Object.entries(errorData).forEach(([field, messages]) => {
+            const messageArray = Array.isArray(messages) ? messages : [messages];
+            messageArray.forEach(msg => {
+              if (field === 'non_field_errors' || field === 'detail') {
+                errorMessages.push(msg);
+              } else {
+                errorMessages.push(`${field}: ${msg}`);
+              }
+            });
+          });
+          
+          setError(errorMessages.join('. ') || "Please check your input and try again.");
         } else {
           setError("Invalid data. Please check your input.");
         }
       } else if (err.response?.status === 403) {
         setError("You don't have permission to perform this action.");
+      } else if (err.response?.status === 404) {
+        setError("API endpoint not found. Please contact support.");
+      } else if (err.response?.status >= 500) {
+        setError("Server error. Please try again later.");
       } else {
         setError("Failed to submit comment. Please try again.");
       }
@@ -223,6 +291,7 @@ const ProductComments = ({ productId }) => {
         fill={index < currentRating ? '#ffd700' : 'none'}
         color={index < currentRating ? '#ffd700' : '#ddd'}
         onClick={() => setFormData(prev => ({ ...prev, rating: index + 1 }))}
+        style={{ cursor: 'pointer' }}
       />
     ));
   };
@@ -239,13 +308,17 @@ const ProductComments = ({ productId }) => {
         </div>
       </div>
 
-      {/* Debug info - Remove this in production */}
+      {/* Enhanced Debug info - Remove this in production */}
       {process.env.NODE_ENV === 'development' && (
-        <div style={{ background: '#f0f0f0', padding: '10px', margin: '10px 0', fontSize: '12px' }}>
+        <div style={{ background: '#f0f0f0', padding: '10px', margin: '10px 0', fontSize: '12px', borderRadius: '4px' }}>
           <strong>Debug Info:</strong><br />
           Is Authenticated: {isAuthenticated ? 'Yes' : 'No'}<br />
-          Current User: {currentUser ? JSON.stringify(currentUser) : 'None'}<br />
-          Token Available: {(getToken && getToken()) || currentUser?.token || localStorage.getItem('token') ? 'Yes' : 'No'}
+          Current User: {currentUser ? JSON.stringify(currentUser, null, 2) : 'None'}<br />
+          Token Available: {(getToken && getToken()) || currentUser?.token || localStorage.getItem('token') ? 'Yes' : 'No'}<br />
+          {(getToken && getToken()) && (
+            <>Token Preview: {getToken().substring(0, 20)}...<br /></>
+          )}
+          Product ID: {productId}
         </div>
       )}
 
@@ -272,7 +345,11 @@ const ProductComments = ({ productId }) => {
                 placeholder="Share your thoughts about this product..."
                 rows="4"
                 required
+                maxLength="1000"
               />
+              <small style={{ color: '#666', fontSize: '12px' }}>
+                {formData.content.length}/1000 characters
+              </small>
             </div>
 
             <div className="form-actions">
@@ -287,12 +364,26 @@ const ProductComments = ({ productId }) => {
 
             {/* Messages */}
             {success && (
-              <div className="message success">
-                Review submitted successfully! ✨
+              <div className="message success" style={{ 
+                background: '#d4edda', 
+                color: '#155724', 
+                padding: '10px', 
+                borderRadius: '4px',
+                border: '1px solid #c3e6cb',
+                margin: '10px 0'
+              }}>
+                Review submitted successfully!
               </div>
             )}
             {error && (
-              <div className="message error">
+              <div className="message error" style={{ 
+                background: '#f8d7da', 
+                color: '#721c24', 
+                padding: '10px', 
+                borderRadius: '4px',
+                border: '1px solid #f5c6cb',
+                margin: '10px 0'
+              }}>
                 {error}
               </div>
             )}
