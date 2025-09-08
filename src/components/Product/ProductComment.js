@@ -1,68 +1,130 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
-import { Star, MessageCircle, User } from 'lucide-react';
-import { AuthContext } from '../../context/AuthContext';
+import { Star, MessageCircle, User, AlertCircle } from 'lucide-react';
 
-const ProductComments = ({ productId }) => {
+// Mock AuthContext for demonstration - replace with your actual import
+const AuthContext = React.createContext({
+  currentUser: null,
+  isAuthenticated: false
+});
+
+const ProductComments = ({ productId = "123" }) => {
   const { currentUser, isAuthenticated } = useContext(AuthContext);
   const [comments, setComments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingComments, setLoadingComments] = useState(true);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
-  
+  const [authDebugInfo, setAuthDebugInfo] = useState(null);
   const [formData, setFormData] = useState({
     username: isAuthenticated && currentUser ? currentUser.name || '' : '',
     content: '',
     rating: 5
   });
 
+  // Enhanced auth debugging function
+  const debugAuthentication = () => {
+    const debugInfo = {
+      // Check localStorage keys
+      localStorage: {
+        token: localStorage.getItem('token'),
+        access_token: localStorage.getItem('access_token'),
+        authToken: localStorage.getItem('authToken'),
+        accessToken: localStorage.getItem('accessToken'),
+        user: localStorage.getItem('user'),
+        userData: localStorage.getItem('userData')
+      },
+      // Check AuthContext
+      context: {
+        isAuthenticated,
+        currentUser,
+        hasToken: currentUser?.token || currentUser?.access_token
+      },
+      // Check sessionStorage as backup
+      sessionStorage: {
+        token: sessionStorage.getItem('token'),
+        access_token: sessionStorage.getItem('access_token'),
+        authToken: sessionStorage.getItem('authToken'),
+        user: sessionStorage.getItem('user')
+      }
+    };
+
+    console.log('=== FULL AUTH DEBUG ===', debugInfo);
+    setAuthDebugInfo(debugInfo);
+    return debugInfo;
+  };
+
+  // Get the best available token
+  const getAuthToken = () => {
+    // First check AuthContext
+    if (currentUser?.token) return currentUser.token;
+    if (currentUser?.access_token) return currentUser.access_token;
+    
+    // Check localStorage
+    const tokenKeys = ['token', 'access_token', 'authToken', 'accessToken'];
+    for (const key of tokenKeys) {
+      const token = localStorage.getItem(key);
+      if (token) return token;
+    }
+    
+    // Check user object in localStorage
+    const userDataStr = localStorage.getItem('user') || localStorage.getItem('userData');
+    if (userDataStr) {
+      try {
+        const userData = JSON.parse(userDataStr);
+        if (userData.token) return userData.token;
+        if (userData.access_token) return userData.access_token;
+      } catch (e) {
+        console.warn('Could not parse user data from localStorage');
+      }
+    }
+    
+    // Check sessionStorage as last resort
+    for (const key of tokenKeys) {
+      const token = sessionStorage.getItem(key);
+      if (token) return token;
+    }
+    
+    return null;
+  };
+
+  // Simulate API call with fetch
+  const fetchComments = async () => {
+    try {
+      setLoadingComments(true);
+      const response = await fetch(
+        `https://othy.pythonanywhere.com/api/comments/?product_id=${productId}`
+      );
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      
+      const commentsData = await response.json();
+      if (Array.isArray(commentsData)) {
+        setComments(commentsData);
+      } else if (commentsData && Array.isArray(commentsData.results)) {
+        setComments(commentsData.results);
+      } else {
+        setComments([]);
+      }
+    } catch (err) {
+      console.error("Error fetching comments:", err);
+      setComments([]);
+    } finally {
+      setLoadingComments(false);
+    }
+  };
+
   // Update username when authentication state changes
   useEffect(() => {
     setFormData(prev => ({
       ...prev,
-      username: isAuthenticated && currentUser ? currentUser.name || '' : ''
+      username: isAuthenticated && currentUser ? currentUser.name || currentUser.username || '' : ''
     }));
   }, [isAuthenticated, currentUser]);
 
   // Fetch existing comments
   useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        setLoadingComments(true);
-        const response = await axios.get(
-          `https://othy.pythonanywhere.com/api/comments/${productId}`
-        );
-        
-        // Ensure we always set an array
-        const commentsData = response.data;
-        if (Array.isArray(commentsData)) {
-          setComments(commentsData);
-        } else if (commentsData && Array.isArray(commentsData.comments)) {
-          // Handle case where API returns { comments: [...] }
-          setComments(commentsData.comments);
-        } else if (commentsData && Array.isArray(commentsData.data)) {
-          // Handle case where API returns { data: [...] }
-          setComments(commentsData.data);
-        } else if (commentsData && typeof commentsData === 'object' && commentsData.id) {
-          // Handle case where API returns a single comment object
-          setComments([commentsData]);
-        } else if (commentsData === null || commentsData === undefined) {
-          // Handle null/undefined response
-          setComments([]);
-        } else {
-          console.warn("API returned unexpected data format:", commentsData);
-          setComments([]);
-        }
-        
-      } catch (err) {
-        console.error("Error fetching comments:", err);
-        setComments([]); // Ensure comments is always an array even on error
-      } finally {
-        setLoadingComments(false);
-      }
-    };
-
     if (productId) {
       fetchComments();
     }
@@ -70,11 +132,8 @@ const ProductComments = ({ productId }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
-    // Clear messages when user starts typing
     if (error) setError(null);
     if (success) setSuccess(false);
-    
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -83,13 +142,13 @@ const ProductComments = ({ productId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     if (!isAuthenticated) {
       setError("You must be logged in to comment.");
+      debugAuthentication();
       return;
     }
 
-    // Validation with safer null checking
     if (!formData.content || !formData.content.trim()) {
       setError("Please write a comment.");
       return;
@@ -99,57 +158,13 @@ const ProductComments = ({ productId }) => {
     setError(null);
 
     try {
-      // Check for token in multiple possible locations
-      const token = localStorage.getItem('token') || 
-                   localStorage.getItem('access_token') || 
-                   localStorage.getItem('authToken') ||
-                   localStorage.getItem('accessToken');
+      const token = getAuthToken();
       
-      // Also check if token might be stored in user object
-      const userData = localStorage.getItem('user');
-      let tokenFromUser = null;
-      if (userData) {
-        try {
-          const parsedUser = JSON.parse(userData);
-          tokenFromUser = parsedUser.token || parsedUser.access_token || parsedUser.authToken;
-        } catch (e) {
-          console.log("Could not parse user data:", e);
-        }
-      }
-
-      const finalToken = token || tokenFromUser;
-      
-      // Debug: Check all auth-related items in localStorage
-      console.log("=== DEBUGGING AUTH ===");
-      console.log("Token from 'token':", localStorage.getItem('token'));
-      console.log("Token from 'access_token':", localStorage.getItem('access_token'));
-      console.log("Token from 'authToken':", localStorage.getItem('authToken'));
-      console.log("Token from 'accessToken':", localStorage.getItem('accessToken'));
-      console.log("User data:", userData);
-      console.log("Token from user object:", tokenFromUser);
-      console.log("Final token:", finalToken);
-      console.log("Current user:", currentUser);
-      console.log("Is authenticated:", isAuthenticated);
-      console.log("Product ID:", productId);
-      
-      if (!finalToken) {
-        setError("Authentication token not found. Please log in again to submit reviews.");
-        setIsLoading(false);
+      if (!token) {
+        setError("Authentication token not found. Please log in again.");
+        debugAuthentication();
         return;
       }
-
-      // Try different authentication methods
-      const authHeaders = [
-        { 'Authorization': `Bearer ${finalToken}` },  // JWT style
-        { 'Authorization': `Token ${finalToken}` },   // Django Token style
-        { 'X-Auth-Token': finalToken },               // Custom header
-        { 'Authentication': finalToken }              // Alternative
-      ];
-
-      const baseHeaders = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      };
 
       const commentData = {
         content: formData.content.trim(),
@@ -157,84 +172,57 @@ const ProductComments = ({ productId }) => {
         product: parseInt(productId)
       };
 
-      console.log("=== REQUEST DATA ===");
-      console.log("URL:", 'https://othy.pythonanywhere.com/api/comments/');
-      console.log("Data:", commentData);
+      console.log('Submitting comment with token:', token ? 'Token found' : 'No token');
+      console.log('Comment data:', commentData);
 
-      // Try each authentication method
-      let response = null;
-      let lastError = null;
+      const response = await fetch('https://othy.pythonanywhere.com/api/comments/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(commentData)
+      });
 
-      for (let i = 0; i < authHeaders.length; i++) {
-        const headers = { ...baseHeaders, ...authHeaders[i] };
-        
-        console.log(`=== TRYING AUTH METHOD ${i + 1} ===`);
-        console.log("Headers:", headers);
-
-        try {
-          response = await axios.post(
-            'https://othy.pythonanywhere.com/api/comments/',
-            commentData,
-            { headers }
-          );
-          
-          console.log(`=== SUCCESS WITH METHOD ${i + 1} ===`);
-          console.log("Response:", response.data);
-          break; // Success, exit loop
-          
-        } catch (err) {
-          console.log(`Method ${i + 1} failed:`, err.response?.status, err.response?.data);
-          lastError = err;
-          continue; // Try next method
-        }
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(JSON.stringify(errorData));
       }
 
-      if (!response) {
-        // All methods failed
-        console.error("=== ALL AUTH METHODS FAILED ===");
-        console.error("Last error:", lastError.response?.data);
-        
-        if (lastError.response?.status === 401) {
-          setError("Authentication failed. You may need to log in again.");
-        } else {
-          setError("Failed to submit comment. Please try logging in again.");
-        }
-        return;
-      }
-
-      // Success! Add comment to list
-      setComments(prev => [response.data, ...prev]);
-      
-      // Reset form
+      const responseData = await response.json();
+      console.log('Comment submitted successfully:', responseData);
+      setComments(prev => [responseData, ...prev]);
       setFormData(prev => ({
         ...prev,
         content: '',
         rating: 5
       }));
-      
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
 
     } catch (err) {
-      console.error("=== UNEXPECTED ERROR ===");
-      console.error("Full error:", err);
-      console.error("Response status:", err.response?.status);
-      console.error("Response data:", err.response?.data);
+      console.error('Submit error:', err.message);
       
-      if (err.response?.status === 400) {
-        const errorData = err.response.data;
-        console.log("Validation error details:", errorData);
-        
-        if (typeof errorData === 'object') {
-          const errorMessages = Object.entries(errorData)
-            .map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`)
-            .join(' | ');
-          setError(errorMessages || "Please check your input and try again.");
-        } else {
+      if (err.message.includes('401')) {
+        setError("Authentication failed. Please log in again.");
+        debugAuthentication();
+      } else if (err.message.includes('400')) {
+        try {
+          const errorData = JSON.parse(err.message);
+          if (typeof errorData === 'object') {
+            const errorMessages = Object.entries(errorData)
+              .map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`)
+              .join(' | ');
+            setError(errorMessages || "Please check your input and try again.");
+          } else {
+            setError("Invalid data. Please check your input.");
+          }
+        } catch {
           setError("Invalid data. Please check your input.");
         }
       } else {
-        setError("Something went wrong. Please try logging in again.");
+        setError("Failed to submit comment. Please try again.");
       }
     } finally {
       setIsLoading(false);
@@ -246,7 +234,6 @@ const ProductComments = ({ productId }) => {
       <Star
         key={index}
         size={16}
-        className={`star ${index < rating ? 'filled' : 'empty'}`}
         fill={index < rating ? '#ffd700' : 'none'}
         color={index < rating ? '#ffd700' : '#ddd'}
       />
@@ -258,112 +245,137 @@ const ProductComments = ({ productId }) => {
       <Star
         key={index}
         size={20}
-        className={`interactive-star ${index < currentRating ? 'filled' : 'empty'}`}
         fill={index < currentRating ? '#ffd700' : 'none'}
         color={index < currentRating ? '#ffd700' : '#ddd'}
         onClick={() => setFormData(prev => ({ ...prev, rating: index + 1 }))}
+        className="cursor-pointer hover:scale-110 transition-transform"
       />
     ));
   };
 
-  // Additional safety check before rendering
   const safeComments = Array.isArray(comments) ? comments : [];
 
   return (
-    <div className="product-comments-section">
-      {/* Comments Header */}
-      <div className="comments-header">
-        <div className="comments-title">
-          <MessageCircle size={24} />
-          <h3>Customer Reviews ({safeComments.length})</h3>
+    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+      {/* Debug Panel - Remove this in production */}
+      {authDebugInfo && (
+        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <div className="flex items-center gap-2 mb-2">
+            <AlertCircle className="text-red-500" size={16} />
+            <h4 className="text-red-700 font-medium">Authentication Debug Info</h4>
+          </div>
+          <pre className="text-xs text-red-600 overflow-auto max-h-40">
+            {JSON.stringify(authDebugInfo, null, 2)}
+          </pre>
         </div>
+      )}
+
+      {/* Comments Header */}
+      <div className="flex items-center gap-3 mb-6">
+        <MessageCircle size={24} className="text-blue-500" />
+        <h3 className="text-2xl font-bold text-gray-800">
+          Customer Reviews ({safeComments.length})
+        </h3>
       </div>
 
       {/* Add Comment Form */}
       {isAuthenticated ? (
-        <div className="add-comment-form">
-          <h4>Write a Review</h4>
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="rating">Rating</label>
-              <div className="rating-input">
+        <div className="mb-8 p-6 bg-gray-50 rounded-lg">
+          <h4 className="text-lg font-semibold mb-4 text-gray-700">Write a Review</h4>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Rating
+              </label>
+              <div className="flex items-center gap-2">
                 {renderInteractiveStars(formData.rating)}
-                <span className="rating-text">({formData.rating}/5)</span>
+                <span className="text-sm text-gray-600">({formData.rating}/5)</span>
               </div>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="content">Your Review</label>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Your Review
+              </label>
               <textarea
-                id="content"
                 name="content"
                 value={formData.content}
                 onChange={handleChange}
                 placeholder="Share your thoughts about this product..."
-                rows="4"
-                required
+                rows={4}
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               />
             </div>
 
-            <div className="form-actions">
+            <div className="flex items-center gap-4">
               <button
-                type="submit"
-                className="submit-comment-btn"
+                onClick={handleSubmit}
+                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 disabled={isLoading || !formData.content || !formData.content.trim()}
               >
                 {isLoading ? 'Submitting...' : 'Submit Review'}
+              </button>
+
+              <button
+                onClick={debugAuthentication}
+                className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 text-sm"
+              >
+                Debug Auth
               </button>
             </div>
 
             {/* Messages */}
             {success && (
-              <div className="message success">
+              <div className="p-3 bg-green-100 border border-green-400 text-green-700 rounded-md">
                 Review submitted successfully! ✨
               </div>
             )}
             {error && (
-              <div className="message error">
+              <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded-md">
                 {error}
               </div>
             )}
-          </form>
+          </div>
         </div>
       ) : (
-        <div className="login-prompt">
-          <p>Please log in to write a review.</p>
+        <div className="mb-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
+          <p className="text-yellow-800">Please log in to write a review.</p>
         </div>
       )}
 
       {/* Comments List */}
-      <div className="comments-list">
+      <div>
         {loadingComments ? (
-          <div className="loading-comments">
-            <div className="loading-spinner">Loading reviews...</div>
+          <div className="text-center py-8">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <p className="mt-2 text-gray-600">Loading reviews...</p>
           </div>
         ) : safeComments.length === 0 ? (
-          <div className="no-comments">
-            <MessageCircle size={48} className="no-comments-icon" />
-            <h4>No reviews yet</h4>
-            <p>Be the first to review this product!</p>
+          <div className="text-center py-12">
+            <MessageCircle size={48} className="mx-auto text-gray-400 mb-4" />
+            <h4 className="text-xl font-semibold text-gray-600 mb-2">No reviews yet</h4>
+            <p className="text-gray-500">Be the first to review this product!</p>
           </div>
         ) : (
-          <div className="comments-grid">
+          <div className="grid gap-4">
             {safeComments.map((comment, index) => (
-              <div key={comment.id || index} className="comment-card">
-                <div className="comment-header">
-                  <div className="user-info">
-                    <div className="user-avatar">
-                      <User size={16} />
+              <div key={comment.id || index} className="p-6 bg-white border border-gray-200 rounded-lg">
+                <div className="flex justify-between items-start mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                      <User size={16} className="text-blue-600" />
                     </div>
-                    <div className="user-details">
-                      <h5 className="username">{comment.user_details?.username || comment.username || 'Anonymous'}</h5>
-                      <div className="comment-rating">
+                    <div>
+                      <h5 className="font-semibold text-gray-800">
+                        {comment.user_details?.username || comment.username || 'Anonymous'}
+                      </h5>
+                      <div className="flex items-center gap-1">
                         {renderStars(comment.rating)}
                       </div>
                     </div>
                   </div>
                   {comment.created_at && (
-                    <div className="comment-date">
+                    <div className="text-sm text-gray-500">
                       {new Date(comment.created_at).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'short',
@@ -372,8 +384,7 @@ const ProductComments = ({ productId }) => {
                     </div>
                   )}
                 </div>
-                
-                <div className="comment-content">
+                <div className="text-gray-700">
                   <p>{comment.content}</p>
                 </div>
               </div>
