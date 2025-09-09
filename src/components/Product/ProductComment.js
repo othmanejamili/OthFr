@@ -98,104 +98,49 @@ const ProductComments = ({ productId }) => {
         return;
       }
 
+      // FIXED: Only send the required data - let Django set the user from the token
       const commentData = {
         content: formData.content.trim(),
         rating: parseInt(formData.rating),
         product: parseInt(productId)
+        // DO NOT send user data - Django will set it automatically from the authenticated request
       };
 
       console.log('=== COMMENT SUBMISSION DEBUG ===');
       console.log('Token found:', token ? 'Yes' : 'No');
       console.log('Token preview:', token ? `${token.substring(0, 10)}...` : 'None');
-      console.log('Base comment data:', baseCommentData);
-      console.log('Comment data with user:', commentDataWithUser);
+      console.log('Comment data:', commentData);
       console.log('Current user:', currentUser);
       console.log('Is authenticated:', isAuthenticated);
 
-      // *** TRY MULTIPLE DATA FORMATS WITH TOKEN FORMAT ONLY ***
-      let response = null;
-      let lastError = null;
-
-      // Method 1: Try with Token format + user ID (most likely to work)
-      try {
-        console.log('Trying Token format with user ID...');
-        response = await axios.post(
-          'https://othy.pythonanywhere.com/api/comments/',
-          commentDataWithUser,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'Authorization': `Token ${token}`
-            }
-          }
-        );
-        console.log('SUCCESS with Token format + user ID');
-      } catch (err) {
-        console.log('Token + user ID failed with status:', err.response?.status);
-        console.log('Token + user ID error:', err.response?.data);
-        lastError = err;
-
-        // Method 2: Try with Token format + base data (let server set user from token)
-        try {
-          console.log('Trying Token format with base data...');
-          response = await axios.post(
-            'https://othy.pythonanywhere.com/api/comments/',
-            baseCommentData,
-            {
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': `Token ${token}`
-              }
-            }
-          );
-          console.log('SUCCESS with Token format + base data');
-        } catch (err2) {
-          console.log('Token + base data failed with status:', err2.response?.status);
-          console.log('Token + base data error:', err2.response?.data);
-          lastError = err2;
-
-          // Method 3: Try with Token format + alternative field names
-          try {
-            console.log('Trying Token format with alternative fields...');
-            response = await axios.post(
-              'https://othy.pythonanywhere.com/api/comments/',
-              commentDataAlt,
-              {
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Accept': 'application/json',
-                  'Authorization': `Token ${token}`
-                }
-              }
-            );
-            console.log('SUCCESS with Token format + alternative fields');
-          } catch (err3) {
-            console.log('Token + alt fields failed with status:', err3.response?.status);
-            console.log('Token + alt fields error:', err3.response?.data);
-            lastError = err3;
-            throw err3; // All Token format attempts failed
+      // FIXED: Use only the correct Token format
+      console.log('Trying Token format...');
+      const response = await axios.post(
+        'https://othy.pythonanywhere.com/api/comments/',
+        commentData,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Token ${token}` // This is the correct format for Django REST Framework
           }
         }
-      }
+      );
 
-      if (response && response.data) {
-        console.log('Comment submitted successfully:', response.data);
-        
-        // Add the new comment to the top of the list
-        setComments(prev => [response.data, ...prev]);
-        
-        // Reset form
-        setFormData(prev => ({
-          ...prev,
-          content: '',
-          rating: 5
-        }));
-        
-        setSuccess(true);
-        setTimeout(() => setSuccess(false), 3000);
-      }
+      console.log('Comment submitted successfully:', response.data);
+      
+      // Add the new comment to the top of the list
+      setComments(prev => [response.data, ...prev]);
+      
+      // Reset form
+      setFormData(prev => ({
+        ...prev,
+        content: '',
+        rating: 5
+      }));
+      
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
 
     } catch (err) {
       console.error('=== COMMENT SUBMISSION ERROR ===');
@@ -208,10 +153,13 @@ const ProductComments = ({ productId }) => {
         const errorDetail = err.response?.data?.detail || err.response?.data?.error || '';
         if (errorDetail.includes('token not valid') || errorDetail.includes('token_not_valid')) {
           setError("Your session has expired. Please log in again.");
-          // Optionally trigger logout to clear invalid token
-          // logout();
-        } else {
+          // Optionally clear invalid tokens
+          localStorage.removeItem('token');
+          sessionStorage.removeItem('token');
+        } else if (errorDetail.includes('Authentication credentials were not provided')) {
           setError("Authentication failed. Please log in again.");
+        } else {
+          setError("Authentication error. Please log in again.");
         }
       } else if (err.response?.status === 400) {
         const errorData = err.response.data;
