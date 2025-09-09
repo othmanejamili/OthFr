@@ -500,13 +500,13 @@ const ProductDetail = () => {
             className={`tab-button ${activeTab === 'specifications' ? 'active' : ''}`}
             onClick={() => handleTabChange('specifications')}
           >
-            Specifications
+            Reviews
           </button>
           <button 
             className={`tab-button ${activeTab === 'reviews' ? 'active' : ''}`}
             onClick={() => handleTabChange('reviews')}
           >
-            Reviews
+            Specifications
           </button>
         </div>
         
