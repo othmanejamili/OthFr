@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { Star, MessageCircle, User } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
-import '../../styles/comment.css';
+import '../../styles/Comment.css';
 
 const ProductComments = ({ productId }) => {
   const { currentUser, isAuthenticated, getToken } = useContext(AuthContext);
