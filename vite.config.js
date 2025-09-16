@@ -1,6 +1,9 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+// Polyfill process/browser for some CJS modules
+import process from 'process'
+
 export default defineConfig({
   plugins: [
     react({
@@ -13,15 +16,20 @@ export default defineConfig({
     exclude: []
   },
   optimizeDeps: {
-    include: ['react-apexcharts', 'apexcharts'], // ✅ Add this
+    include: ['react-apexcharts', 'apexcharts'], // pre-bundle CJS
     esbuildOptions: {
       loader: {
         '.js': 'jsx',
       },
     },
   },
+  resolve: {
+    alias: {
+      process: 'process/browser', // ✅ Node polyfill
+    },
+  },
   define: {
-    global: "globalThis",
+    global: "globalThis", // ✅ fixes exports/global issues
   },
   server: {
     port: 3000,
