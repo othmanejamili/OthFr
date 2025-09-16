@@ -13,6 +13,7 @@ export default defineConfig({
     exclude: []
   },
   optimizeDeps: {
+    include: ['react-apexcharts', 'apexcharts'], // ✅ Add this
     esbuildOptions: {
       loader: {
         '.js': 'jsx',
