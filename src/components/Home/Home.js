@@ -10,22 +10,6 @@ import { Link } from 'react-router-dom';
 gsap.registerPlugin(ScrollTrigger);
 
 const Home = () => {
-  const [Chart, setChart] = useState(null)
-
-  useEffect(() => {
-    import('react-apexcharts').then((mod) => setChart(() => mod.default))
-  }, [])
-
-  const options = {
-    chart: { id: 'basic-line' },
-    xaxis: { categories: [1991, 1992, 1993, 1994, 1995, 1996] }
-  }
-
-  const series = [
-    { name: 'Series 1', data: [30, 40, 35, 50, 49, 60] }
-  ]
-
-  if (!Chart) return null
 
 
 
@@ -541,7 +525,6 @@ const Home = () => {
 
         </div>
       </section>
-      <Chart options={options} series={series} type="line" height={350} />
 
 
     </>
