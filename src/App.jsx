@@ -1,31 +1,30 @@
 import React, { useContext } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-
-import ProductList from './components/Admin/productsList.js';
-import TestAddProduct from './components/Admin/test.js';
-import UpdateProduct from './components/Admin/testUpdate.js';
-import Home from './components/Home/Home.js';
-import NavBar from './components/Nav&Foo/navbar.js';
-import Footer from './components/Nav&Foo/foter.js';
-import Product from './components/Product/product.js';
-import ProductDetail from './components/Product/detailsProduct.js';
-import { AuthProvider, AuthContext } from './context/AuthContext.js';
-import { CartProvider } from './context/CartContext.js';
-import Login from './components/Auth/Login.js';
-import AdminDashboard from './components/Admin/AdminDashboard.js';
-import CreateAdmin from './components/Admin/CreateAdmin.js';
-import LuxuryCart from './components/Shop/Cart.js';
-import Checkout from './components/Shop/Checkout.js';
-import CheckoutSuccess from './components/Shop/CheckoutSuccess.js';
-import AdminOrders from './components/Admin/AdminOrder.js';
-import AdminOrderDetail from './components/Admin/AdminOrderDetail.js';
-import Register from './components/Auth/Register.js';
-import Profile from './components/Auth/Profile.js';
-import ForgotPassword from './components/Auth/ForgotPassword.js';
-import SeasonalCollections from './components/Collection/Collections.js';
-import CreateCollection from './components/Collection/CreateCollection.js';
-import GiftOutOfStock from './components/Gifts/Gifts.js';
-import SpinToWinUnavailable from './components/Spinner/spinner.js';
+import ProductList from './components/Admin/productsList';
+import TestAddProduct from './components/Admin/test';
+import UpdateProduct from './components/Admin/testUpdate';
+import Home from './components/Home/Home';
+import NavBar from './components/Nav&Foo/navbar';
+import Footer from './components/Nav&Foo/foter';
+import Product from './components/Product/product';
+import ProductDetail from './components/Product/detailsProduct';
+import { AuthProvider, AuthContext } from './context/AuthContext';
+import { CartProvider } from './context/CartContext';
+import Login from './components/Auth/Login';
+import AdminDashboard from './components/Admin/AdminDashboard';
+import CreateAdmin from './components/Admin/CreateAdmin';
+import LuxuryCart from './components/Shop/Cart';
+import Checkout from './components/Shop/Checkout';
+import CheckoutSuccess from './components/Shop/CheckoutSuccess';
+import AdminOrders from './components/Admin/AdminOrder';
+import AdminOrderDetail from './components/Admin/AdminOrderDetail';
+import Register from './components/Auth/Register';
+import Profile from './components/Auth/Profile';
+import ForgotPassword from './components/Auth/ForgotPassword';
+import SeasonalCollections from './components/Collection/Collections';
+import CreateCollection from './components/Collection/CreateCollection';
+import GiftOutOfStock from './components/Gifts/Gifts';
+import SpinToWinUnavailable from './components/Spinner/spinner';
 
 const MainLayout = ({ children }) => (
   <>
