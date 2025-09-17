@@ -1,7 +1,3 @@
-body{
-  background: #FFFFFF;
-}
-
 .heeder{
     display: flex;
     box-sizing: border-box;
@@ -127,7 +123,7 @@ body{
 }
 
 .slider-nav button {
-  background: rgba(255, 87, 34, 0.7);
+  background: #000;
   color: white;
   border: none;
   width: 50px;
@@ -142,7 +138,7 @@ body{
 }
 
 .slider-nav button:hover {
-  background: rgba(255, 87, 34, 1);
+  background: #000;
   transform: scale(1.1);
 }
 
@@ -157,7 +153,7 @@ body{
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background-color: #ccc;
+  background-color: #000;
   cursor: pointer;
   transition: all 0.5s ease;
 }
@@ -267,7 +263,7 @@ body{
     left: 0;
     width: 100%;
     height: auto;
-    background: white;
+    background: #000;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -325,14 +321,14 @@ body{
 
 .collections-section {
     padding: 4rem 2rem;
-    background: #000000;
+    background: #FFF;
 }
 
 .section-title {
     text-align: center;
     font-size: 2.5rem;
     margin-bottom: 3rem;
-    color: #333;
+    color: #000;
     font-weight: 600;
     text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.8), 
     0px 0px 20px rgba(200, 225, 255, 1);
@@ -555,7 +551,7 @@ body{
   
   body {
     overflow-x: hidden;
-    background-color: #000;
+    background-color: #fff;
     color: #fff;
   }
   
@@ -566,7 +562,7 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #000;
+    background-color: #FFF;
     overflow: hidden;
   }
   
@@ -615,8 +611,8 @@ body{
     letter-spacing: 1rem;
     position: relative;
     margin-bottom: 2rem;
-    color: transparent;
-    -webkit-text-stroke: 2px white;
+    color: #000;
+    -webkit-text-stroke: 2px #000;
   }
   
   .brand-name-overlay {
@@ -625,7 +621,7 @@ body{
     left: 0;
     width: 100%;
     height: auto;
-    color: white;
+    color: #000;
     clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
     animation: revealText 4s cubic-bezier(0.77, 0, 0.175, 1) forwards;
   }
@@ -655,8 +651,8 @@ body{
     margin-top: 2rem;
     padding: 1rem 3rem;
     background: transparent;
-    color: white;
-    border: 2px solid white;
+    color: #000;
+    border: 2px solid #000;
     text-transform: uppercase;
     letter-spacing: 0.2rem;
     position: relative;
@@ -674,17 +670,21 @@ body{
     left: -100%;
     width: 100%;
     height: auto;
-    background: white;
+    background: #000;
     transition: all 0.4s;
     z-index: -1;
+    color: #FFF;
   }
   
   .cta-button:hover {
-    color: black;
+    color: #FFF;
+    background-color: #000;
   }
   
   .cta-button:hover:before {
     left: 0;
+    color: #FFF;
+
   }
   
   .moving-stripes {
@@ -701,7 +701,7 @@ body{
     position: absolute;
     width: 300%;
     height: 2px;
-    background: linear-gradient(90deg, transparent, white, transparent);
+    background: linear-gradient(90deg, transparent, #000, transparent);
     animation: moveStripe 8s linear infinite;
   }
   
@@ -797,7 +797,7 @@ body{
   .card-icon svg {
     width: 24px;
     height: 24px;
-    color: white;
+    color: #000;
     fill: none;
     stroke: currentColor;
     stroke-width: 2;
@@ -862,7 +862,7 @@ body{
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    border: 2px solid white;
+    border: 2px solid #000;
     pointer-events: none;
     transform: translate(-50%, -50%);
     z-index: 9999;
@@ -951,7 +951,7 @@ body{
     overflow: hidden;
     position: relative;
     scroll-snap-align: start;
-    background-color: #121212;
+    background-color: #FFF;
   }
   
   .product-image {
@@ -1020,7 +1020,7 @@ body{
     scroll-behavior: smooth;
     padding: 10px 0;
     gap: 10px;
-    background-color: #111;
+    background-color: #FFF;
     padding-bottom: 20px;
     scrollbar-width: none; /* Firefox */
   }

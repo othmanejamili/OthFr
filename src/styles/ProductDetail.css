@@ -8,7 +8,11 @@
   background-color: var(--white);
 }
 
-/* Breadcrumb Navigation */
+.clk{
+  color: #000000;
+}
+
+/* Brea dcrumb Navigation */
 .breadcrumb {
   display: flex;
   align-items: center;

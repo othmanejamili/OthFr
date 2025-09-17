@@ -1,9 +1,9 @@
 /* Enhanced Admin Dashboard Styles with Apex Charts Integration */
 :root {
     /* Primary color scheme */
-    --primary-color: #FF5722;
+    --primary-color: #000;
     --primary-gradient: linear-gradient(135deg, #FF5722 0%, #FF5722 100%);
-    --primary-hover: #FF5722;
+    --primary-hover: #000;
     --secondary-color: #293056;
     
     /* Accent colors for various elements */
@@ -15,8 +15,8 @@
     
     /* Background & surface colors */
     --bg-dark: #111827;
-    --bg-light: #f9fafc;
-    --card-bg: #ffffff;
+    --bg-light: #000;
+    --card-bg: #000;
     --card-border: rgba(0, 0, 0, 0.05);
     
     /* Text colors */

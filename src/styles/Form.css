@@ -1,10 +1,4 @@
-:root {
-  --primary-color: #6a11cb;
-  --secondary-color: #2575fc;
-  --background-color: #f4f5f7;
-  --text-color: #333;
-  --border-radius: 12px;
-}
+
 
 .container {
   max-width: 650px;

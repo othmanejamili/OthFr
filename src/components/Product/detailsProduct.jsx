@@ -414,7 +414,7 @@ const ProductDetail = () => {
         {/* Product Info Section */}
         <div className="product-info" ref={productInfoRef}>
           <div className="product-header">
-            <h1>{product.name}</h1>
+            <h1 className="clk">{product.name}</h1>
             <button 
               className="share-button"
               onClick={openShareModal}

@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import gsap from "gsap";
+import { Search, Heart, ShoppingBag } from 'lucide-react';
 import '../../styles/Navbar.css';
-import { ShoppingBag } from 'lucide-react';
 
 const NavBar = () => {
   const navbarRef = useRef(null);
@@ -11,7 +11,7 @@ const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 767);
 
-  // Simple toggle menu function
+  // Toggle menu function
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
@@ -26,34 +26,26 @@ const NavBar = () => {
     };
 
     window.addEventListener('resize', handleResize);
-    
-    // Initial check
     handleResize();
     
-    // Clean up
     return () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
 
-  // Handle scroll effect for navbar
+  // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
+      setScrolled(window.scrollY > 10);
     };
 
     window.addEventListener('scroll', handleScroll);
-    
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
-  // GSAP animations for navbar elements
+  // GSAP animations
   useEffect(() => {
     const navbar = navbarRef.current;
     if (!navbar) return;
@@ -61,116 +53,117 @@ const NavBar = () => {
     // Logo animation
     gsap.fromTo(
       navbar.querySelector('.logo'),
-      { x: -50, opacity: 0 },
-      { x: 0, opacity: 1, duration: 1, ease: 'back.out(1.7)' }
+      { x: -30, opacity: 0 },
+      { x: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }
     );
     
     // Nav links animation
     gsap.fromTo(
       navbar.querySelectorAll('.nav-links a'),
-      { y: -30, opacity: 0 },
-      { y: 0, opacity: 1, stagger: 0.1, duration: 0.6, ease: 'power2.out', delay: 0.3 }
+      { y: -20, opacity: 0 },
+      { y: 0, opacity: 1, stagger: 0.08, duration: 0.6, ease: 'power2.out', delay: 0.2 }
     );
     
-    // Add hover animation for nav links on desktop
-    if (window.innerWidth >= 768) {
-      const links = navbar.querySelectorAll('.nav-links a');
-      
-      links.forEach(link => {
-        link.addEventListener('mouseenter', () => {
-          gsap.to(link, { y: -5, duration: 0.2, ease: 'power1.out' });
-        });
-        
-        link.addEventListener('mouseleave', () => {
-          gsap.to(link, { y: 0, duration: 0.2, ease: 'power1.out' });
-        });
-      });
-      
-      return () => {
-        links.forEach(link => {
-          link.removeEventListener('mouseenter', () => {});
-          link.removeEventListener('mouseleave', () => {});
-        });
-      };
-    }
+    // Right section animation
+    gsap.fromTo(
+      navbar.querySelector('.nav-right'),
+      { x: 30, opacity: 0 },
+      { x: 0, opacity: 1, duration: 0.8, ease: 'power2.out', delay: 0.3 }
+    );
   }, []);
   
-  // Close mobile menu when route changes
+  // Close menu on route change
   useEffect(() => {
     setMenuOpen(false);
   }, [location.pathname]);
   
-  // Helper function to determine if link should be active
+  // Check if link is active
   const isActive = (path) => {
-    if (path === '/' && location.pathname === '/') {
-      return true;
-    }
-    if (path !== '/' && location.pathname.startsWith(path)) {
-      return true;
-    }
+    if (path === '/' && location.pathname === '/') return true;
+    if (path !== '/' && location.pathname.startsWith(path)) return true;
     return false;
   };
   
-  // Render nav links with proper structure
-  const renderNavLinks = () => {
-    const links = [
-      { href: "/", label: "Home" },
-      { href: "/product", label: "Product" },
-      { href: "/collection", label: "collections" },
-      { href: "/gifts", label: "gifts" },
-      { href: "/spinner", label: "spinner" },
-      { href: "/login", label: "Login" },
-      { 
-        href: "/cart", 
-        label:  <ShoppingBag />
+  // Navigation links
+  const navLinks = [
+    { href: "/", label: "Home" },
+    { href: "/product", label: "Product" },
+    { href: "/collection", label: "Collections" },
+    { href: "/gifts", label: "Gifts" },
+    { href: "/spinner", label: "Spinner" },
+    { href: "/login", label: "Login" }
+  ];
 
-      }
-    ];
-
-    return links.map((link, index) => (
-      <Link 
-        key={index} 
-        to={link.href} 
-        className={isActive(link.href) ? 'active' : ''}
-        onClick={() => setMenuOpen(false)}
-        style={{ '--i': index + 1 }}
-      >
-        {link.label}
-      </Link>
-    ));
-  };
-  
   return (
     <>
-      {/* Overlay for mobile menu */}
+      {/* Mobile menu overlay */}
       {isMobile && menuOpen && (
         <div 
           className="menu-overlay active" 
           onClick={() => setMenuOpen(false)}
-        ></div>
+        />
       )}
       
       <div className={`Navbar ${scrolled ? 'scrolled' : ''}`} ref={navbarRef}>
+        {/* Logo */}
         <div className="logo">
-          <Link to={'/'}><img src='/images/logo.png' alt="Logo" /></Link>
+          <Link to="/">
+            <img src="/logo.png" alt="Logo" />
+          </Link>
         </div>
         
-        {/* Hamburger Menu Toggle Button */}
-        {isMobile && (
-          <div 
-            className={`menu-toggle ${menuOpen ? 'active' : ''}`} 
-            onClick={toggleMenu}
-            aria-label="Toggle navigation menu"
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-        )}
-        
+        {/* Navigation Links - Hidden on mobile */}
         <nav className={`nav-links ${menuOpen ? 'active' : ''}`}>
-          {renderNavLinks()}
+          {navLinks.map((link, index) => (
+            <Link 
+              key={index}
+              to={link.href} 
+              className={isActive(link.href) ? 'active' : ''}
+              onClick={() => setMenuOpen(false)}
+              style={{ '--i': index + 1 }}
+            >
+              {link.label}
+            </Link>
+          ))}
         </nav>
+        
+        {/* Right section with search and icons */}
+        <div className="nav-right">
+          {/* Search - Hidden on mobile */}
+          {!isMobile && (
+            <div className="search-container">
+              <Search size={16} color="#707072" />
+              <input 
+                type="text" 
+                placeholder="Search" 
+                aria-label="Search products"
+              />
+            </div>
+          )}
+          
+          {/* Icons */}
+          <button className="icon-button" aria-label="Wishlist">
+            <Heart size={20} />
+          </button>
+          
+          <Link to="/cart" className="icon-button" aria-label="Shopping cart">
+            <ShoppingBag size={20} />
+          </Link>
+          
+          {/* Mobile hamburger menu */}
+          {isMobile && (
+            <button 
+              className={`menu-toggle ${menuOpen ? 'active' : ''}`} 
+              onClick={toggleMenu}
+              aria-label="Toggle navigation menu"
+              aria-expanded={menuOpen}
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+          )}
+        </div>
       </div>
     </>
   );
