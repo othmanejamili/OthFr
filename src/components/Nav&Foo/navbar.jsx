@@ -128,15 +128,15 @@ const NavBar = () => {
     ];
 
     return links.map((link, index) => (
-      <a 
+      <Link 
         key={index} 
-        href={link.href} 
+        to={link.href} 
         className={isActive(link.href) ? 'active' : ''}
         onClick={() => setMenuOpen(false)}
         style={{ '--i': index + 1 }}
       >
         {link.label}
-      </a>
+      </Link>
     ));
   };
   
