@@ -601,7 +601,7 @@ const Product = () => {
             <label>Custom Price Range</label>
             <div className="price-input-group">
               <div className="min-price-input">
-                <span className="price-symbol">$</span>
+                <span className="price-symbol">DHD</span>
                 <input
                   type="number"
                   placeholder="Min"
@@ -612,7 +612,7 @@ const Product = () => {
               </div>
               <span className="price-range-separator">to</span>
               <div className="max-price-input">
-                <span className="price-symbol">$</span>
+                <span className="price-symbol">DHD</span>
                 <input
                   type="number"
                   placeholder="Max"

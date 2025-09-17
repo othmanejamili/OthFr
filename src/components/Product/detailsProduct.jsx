@@ -615,7 +615,7 @@ const ProductDetail = () => {
               </div>
               <div className="share-product-info">
                 <h4 className="share-product-name">{product.name}</h4>
-                <p className="share-product-price">DH {product.price}</p>
+                <p className="share-product-price">DHD {product.price}</p>
               </div>
             </div>
             

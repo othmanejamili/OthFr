@@ -137,12 +137,12 @@ const Footer = () => {
                 </div>
                 
                 <div className="footer-column">
-                    <h3>Quick Links</h3>
+                    <h3>Quick Links</h3> 
                     <ul className="quick-links">
                         <li><Link to="/">Home</Link></li>
                         <li><Link to="/product">Productt</Link></li>
-                        <li><Link to="/collections">collections</Link></li>
-                        <li><Link to="/gift">Gifts</Link></li>
+                        <li><Link to="/collection">collections</Link></li>
+                        <li><Link to="/gifts">Gifts</Link></li>
                         <li><Link to="/spinner">spinner</Link></li>
                         <li><Link to="/login">Login</Link></li>
                     </ul>
