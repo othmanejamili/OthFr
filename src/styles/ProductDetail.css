@@ -1,5 +1,4 @@
 
-
 .product-detail-page {
   max-width: 1280px;
   margin: 0 auto;
@@ -392,7 +391,7 @@
   box-shadow: var(--shadow-md);
   transition: var(--transition);
   background-color: var(--white);
-  height: 100%;
+  height: auto;
   display: flex;
   flex-direction: column;
 }
