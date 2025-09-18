@@ -5,12 +5,14 @@ import gsap from "gsap";
 import { useCart } from '../../context/CartContext';
 import '../../styles/ProductDetail.css';
 import ProductComments from "./ProductComment";
-import { Minus, Plus, ShoppingBag, ShoppingCart, Share2, Copy, Facebook, Twitter, MessageCircle, X } from "lucide-react";
+import { Minus, Plus, ShoppingBag, ShoppingCart, Share2, Copy, Facebook, Twitter, MessageCircle, X, Heart } from "lucide-react";
+import { useFavourite } from "../../context/FavouriteContext";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addItem } = useCart();
+  const { addFavourite } = useFavourite();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,6 +21,7 @@ const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState("description");
   const [similarProducts, setSimilarProducts] = useState([]);
   const [addedToCart, setAddedToCart] = useState(false);
+  const [addedToFavourite, setAddedToFavourite] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
   
@@ -39,7 +42,9 @@ const ProductDetail = () => {
       setLoading(false);
       return;
     }
-    
+    if (product) {
+      
+    }
     // Fetch product details by ID
     axios.get(`https://othy.pythonanywhere.com/api/products/${id}/`)
       .then(response => {
@@ -218,6 +223,8 @@ const ProductDetail = () => {
         );
       }
     });
+
+    
     
     if (product) {
       const itemToAdd = {
@@ -227,14 +234,66 @@ const ProductDetail = () => {
         quantity: quantity,
         image: product.images && product.images.length > 0 ? product.images[0].image_url : null
       };
+
       
-      addItem(itemToAdd);
-      setAddedToCart(true);
-      setQuantity(1);
-      
-      setTimeout(() => {
-        setAddedToCart(false);
-      }, 3000);
+        
+    }
+  };
+
+  const handleAddToFavourite = () => {
+    const addedToFavourite = document.querySelector('.add-to-Favourite-button');
+    
+    gsap.to(addedToFavourite, {
+      scale: 0.95,
+      duration: 0.1,
+      yoyo: true,
+      repeat: 1,
+      onComplete: () => {
+        const successMessage = document.createElement('div');
+        successMessage.className = 'favourite-success-message';
+        successMessage.textContent = `${product.name}  added to favourite!`;
+        
+        document.querySelector('.product-detail-page').appendChild(successMessage);
+        
+        gsap.fromTo(successMessage, 
+          { opacity: 0, y: -20 },
+          { 
+            opacity: 1, 
+            y: 0, 
+            duration: 0.5,
+            ease: "power2.out",
+            onComplete: () => {
+              setTimeout(() => {
+                gsap.to(successMessage, {
+                  opacity: 0,
+                  y: -20,
+                  duration: 0.5,
+                  ease: "power2.in",
+                  onComplete: () => {
+                    successMessage.remove();
+                  }
+                });
+              }, 2000);
+            }
+          }
+        );
+      }
+    });
+
+    
+    
+    if (product) {
+      const favouriteToAdd = {
+        id: product.id,
+        name: product.name,
+        price: parseFloat(product.price.replace(/[^0-9.-]+/g,"")),
+        image: product.images?.[0]?.image_url || null
+      };
+  
+      addFavourite(favouriteToAdd); // Only add to favourites
+      setAddedToFavourite(true);
+  
+      setTimeout(() => setAddedToFavourite(false), 3000);
     }
   };
   
@@ -476,6 +535,23 @@ const ProductDetail = () => {
               )}
             </button>
             
+            <button
+              className={`luxury-btn-primary ${addedToFavourite ? 'added' : ''}`}
+              onClick={handleAddToFavourite}
+            >
+              {addedToFavourite ? (
+                <>
+                  <Heart />
+                  Added to Favourite!
+                </>
+              ) : (
+                <>
+                  <Heart />
+                  Add to Favourite
+                </>
+              )}
+            </button>
+
             <button
               className="view-cart-button"
               onClick={goToCart}

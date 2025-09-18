@@ -25,7 +25,8 @@ import SeasonalCollections from './components/Collection/Collections';
 import CreateCollection from './components/Collection/CreateCollection';
 import GiftOutOfStock from './components/Gifts/Gifts';
 import SpinToWinUnavailable from './components/Spinner/spinner';
-
+import Favourite from './components/Favourite/Favourite';
+import { FavouriteProvider } from './context/FavouriteContext';
 const MainLayout = ({ children }) => (
   <>
     <NavBar />
@@ -100,6 +101,7 @@ const AppRoutes = () => {
 
       {/* Cart and Checkout Routes */}
       <Route path="/cart" element={<LuxuryCart />} />
+      <Route path='/favourite' element={<Favourite />}/>
       
       <Route path="/checkout" element={
           <Checkout />
@@ -178,9 +180,11 @@ const App = () => {
   return (
     <AuthProvider>
       <CartProvider>
+      <FavouriteProvider>
         <Router>
           <AppRoutes />
         </Router>
+        </FavouriteProvider>
       </CartProvider>
     </AuthProvider>
   );

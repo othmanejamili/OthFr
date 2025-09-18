@@ -13,7 +13,7 @@ const LuxuryCartItem = ({ item, index }) => {
 
 
   return (
-    <div className="luxury-item" style={{ animationDelay: `DHD{index * 0.1}s` }}>
+    <div className="luxury-item" style={{ animationDelay: `${index * 0.1}s` }}>
       <div className="md:grid md:grid-cols-6 gap-6 items-center">
         {/* Product Image and Details */}
         <div className="md:col-span-3 flex items-center space-x-5">

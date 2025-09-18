@@ -142,9 +142,9 @@ const NavBar = () => {
           )}
           
           {/* Icons */}
-          <button className="icon-button" aria-label="Wishlist">
+          <Link to="/favourite" className="icon-button" aria-label="Wishlist">
             <Heart size={20} />
-          </button>
+          </Link>
           
           <Link to="/cart" className="icon-button" aria-label="Shopping cart">
             <ShoppingBag size={20} />
