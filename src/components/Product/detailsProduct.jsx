@@ -235,7 +235,7 @@ const ProductDetail = () => {
         image: product.images && product.images.length > 0 ? product.images[0].image_url : null
       };
 
-      addedToCart(itemToAdd); // Only add to favourites
+      addItem(itemToAdd); 
       setAddedToCart(true);
   
       setTimeout(() => setAddedToFavourite(false), 3000);
