@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { useCart } from '../../context/CartContext';
 import '../../styles/ProductDetail.css';
 import ProductComments from "./ProductComment";
-import { Minus, Plus, ShoppingBag, ShoppingCart, Share2, Copy, Facebook, Twitter, MessageCircle, X, Heart } from "lucide-react";
+import { Minus, Plus, ShoppingBag, ShoppingCart, Share2, Copy, Facebook, Twitter, MessageCircle, X, Heart, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { useFavourite } from "../../context/FavouriteContext";
 
 const ProductDetail = () => {
@@ -25,6 +25,15 @@ const ProductDetail = () => {
   const [showShareModal, setShowShareModal] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
   
+  // Nike-style states
+  const [selectedSize, setSelectedSize] = useState('');
+  const [selectedColor, setSelectedColor] = useState(0);
+  const [expandedAccordion, setExpandedAccordion] = useState('');
+  
+  // Image lightbox states
+  const [showLightbox, setShowLightbox] = useState(false);
+  const [lightboxImageIndex, setLightboxImageIndex] = useState(0);
+  
   // Refs for animations
   const productDetailRef = useRef(null);
   const containerRef = useRef(null);
@@ -33,24 +42,28 @@ const ProductDetail = () => {
   const thumbnailsRef = useRef([]);
   const mainImageRef = useRef(null);
   const shareModalRef = useRef(null);
+  const lightboxRef = useRef(null);
+
+  // Nike shoe sizes (you can make this dynamic based on product type)
+  const shoeSizes = ['7', '7.5', '8', '8.5', '9', '9.5', '10', '10.5', '11', '11.5', '12'];
+  
+  // Nike colors (you can make this dynamic from product data)
+  const productColors = [
+    { name: 'Black/White', color: '#000000' },
+    { name: 'University Red', color: '#DC143C' },
+    { name: 'Game Royal', color: '#4169E1' },
+    { name: 'Pine Green', color: '#01796F' }
+  ];
 
   useEffect(() => {
-    console.log("Product ID from params:", id);
-    
     if (!id) {
       setError("No product ID provided");
       setLoading(false);
       return;
     }
-    if (product) {
-      
-    }
-    // Fetch product details by ID
+
     axios.get(`https://othy.pythonanywhere.com/api/products/${id}/`)
       .then(response => {
-        console.log("Product data:", response.data);
-        
-        // Create a normalized product object with images array for compatibility
         const productData = {
           ...response.data,
           images: response.data.image_list?.map(item => ({
@@ -62,12 +75,10 @@ const ProductDetail = () => {
         setProduct(productData);
         setLoading(false);
         
-        // Fetch products with the same type
         if (response.data.type) {
           fetchSimilarProducts(response.data.type, response.data.id);
         }
         
-        // Initialize animations after product is loaded
         setTimeout(() => {
           animateProductDetails();
           if (containerRef.current) {
@@ -82,16 +93,30 @@ const ProductDetail = () => {
       });
   }, [id]);
 
-  // Fetch products with the same type
+  // Close lightbox on Escape key
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape' && showLightbox) {
+        closeLightbox();
+      }
+      if (event.key === 'ArrowLeft' && showLightbox) {
+        navigateLightbox('prev');
+      }
+      if (event.key === 'ArrowRight' && showLightbox) {
+        navigateLightbox('next');
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [showLightbox, lightboxImageIndex, product]);
+
   const fetchSimilarProducts = (productType, currentProductId) => {
     axios.get(`https://othy.pythonanywhere.com/api/products/`, {
-      params: {
-        type: productType
-      }
+      params: { type: productType }
     })
       .then(response => {
         const filtered = response.data.filter(prod => prod.id !== currentProductId);
-        
         const normalizedProducts = filtered.map(prod => ({
           ...prod,
           images: prod.image_list?.map(item => ({
@@ -99,7 +124,6 @@ const ProductDetail = () => {
             image_url: item.image
           })) || []
         }));
-        
         setSimilarProducts(normalizedProducts.slice(0, 4));
       })
       .catch(error => {
@@ -107,47 +131,60 @@ const ProductDetail = () => {
       });
   };
 
-  // Animation for product details on loade
   const animateProductDetails = () => {
     gsap.set([imageGalleryRef.current, productInfoRef.current?.children], { 
       clearProps: "all" 
     });
     
     gsap.fromTo(imageGalleryRef.current, 
-      { opacity: 0, x: -30 },
-      { opacity: 1, x: 0, duration: 0.8, ease: "power2.out" }
+      { opacity: 0, x: -20 },
+      { opacity: 1, x: 0, duration: 0.6, ease: "power2.out" }
     );
     
     const thumbnails = thumbnailsRef.current.filter(Boolean);
     gsap.fromTo(thumbnails, 
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: "power2.out", delay: 0.3 }
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, duration: 0.4, stagger: 0.05, ease: "power2.out", delay: 0.2 }
     );
     
     if (productInfoRef.current) {
       const productInfoElements = productInfoRef.current.children;
       gsap.fromTo(productInfoElements, 
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: "power2.out", delay: 0.5 }
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, duration: 0.4, stagger: 0.05, ease: "power2.out", delay: 0.3 }
       );
     }
   };
 
-  // Handle image change with animation
   const changeImage = (index) => {
     if (index === activeImageIndex) return;
-    
-    const mainImage = mainImageRef.current;
-    
-    gsap.fromTo(mainImage,
-      { opacity: 0.7, scale: 0.98 },
-      { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }
-    );
-    
     setActiveImageIndex(index);
   };
 
-  // Handle quantity change
+  // Lightbox functions
+  const openLightbox = (index) => {
+    setLightboxImageIndex(index);
+    setShowLightbox(true);
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+  };
+
+  const closeLightbox = () => {
+    setShowLightbox(false);
+    document.body.style.overflow = 'unset'; // Restore scrolling
+  };
+
+  const navigateLightbox = (direction) => {
+    if (!product || !product.images) return;
+    
+    let newIndex;
+    if (direction === 'next') {
+      newIndex = (lightboxImageIndex + 1) % product.images.length;
+    } else {
+      newIndex = (lightboxImageIndex - 1 + product.images.length) % product.images.length;
+    }
+    setLightboxImageIndex(newIndex);
+  };
+
   const handleQuantityChange = (e) => {
     const value = parseInt(e.target.value);
     if (value > 0) {
@@ -155,7 +192,6 @@ const ProductDetail = () => {
     }
   };
 
-  // Handle increment/decrement quantity
   const adjustQuantity = (amount) => {
     const newQuantity = quantity + amount;
     if (newQuantity > 0) {
@@ -163,68 +199,32 @@ const ProductDetail = () => {
     }
   };
 
-  // Navigate through images
-  const navigateGallery = (direction) => {
-    if (!product) return;
-    
-    let newIndex = activeImageIndex;
-    
-    if (direction === 'next') {
-      newIndex = (activeImageIndex + 1) % product.images.length;
-    } else {
-      newIndex = (activeImageIndex - 1 + product.images.length) % product.images.length;
-    }
-    
-    changeImage(newIndex);
+  const handleSizeSelect = (size) => {
+    setSelectedSize(size);
   };
 
-  // Handle tab changes
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
+  const handleColorSelect = (index) => {
+    setSelectedColor(index);
   };
 
-  // Handle Add to Cart with animation
+  const toggleAccordion = (section) => {
+    setExpandedAccordion(expandedAccordion === section ? '' : section);
+  };
+
   const handleAddToCart = () => {
-    const addToCartButton = document.querySelector('.add-to-cart-button');
-    
-    gsap.to(addToCartButton, {
-      scale: 0.95,
-      duration: 0.1,
-      yoyo: true,
-      repeat: 1,
-      onComplete: () => {
-        const successMessage = document.createElement('div');
-        successMessage.className = 'cart-success-message';
-        successMessage.textContent = `${product.name} (${quantity}) added to cart!`;
-        
-        document.querySelector('.product-detail-page').appendChild(successMessage);
-        
-        gsap.fromTo(successMessage, 
-          { opacity: 0, y: -20 },
-          { 
-            opacity: 1, 
-            y: 0, 
-            duration: 0.5,
-            ease: "power2.out",
-            onComplete: () => {
-              setTimeout(() => {
-                gsap.to(successMessage, {
-                  opacity: 0,
-                  y: -20,
-                  duration: 0.5,
-                  ease: "power2.in",
-                  onComplete: () => {
-                    successMessage.remove();
-                  }
-                });
-              }, 2000);
-            }
-          }
-        );
-      }
-    });
+    if (!selectedSize && product.type === 'footwear') {
+      alert('Please select a size');
+      return;
+    }
 
-    
+    const successMessage = document.createElement('div');
+    successMessage.className = 'success-message';
+    successMessage.textContent = `Added to Bag`;
+    document.body.appendChild(successMessage);
+
+    setTimeout(() => {
+      successMessage.remove();
+    }, 3000);
     
     if (product) {
       const itemToAdd = {
@@ -232,58 +232,26 @@ const ProductDetail = () => {
         name: product.name,
         price: parseFloat(product.price.replace(/[^0-9.-]+/g,"")),
         quantity: quantity,
+        size: selectedSize,
+        color: productColors[selectedColor]?.name,
         image: product.images && product.images.length > 0 ? product.images[0].image_url : null
       };
 
       addItem(itemToAdd); 
       setAddedToCart(true);
-  
-      setTimeout(() => setAddedToFavourite(false), 3000);
-        
+      setTimeout(() => setAddedToCart(false), 3000);
     }
   };
 
   const handleAddToFavourite = () => {
-    const addedToFavourite = document.querySelector('.add-to-Favourite-button');
-    
-    gsap.to(addedToFavourite, {
-      scale: 0.95,
-      duration: 0.1,
-      yoyo: true,
-      repeat: 1,
-      onComplete: () => {
-        const successMessage = document.createElement('div');
-        successMessage.className = 'favourite-success-message';
-        successMessage.textContent = `${product.name}  added to favourite!`;
-        
-        document.querySelector('.product-detail-page').appendChild(successMessage);
-        
-        gsap.fromTo(successMessage, 
-          { opacity: 0, y: -20 },
-          { 
-            opacity: 1, 
-            y: 0, 
-            duration: 0.5,
-            ease: "power2.out",
-            onComplete: () => {
-              setTimeout(() => {
-                gsap.to(successMessage, {
-                  opacity: 0,
-                  y: -20,
-                  duration: 0.5,
-                  ease: "power2.in",
-                  onComplete: () => {
-                    successMessage.remove();
-                  }
-                });
-              }, 2000);
-            }
-          }
-        );
-      }
-    });
+    const successMessage = document.createElement('div');
+    successMessage.className = 'success-message';
+    successMessage.textContent = `Added to Favourites`;
+    document.body.appendChild(successMessage);
 
-    
+    setTimeout(() => {
+      successMessage.remove();
+    }, 3000);
     
     if (product) {
       const favouriteToAdd = {
@@ -293,19 +261,17 @@ const ProductDetail = () => {
         image: product.images?.[0]?.image_url || null
       };
   
-      addFavourite(favouriteToAdd); // Only add to favourites
+      addFavourite(favouriteToAdd);
       setAddedToFavourite(true);
-  
       setTimeout(() => setAddedToFavourite(false), 3000);
     }
   };
   
-  // Navigate to cart
   const goToCart = () => {
     navigate('/cart');
   };
 
-  // Share functionality
+  // Share functionality (keeping the same logic)
   const getProductUrl = () => {
     return window.location.href;
   };
@@ -317,12 +283,8 @@ const ProductDetail = () => {
   const handleShare = (platform) => {
     const url = encodeURIComponent(getProductUrl());
     const text = encodeURIComponent(getShareText());
-    const imageUrl = product.images && product.images.length > 0 
-      ? encodeURIComponent(product.images[0].image_url) 
-      : '';
 
     let shareUrl = '';
-
     switch (platform) {
       case 'facebook':
         shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
@@ -362,35 +324,9 @@ const ProductDetail = () => {
     }
   };
 
-  const openShareModal = () => {
-    setShowShareModal(true);
-    setTimeout(() => {
-      if (shareModalRef.current) {
-        gsap.fromTo(shareModalRef.current,
-          { opacity: 0, scale: 0.8 },
-          { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }
-        );
-      }
-    }, 10);
-  };
-
-  const closeShareModal = () => {
-    if (shareModalRef.current) {
-      gsap.to(shareModalRef.current, {
-        opacity: 0,
-        scale: 0.8,
-        duration: 0.2,
-        ease: "power2.in",
-        onComplete: () => setShowShareModal(false)
-      });
-    } else {
-      setShowShareModal(false);
-    }
-  };
-
   if (loading) return (
     <div className="product-detail-page">
-      <div className="loading-spinner">Loading product details...</div>
+      <div className="loading-spinner">Loading...</div>
     </div>
   );
   
@@ -410,8 +346,8 @@ const ProductDetail = () => {
     <div className="product-detail-page" ref={productDetailRef}>
       {/* Breadcrumb navigation */}
       <div className="breadcrumb">
-        <Link to="/">Home</Link> &gt; 
-        <Link to="/product">Products</Link> &gt; 
+        <Link to="/">Home</Link> / 
+        <Link to="/product">Products</Link> / 
         <span className="current">{product.name}</span>
       </div>
       
@@ -419,43 +355,17 @@ const ProductDetail = () => {
       <div className="product-detail-container" ref={containerRef}>
         {/* Product Images Gallery */}
         <div className="product-gallery" ref={imageGalleryRef}>
-          <div className="main-image-container">
+          <div className="main-image-container" onClick={() => openLightbox(activeImageIndex)}>
             {product.images && product.images.length > 0 ? (
               <img 
                 ref={mainImageRef}
                 src={product.images[activeImageIndex].image_url}
                 alt={product.name}
                 className="main-image"
+                style={{ cursor: 'zoom-in' }}
               />
             ) : (
               <div className="no-image">No image available</div>
-            )}
-            
-            {/* Gallery navigation */}
-            {product.images && product.images.length > 1 && (
-              <div className="gallery-navigation">
-                <button 
-                  className="gallery-nav-button" 
-                  onClick={() => navigateGallery('prev')}
-                  aria-label="Previous image"
-                >
-                  &#10094;
-                </button>
-                <button 
-                  className="gallery-nav-button" 
-                  onClick={() => navigateGallery('next')}
-                  aria-label="Next image"
-                >
-                  &#10095;
-                </button>
-              </div>
-            )}
-            
-            {/* Gallery counter */}
-            {product.images && product.images.length > 0 && (
-              <div className="gallery-counter">
-                {activeImageIndex + 1} / {product.images.length}
-              </div>
             )}
           </div>
           
@@ -466,8 +376,13 @@ const ProductDetail = () => {
                 src={image.image_url}
                 alt={`${product.name} thumbnail ${index + 1}`}
                 className={`thumbnail ${index === activeImageIndex ? 'active' : ''}`}
-                onClick={() => changeImage(index)}
+                onClick={() => {
+                  changeImage(index);
+                  // Optional: Also open lightbox when clicking thumbnail
+                  // openLightbox(index);
+                }}
                 ref={(el) => (thumbnailsRef.current[index] = el)}
+                style={{ cursor: 'pointer' }}
               />
             ))}
           </div>
@@ -475,22 +390,57 @@ const ProductDetail = () => {
 
         {/* Product Info Section */}
         <div className="product-info" ref={productInfoRef}>
-          <div className="product-header">
-            <h1 className="clk">{product.name}</h1>
-            <button 
-              className="share-button"
-              onClick={openShareModal}
-              aria-label="Share this product"
-            >
-              <Share2 size={20} />
-              Share
-            </button>
+          {/* Product badge */}
+          {product.isNew && (
+            <div className="product-badge">Just In</div>
+          )}
+
+          <h1>{product.name}</h1>
+          <p className="product-subtitle">{product.type || "Men's Shoes"}</p>
+          
+          <div className="price">{product.price}</div>
+          
+          <div className="description">
+            {product.description}
+            {product.points_reward && (
+              <p>Earn {product.points_reward} points with this purchase</p>
+            )}
           </div>
-          
-          <p className="description">{product.description}</p>
-          <p className="price">{product.price}</p>
-          <p className="description">Points : {product.points_reward}</p>
-          
+
+          {/* Color Selector */}
+          <div className="color-selector">
+            <h3>Select Color: {productColors[selectedColor]?.name}</h3>
+            <div className="color-options">
+              {productColors.map((color, index) => (
+                <button
+                  key={index}
+                  className={`color-option ${selectedColor === index ? 'selected' : ''}`}
+                  style={{ backgroundColor: color.color }}
+                  onClick={() => handleColorSelect(index)}
+                  aria-label={color.name}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Size Selector */}
+          {product.type === 'footwear' && (
+            <div className="size-selector">
+              <h3>Select Size</h3>
+              <div className="size-options">
+                {shoeSizes.map((size) => (
+                  <button
+                    key={size}
+                    className={`size-option ${selectedSize === size ? 'selected' : ''}`}
+                    onClick={() => handleSizeSelect(size)}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Quantity Selector */}
           <div className="quantity-selector">
             <button 
@@ -498,7 +448,7 @@ const ProductDetail = () => {
               disabled={quantity <= 1}
               aria-label="Decrease quantity"
             >
-              <Minus size={18} />
+              <Minus size={16} />
             </button>
             <input
               type="number"
@@ -511,129 +461,114 @@ const ProductDetail = () => {
               onClick={() => adjustQuantity(1)}
               aria-label="Increase quantity"
             >
-              <Plus size={18}/>
+              <Plus size={16} />
             </button>
           </div>
 
-          {/* Cart Buttons */}
-          <div className="cart-buttons">
-            <button
-              className={`luxury-btn-primary ${addedToCart ? 'added' : ''}`}
-              onClick={handleAddToCart}
-            >
-              {addedToCart ? (
-                <>
-                  <ShoppingBag />
-                  Added to Cart!
-                </>
-              ) : (
-                <>
-                  <svg className="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <path d="M16 10a4 4 0 0 1-8 0"></path>
-                  </svg>
-                  Add to Cart
-                </>
-              )}
-            </button>
-            
-            <button
-              className={`luxury-btn-primary ${addedToFavourite ? 'added' : ''}`}
-              onClick={handleAddToFavourite}
-            >
-              {addedToFavourite ? (
-                <>
-                  <Heart />
-                  Added to Favourite!
-                </>
-              ) : (
-                <>
-                  <Heart />
-                  Add to Favourite
-                </>
-              )}
-            </button>
+          {/* Add to Bag Button */}
+          <button
+            className="add-to-cart-button"
+            onClick={handleAddToCart}
+            disabled={product.type === 'footwear' && !selectedSize}
+          >
+            <ShoppingBag size={20} />
+            Add to Bag
+          </button>
 
-            <button
-              className="view-cart-button"
-              onClick={goToCart}
-            >
-              <ShoppingCart size={18} strokeWidth={2} />
-              View Cart
-            </button>
+          {/* Favorite Button */}
+          <button
+            className="favorite-button"
+            onClick={handleAddToFavourite}
+          >
+            <Heart size={20} />
+            Favourite
+          </button>
+
+          {/* Share Button */}
+          <button 
+            className="share-button"
+            onClick={() => setShowShareModal(true)}
+          >
+            <Share2 size={16} />
+            Share
+          </button>
+
+          {/* Product Features */}
+          <div className="product-features">
+            <ul className="feature-list">
+              <li>Shown: {productColors[selectedColor]?.name}</li>
+              <li>Style: {product.id}</li>
+              <li>Country/Region of Origin: Morocco</li>
+            </ul>
+          </div>
+
+          {/* Shipping & Returns */}
+          <div className="shipping-returns">
+            <h3>Free Delivery and Returns</h3>
+            <p>Free standard delivery on orders over DHD 50</p>
+            <p>Free 30-day returns</p>
           </div>
         </div>
       </div>
       
-      {/* Product Details Tabs */}
+      {/* Product Details Accordion */}
       <div className="product-details-sections">
-        <div className="details-tabs">
+        <div className="accordion-item">
           <button 
-            className={`tab-button ${activeTab === 'description' ? 'active' : ''}`}
-            onClick={() => handleTabChange('description')}
+            className="accordion-button"
+            onClick={() => toggleAccordion('description')}
           >
             Description
+            <ChevronDown size={20} style={{ 
+              transform: expandedAccordion === 'description' ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform 0.2s ease'
+            }} />
           </button>
+          <div className={`accordion-content ${expandedAccordion === 'description' ? 'active' : ''}`}>
+            <p>{product.fullDescription || product.description}</p>
+            <p>This product is made with at least 20% recycled materials by weight.</p>
+          </div>
+        </div>
+
+        <div className="accordion-item">
           <button 
-            className={`tab-button ${activeTab === 'specifications' ? 'active' : ''}`}
-            onClick={() => handleTabChange('specifications')}
+            className="accordion-button"
+            onClick={() => toggleAccordion('reviews')}
           >
             Reviews
+            <ChevronDown size={20} style={{ 
+              transform: expandedAccordion === 'reviews' ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform 0.2s ease'
+            }} />
           </button>
+          <div className={`accordion-content ${expandedAccordion === 'reviews' ? 'active' : ''}`}>
+            <ProductComments productId={product.id} />
+          </div>
+        </div>
+
+        <div className="accordion-item">
           <button 
-            className={`tab-button ${activeTab === 'reviews' ? 'active' : ''}`}
-            onClick={() => handleTabChange('reviews')}
+            className="accordion-button"
+            onClick={() => toggleAccordion('delivery')}
           >
-            Specifications
+            Delivery & Returns
+            <ChevronDown size={20} style={{ 
+              transform: expandedAccordion === 'delivery' ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform 0.2s ease'
+            }} />
           </button>
-        </div>
-        
-        <div className={`tab-content ${activeTab === 'description' ? 'active' : ''}`}>
-          <p>{product.fullDescription || product.description}</p>
-        </div>
-        
-        <div className={`tab-content ${activeTab === 'specifications' ? 'active' : ''}`}>
-          <table>
-            <tbody>
-              {product.specifications?.map((spec, index) => (
-                <tr key={index}>
-                  <td>{spec.name}</td>
-                  <td>{spec.value}</td>
-                </tr>
-              )) || (
-                <tr>
-                  <td colSpan="2"><ProductComments productId={product.id} /></td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-        
-        <div className={`tab-content ${activeTab === 'reviews' ? 'active' : ''}`}>
-          {product.reviews?.length > 0 ? (
-            product.reviews.map((review, index) => (
-              <div key={index} className="review-item">
-                <div className="review-header">
-                  <h4>{review.userName}</h4>
-                  <div className="review-rating">
-                    {[...Array(5)].map((_, i) => (
-                      <span key={i} className={`star ${i < review.rating ? 'filled' : ''}`}>★</span>
-                    ))}
-                  </div>
-                </div>
-                <p>{review.comment}</p>
-              </div>
-            ))
-          ) : (
-            <p>No reviews yet. Be the first to review this product!</p>
-          )}
+          <div className={`accordion-content ${expandedAccordion === 'delivery' ? 'active' : ''}`}>
+            <p><strong>Free standard delivery</strong></p>
+            <p>Order by 11:59pm and choose Standard Delivery at checkout.</p>
+            <p><strong>Free 30-day returns</strong></p>
+            <p>Some exclusions apply. Return items in original packaging within 30 days for a full refund.</p>
+          </div>
         </div>
       </div>
       
-      {/* Similar Products */}
+      {/* You Might Also Like */}
       <div className="similar-products">
-        <h2>Similar Products</h2>
+        <h2>You Might Also Like</h2>
         <div className="similar-products-grid">
           {similarProducts.length > 0 ? (
             similarProducts.map((similarProduct, index) => (
@@ -651,22 +586,81 @@ const ProductDetail = () => {
                 </div>
                 <div className="similar-product-info">
                   <h3 className="similar-product-name">{similarProduct.name}</h3>
+                  <p className="similar-product-category">{similarProduct.type || "Men's Shoes"}</p>
                   <p className="similar-product-price">{similarProduct.price}</p>
+                  <div className="similar-product-colors">
+                    <div className="similar-color-dot" style={{ backgroundColor: '#000' }}></div>
+                    <div className="similar-color-dot" style={{ backgroundColor: '#DC143C' }}></div>
+                    <div className="similar-color-dot" style={{ backgroundColor: '#4169E1' }}></div>
+                  </div>
                 </div>
               </Link>
             ))
           ) : (
-            <div className="no-similar-products">
-              No similar products found
-            </div>
+            <p>No similar products found</p>
           )}
         </div>
       </div>
 
-      {/* Share Modal */}
+      {/* Image Lightbox Modal */}
+      {showLightbox && product.images && product.images.length > 0 && (
+        <div className="lightbox-overlay" onClick={closeLightbox}>
+          <div className="lightbox-container" ref={lightboxRef} onClick={(e) => e.stopPropagation()}>
+            <button className="lightbox-close" onClick={closeLightbox} aria-label="Close">
+              <X size={24} />
+            </button>
+            
+            {product.images.length > 1 && (
+              <>
+                <button 
+                  className="lightbox-nav lightbox-prev" 
+                  onClick={() => navigateLightbox('prev')}
+                  aria-label="Previous image"
+                >
+                  <ChevronLeft size={24} />
+                </button>
+                <button 
+                  className="lightbox-nav lightbox-next" 
+                  onClick={() => navigateLightbox('next')}
+                  aria-label="Next image"
+                >
+                  <ChevronRight size={24} />
+                </button>
+              </>
+            )}
+            
+            <div className="lightbox-image-container">
+              <img 
+                src={product.images[lightboxImageIndex].image_url} 
+                alt={`${product.name} - Image ${lightboxImageIndex + 1}`}
+                className="lightbox-image"
+              />
+            </div>
+            
+            {product.images.length > 1 && (
+              <div className="lightbox-counter">
+                {lightboxImageIndex + 1} / {product.images.length}
+              </div>
+            )}
+            
+            <div className="lightbox-thumbnails">
+              {product.images.map((image, index) => (
+                <img
+                  key={index}
+                  src={image.image_url}
+                  alt={`Thumbnail ${index + 1}`}
+                  className={`lightbox-thumbnail ${index === lightboxImageIndex ? 'active' : ''}`}
+                  onClick={() => setLightboxImageIndex(index)}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Share Modal (keeping existing modal structure) */}
       {showShareModal && (
-        <div className="share-modal-overlay" onClick={closeShareModal}>
-          <Share2 />
+        <div className="share-modal-overlay" onClick={() => setShowShareModal(false)}>
           <div 
             className="share-modal" 
             ref={shareModalRef}
@@ -676,14 +670,12 @@ const ProductDetail = () => {
               <h3>Share this product</h3>
               <button 
                 className="close-modal-btn"
-                onClick={closeShareModal}
-                aria-label="Close share modal"
+                onClick={() => setShowShareModal(false)}
               >
                 <X size={20} />
               </button>
             </div>
 
-            {/* Product Preview Section */}
             <div className="share-product-preview">
               <div className="share-product-image">
                 <img
@@ -694,11 +686,10 @@ const ProductDetail = () => {
               </div>
               <div className="share-product-info">
                 <h4 className="share-product-name">{product.name}</h4>
-                <p className="share-product-price">DHD {product.price}</p>
+                <p className="share-product-price">{product.price}</p>
               </div>
             </div>
             
-            {/* Social Share Options - Horizontal Layout */}
             <div className="share-options-horizontal">
               <h5 className="share-options-title">Share on social media</h5>
               <div className="social-icons-row">
@@ -737,11 +728,16 @@ const ProductDetail = () => {
                   </svg>
                 </button>
 
-                
+                <button 
+                  className={`share-option copy-link ${copySuccess ? 'copied' : ''}`}
+                  onClick={copyToClipboard}
+                  title="Copy Link"
+                >
+                  {copySuccess ? '✓' : <Copy size={24} />}
+                </button>
               </div>
             </div>
           </div>
-        
         </div>
       )}
     </div>

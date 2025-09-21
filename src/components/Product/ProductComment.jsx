@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { Star, MessageCircle, User } from 'lucide-react';
+import { Star, User } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
 import '../../styles/Comment.css';
 
@@ -70,12 +70,12 @@ const ProductComments = ({ productId }) => {
     e.preventDefault();
     
     if (!isAuthenticated) {
-      setError("You must be logged in to comment.");
+      setError("You must be logged in to review this product.");
       return;
     }
 
     if (!formData.content || !formData.content.trim()) {
-      setError("Please write a comment.");
+      setError("Please write a review.");
       return;
     }
 
@@ -83,7 +83,6 @@ const ProductComments = ({ productId }) => {
     setError(null);
 
     try {
-      // Get token with multiple fallback methods
       let token = null;
       
       if (getToken) {
@@ -95,27 +94,16 @@ const ProductComments = ({ productId }) => {
       }
       
       if (!token) {
-        setError("Authentication token not found. Please log in again.");
+        setError("Please log in to continue.");
         return;
       }
 
-      // FIXED: Only send the required data - let Django set the user from the token
       const commentData = {
         content: formData.content.trim(),
         rating: parseInt(formData.rating),
         product: parseInt(productId)
-        // DO NOT send user data - Django will set it automatically from the authenticated request
       };
 
-      console.log('=== COMMENT SUBMISSION DEBUG ===');
-      console.log('Token found:', token ? 'Yes' : 'No');
-      console.log('Token preview:', token ? `${token.substring(0, 10)}...` : 'None');
-      console.log('Comment data:', commentData);
-      console.log('Current user:', currentUser);
-      console.log('Is authenticated:', isAuthenticated);
-
-      // FIXED: Use only the correct Token format
-      console.log('Trying Token format...');
       const response = await axios.post(
         'https://othy.pythonanywhere.com/api/comments/',
         commentData,
@@ -123,12 +111,10 @@ const ProductComments = ({ productId }) => {
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'Authorization': `Token ${token}` // This is the correct format for Django REST Framework
+            'Authorization': `Token ${token}`
           }
         }
       );
-
-      console.log('Comment submitted successfully:', response.data);
       
       // Add the new comment to the top of the list
       setComments(prev => [response.data, ...prev]);
@@ -144,32 +130,16 @@ const ProductComments = ({ productId }) => {
       setTimeout(() => setSuccess(false), 3000);
 
     } catch (err) {
-      console.error('=== COMMENT SUBMISSION ERROR ===');
-      console.error('Final error:', err);
-      console.error('Response status:', err.response?.status);
-      console.error('Response data:', err.response?.data);
+      console.error('Comment submission error:', err);
       
-      // Enhanced error handling
       if (err.response?.status === 401) {
-        const errorDetail = err.response?.data?.detail || err.response?.data?.error || '';
-        if (errorDetail.includes('token not valid') || errorDetail.includes('token_not_valid')) {
-          setError("Your session has expired. Please log in again.");
-          // Optionally clear invalid tokens
-          localStorage.removeItem('token');
-          sessionStorage.removeItem('token');
-        } else if (errorDetail.includes('Authentication credentials were not provided')) {
-          setError("Authentication failed. Please log in again.");
-        } else {
-          setError("Authentication error. Please log in again.");
-        }
+        setError("Your session has expired. Please log in again.");
+        localStorage.removeItem('token');
+        sessionStorage.removeItem('token');
       } else if (err.response?.status === 400) {
         const errorData = err.response.data;
-        console.log('400 error details:', errorData);
-        
         if (typeof errorData === 'object') {
-          // Handle field-specific errors
           const errorMessages = [];
-          
           Object.entries(errorData).forEach(([field, messages]) => {
             const messageArray = Array.isArray(messages) ? messages : [messages];
             messageArray.forEach(msg => {
@@ -180,19 +150,16 @@ const ProductComments = ({ productId }) => {
               }
             });
           });
-          
           setError(errorMessages.join('. ') || "Please check your input and try again.");
         } else {
           setError("Invalid data. Please check your input.");
         }
       } else if (err.response?.status === 403) {
         setError("You don't have permission to perform this action.");
-      } else if (err.response?.status === 404) {
-        setError("API endpoint not found. Please contact support.");
       } else if (err.response?.status >= 500) {
         setError("Server error. Please try again later.");
       } else {
-        setError("Failed to submit comment. Please try again.");
+        setError("Failed to submit review. Please try again.");
       }
     } finally {
       setIsLoading(false);
@@ -205,8 +172,8 @@ const ProductComments = ({ productId }) => {
         key={index}
         size={16}
         className={`star ${index < rating ? 'filled' : 'empty'}`}
-        fill={index < rating ? '#ffd700' : 'none'}
-        color={index < rating ? '#ffd700' : '#ddd'}
+        fill={index < rating ? '#111' : 'none'}
+        color={index < rating ? '#111' : '#ccc'}
       />
     ));
   };
@@ -217,8 +184,8 @@ const ProductComments = ({ productId }) => {
         key={index}
         size={20}
         className={`interactive-star ${index < currentRating ? 'filled' : 'empty'}`}
-        fill={index < currentRating ? '#ffd700' : 'none'}
-        color={index < currentRating ? '#ffd700' : '#ddd'}
+        fill={index < currentRating ? '#111' : 'none'}
+        color={index < currentRating ? '#111' : '#ccc'}
         onClick={() => setFormData(prev => ({ ...prev, rating: index + 1 }))}
         style={{ cursor: 'pointer' }}
       />
@@ -231,25 +198,8 @@ const ProductComments = ({ productId }) => {
     <div className="product-comments-section">
       {/* Comments Header */}
       <div className="comments-header">
-        <div className="comments-title">
-          <MessageCircle size={24} />
-          <h3>Customer Reviews ({safeComments.length})</h3>
-        </div>
+        <h3>Reviews ({safeComments.length})</h3>
       </div>
-
-      {/* Enhanced Debug info - Remove this in production */}
-      {process.env.NODE_ENV === 'development' && (
-        <div style={{ background: '#f0f0f0', padding: '10px', margin: '10px 0', fontSize: '12px', borderRadius: '4px' }}>
-          <strong>Debug Info:</strong><br />
-          Is Authenticated: {isAuthenticated ? 'Yes' : 'No'}<br />
-          Current User: {currentUser ? JSON.stringify(currentUser, null, 2) : 'None'}<br />
-          Token Available: {(getToken && getToken()) || currentUser?.token || localStorage.getItem('token') ? 'Yes' : 'No'}<br />
-          {(getToken && getToken()) && (
-            <>Token Preview: {getToken().substring(0, 20)}...<br /></>
-          )}
-          Product ID: {productId}
-        </div>
-      )}
 
       {/* Add Comment Form */}
       {isAuthenticated ? (
@@ -260,25 +210,25 @@ const ProductComments = ({ productId }) => {
               <label htmlFor="rating">Rating</label>
               <div className="rating-input">
                 {renderInteractiveStars(formData.rating)}
-                <span className="rating-text">({formData.rating}/5)</span>
+                <span className="rating-text">({formData.rating} out of 5)</span>
               </div>
             </div>
 
             <div className="form-group">
-              <label htmlFor="content">Your Review</label>
+              <label htmlFor="content">Review</label>
               <textarea
                 id="content"
                 name="content"
                 value={formData.content}
                 onChange={handleChange}
-                placeholder="Share your thoughts about this product..."
+                placeholder="How did this product work for you?"
                 rows="4"
                 required
-                maxLength="1000"
+                maxLength="500"
               />
-              <small style={{ color: '#666', fontSize: '12px' }}>
-                {formData.content.length}/1000 characters
-              </small>
+              <div className="character-count">
+                {formData.content.length}/500
+              </div>
             </div>
 
             <div className="form-actions">
@@ -287,32 +237,18 @@ const ProductComments = ({ productId }) => {
                 className="submit-comment-btn"
                 disabled={isLoading || !formData.content || !formData.content.trim()}
               >
-                {isLoading ? 'Submitting...' : 'Submit Review'}
+                {isLoading ? 'Publishing...' : 'Publish Review'}
               </button>
             </div>
 
             {/* Messages */}
             {success && (
-              <div className="message success" style={{ 
-                background: '#d4edda', 
-                color: '#155724', 
-                padding: '10px', 
-                borderRadius: '4px',
-                border: '1px solid #c3e6cb',
-                margin: '10px 0'
-              }}>
-                Review submitted successfully!
+              <div className="success-message">
+                Review published successfully!
               </div>
             )}
             {error && (
-              <div className="message error" style={{ 
-                background: '#f8d7da', 
-                color: '#721c24', 
-                padding: '10px', 
-                borderRadius: '4px',
-                border: '1px solid #f5c6cb',
-                margin: '10px 0'
-              }}>
+              <div className="error-message">
                 {error}
               </div>
             )}
@@ -320,7 +256,7 @@ const ProductComments = ({ productId }) => {
         </div>
       ) : (
         <div className="login-prompt">
-          <p>Please log in to write a review.</p>
+          <p>Sign in to write a review</p>
         </div>
       )}
 
@@ -328,13 +264,12 @@ const ProductComments = ({ productId }) => {
       <div className="comments-list">
         {loadingComments ? (
           <div className="loading-comments">
-            <div className="loading-spinner">Loading reviews...</div>
+            <div className="loading-text">Loading reviews...</div>
           </div>
         ) : safeComments.length === 0 ? (
           <div className="no-comments">
-            <MessageCircle size={48} className="no-comments-icon" />
-            <h4>No reviews yet</h4>
-            <p>Be the first to review this product!</p>
+            <h4>No Reviews Yet</h4>
+            <p>Be the first to review this product.</p>
           </div>
         ) : (
           <div className="comments-grid">
@@ -346,9 +281,9 @@ const ProductComments = ({ productId }) => {
                       <User size={16} />
                     </div>
                     <div className="user-details">
-                      <h5 className="username">
+                      <div className="username">
                         {comment.user_details?.username || comment.username || 'Anonymous'}
-                      </h5>
+                      </div>
                       <div className="comment-rating">
                         {renderStars(comment.rating)}
                       </div>
