@@ -1,4 +1,4 @@
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Link } from "lucide-react";
 import React from "react";
 import "../../styles/coll/Collections.css";
 
@@ -90,7 +90,8 @@ const SeasonalCollections = () => {
                 <div className="cards-description">{item.description}</div>
 
                 <div className="cards-footer">
-                    <a href="/product" className="explore-btn">
+                    <a>
+                    <Link to="/product" className="explore-btn" />
                     <span>Explore Collection</span>
                     <ChevronRight size={24} strokeWidth={2} />
                     </a>
