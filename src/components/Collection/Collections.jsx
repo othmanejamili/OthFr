@@ -93,7 +93,7 @@ const SeasonalCollections = () => {
                     <button>
                     <Link to="/product" className="explore-btn" />
                     <span>Explore Collection</span>
-                    <ChevronRight size={24} strokeWidth={2} />
+                    <ChevronRight size={25} strokeWidth={2} />
                     </button>
                     <div className="dots">
                     <div className="dot"></div>
