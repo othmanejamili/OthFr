@@ -90,11 +90,11 @@ const SeasonalCollections = () => {
                 <div className="cards-description">{item.description}</div>
 
                 <div className="cards-footer">
-                    <a>
+                    <button>
                     <Link to="/product" className="explore-btn" />
                     <span>Explore Collection</span>
                     <ChevronRight size={24} strokeWidth={2} />
-                    </a>
+                    </button>
                     <div className="dots">
                     <div className="dot"></div>
                     <div className="dot"></div>
