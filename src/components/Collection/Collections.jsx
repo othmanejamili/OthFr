@@ -1,4 +1,5 @@
-import { ChevronRight, Link } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import React from "react";
 import "../../styles/coll/Collections.css";
 
@@ -90,11 +91,10 @@ const SeasonalCollections = () => {
                 <div className="cards-description">{item.description}</div>
 
                 <div className="cards-footer">
-                    <button>
-                      <Link to="/product" className="explore-btn" />
-                      <span>Explore Collection</span>
-                      <ChevronRight size={25} strokeWidth={2} />
-                    </button>
+                <Link to="/product" className="explore-btn">
+                    <span>Explore Collection</span>
+                    <ChevronRight size={24} strokeWidth={2} />
+                </Link>
                     <div className="dots">
                     <div className="dot"></div>
                     <div className="dot"></div>
