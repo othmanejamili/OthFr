@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import gsap from 'gsap';
 import '../../styles/slider.css';
+import { Link } from "react-router-dom";
 
 const ClothingHero = () => {
   const mainContainerRef = useRef(null);
@@ -79,9 +80,11 @@ const ClothingHero = () => {
           </p>
           
           <button className="action-btn">
-            Shop Now
+            <Link to="/product" className="action-btn">
+              Shop Now
+              </Link>
           </button>
-          
+         
           <div className="metrics-wrapper" ref={metricsRef}>
             <div className="metric-box">
               <span className="metric-value">200+</span>
