@@ -3,7 +3,7 @@ import '../../styles/Home.css';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Slider from "./slider";
-import EnhancedSlider from "./slidef";
+import ClothingHero from "./slidef";
 import { Link } from 'react-router-dom';
 
 // Register ScrollTrigger plugin
@@ -375,7 +375,7 @@ const Home = () => {
   // Main component returned here with refs attached
   return (
     <>
-    <EnhancedSlider />
+    <ClothingHero />
 
       <div className="section-text1 fade-in">
         Discover the Style That Fits You Perfectly
