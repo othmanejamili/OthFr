@@ -103,7 +103,7 @@ const ClothingHero = () => {
           </div>
         </div>
         
-        <div className="image-section" ref={imageAreaRef}>
+        <div className="image-section2" ref={imageAreaRef}>
           <div className="photo-container">
             <img 
               src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1758734137/Photoroom_20250924_173921_iwnx4a.png" 

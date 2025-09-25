@@ -1,17 +1,53 @@
-import React, { useEffect, useRef } from "react";
+import React, {  useEffect, useRef, useState } from "react";
 import '../../styles/Home.css';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Slider from "./slider";
 import ClothingHero from "./slidef";
 import { Link } from 'react-router-dom';
+import axios from "axios";
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
 
 const Home = () => {
 
+//this's about fetch product for show it in the page
+  const [product, setProduct] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null) 
 
+  const fetchProduct = () => { 
+      axios.get(`https://othy.pythonanywhere.com/api/products/`)
+      .then(response => {
+        setProduct(response.data);
+        setLoading(false);
+      })
+      .catch(error => {
+        setError(error.message);
+        setLoading(true);
+      });
+  };
+
+  useEffect(()=>{
+    fetchProduct();
+  },[])
+
+
+  const getProductImageUrl = (product) => {
+    if (product.image_list && product.image_list.length > 0) {
+      return product.image_list[0].image;
+    }
+    else if (product.image) {
+      return product.image;
+    }
+    else {
+      return "https://via.placeholder.com/300x400?text=No+Image";
+    }
+  };
+
+  // 
+  const productCardsRef = useRef([]);
 
   const cursorRef = useRef(null);
   const collectionsSectionRef = useRef(null);
@@ -377,48 +413,55 @@ const Home = () => {
     <>
     <ClothingHero />
 
-      <div className="section-text1 fade-in">
-        Discover the Style That Fits You Perfectly
-      </div>
 
-      <section className="collections-section" ref={collectionsSectionRef}>
-        <h2 className="section-title">New Collection</h2>
-        <div className="collections-grid">
-          <Link to={'/product/1'}><div className="collection-card">
-            <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458292/Photoroom_20250203_011430_e7wddp.png" alt="Summer Essentials" className="collection-image" />
-            <div className="collection-tag">New Arrival</div>
-            <div className="collection-info">
-              <h3>Summer Essentials</h3>
-              <p>Light and breathable pieces for warm days</p>
-              <div className="collection-price">From 299.99DH</div>
-            </div>
-          </div></Link>
 
-          <Link to={'/product/21'}><div className="collection-card">
-            <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458676/Photoroom_20250220_163337_qzpux7.png" alt="Urban Collection" className="collection-image" />
-            <div className="collection-tag">Best Seller</div>
-            <div className="collection-info">
-              <h3>Urban Collection</h3>
-              <p>Modern streetwear with a traditional twist</p>
-              <div className="collection-price">From 149.99DH</div>
-            </div>
-          </div></Link>
+      <section className="product-carousel" ref={carouselRef}>
+        <div className="collection-header">
+          <h2>Our most popular items</h2>
+        </div>
 
-          <Link to={'/product/4'}><div className="collection-card">
-            <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458540/Photoroom_20250722_151619_d1v8el.png" alt="Traditional Series" className="collection-image" />
-            <div className="collection-tag">Limited Edition</div>
-            <div className="collection-info">
-              <h3>Traditional Series</h3>
-              <p>Handcrafted with authentic Moroccan designs</p>
-              <div className="collection-price">From 199.99DH</div>
+        <div className="collection-carousel">
+        {product.length > 0 ? (
+          product.map((product, index) => (
+            <Link to="/product" className="product-link">
+            <div
+            key={product.id}
+            className="product-card"
+            data-product-id = {product.id}
+            ref={el => productCardsRef.current[index] = el}
+            >
+                <img src={getProductImageUrl(product)}
+                alt={product.name}
+                className="product-image" 
+                onError={(e) => {
+                  e.target.src = "https://via.placeholder.com/300x400?text=Image+Error";
+                }}/>
+                
+                <div className="prduct-info">
+                  <p className="product-title">{product.name}</p>
+                  <p className="product-price">DHD{product.price}</p>
+                </div>
+              
             </div>
-          </div></Link>
+            </Link>
+          ))
+        ) : (
+          <div className="no-products-message">
+          <p>No products found matching your filters.</p>
+        </div>
+        )}
         </div>
       </section>
 
-      <section className="unique-section" ref={uniqueSectionRef}>
+
+
+
+
+
+      
+      <section className="unique-section">
         <h2 className="section-text1">What Makes Us Unique</h2>
-        <div className="cards-container">
+        <div className="collection-carousel1">
           <div className="card">
             <div className="card-icon">OJ</div>
             <h3>System Points</h3>
@@ -455,76 +498,74 @@ const Home = () => {
       </section>
 
 
-    <Slider />
-  
 
-      <section className="product-carousel" ref={carouselRef}>
-        <div className="collection-header">
-          <h2>Featured Products</h2>
-          <p className="section-text1 fade-in">Our most popular items</p>
+      <div className="main-wrapper1">
+          <div className="content-layout"> 
+            {/* Text Section */}
+            <div className="text-section">
+              <h1 className="primary-title">PURE MOTION</h1>
+              <p className="description-text">
+                Pure performance. Pure comfort. Pure Motion.
+              </p>
+              <Link to="/product">
+                <button className="action-btn">Shop now</button>
+              </Link>
+            </div>
+
+            {/* Image Section */}
+            <div className="image-section2">
+              <div className="photo-container">
+                <img 
+                  src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1758818878/Photoroom_20250925_174706_bjmej2.png" 
+                  alt="Fashion Models" 
+                  className="hero-photo"
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
+
+        <section className="product-carousel" ref={carouselRef}>
+        <div className="collection-header">
+          <h2>Our most popular items</h2>
+        </div>
 
         <div className="collection-carousel">
-        <div className="product-card">
-            <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458765/autumn_smhg3v.jpg" className="product-image" alt="product" />
-            <div className="product-info">
-              All New Design Hoodie
+        {product.length > 0 ? (
+          product.map((product, index) => (
+            <Link to="/product" className="product-link">
+            <div
+            key={product.id}
+            className="product-card"
+            data-product-id = {product.id}
+            ref={el => productCardsRef.current[index] = el}
+            >
+                <img src={getProductImageUrl(product)}
+                alt={product.name}
+                className="product-image" 
+                onError={(e) => {
+                  e.target.src = "https://via.placeholder.com/300x400?text=Image+Error";
+                }}/>
+                
+                <div className="prduct-info">
+                  <p className="product-title">{product.name}</p>
+                  <p className="product-price">DHD{product.price}</p>
+                </div>
+              
             </div>
-
-          </div>
-
-          <div className="product-card">
-            <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458868/sstyle_me_m2u4ed.jpg" className="product-image" alt="product" />
-            <div className="product-info">
-              All New Design Hoodie
-            </div>
-
-          </div>
-
-          <div className="product-card">
-            <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458444/__1_hjei4x.jpg" className="product-image" alt="Black varsity jacket" />
-            <div className="product-info">
-              All New Design Hoodie
-            </div>
-
-          </div>
-
-          <div className="product-card">
-            <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458940/product1_s1e6gq.jpg" className="product-image" alt="Red patchwork hoodie" />
-            <div className="product-info">
-              All New Design Hoodie
-            </div>
-
-          </div>
-
-          <div className="product-card">
-            <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753458981/Lewis_hamilton_style_ljy3iq.jpg" className="product-image" alt="product" />
-            <div className="product-info">
-              All New Design Hoodie
-            </div>
-
-          </div>
-
-          <div className="product-card">
-            <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753457493/Photoroom_20250722_151656_cp8xwn.png" className="product-image" alt="product" />
-            <div className="product-info">
-              All New Design Hoodie
-            </div>
-
-          </div>
-
-          <div className="product-card">
-            <img src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1753459033/__nicgq4.jpg" className="product-image" alt="product" />
-            <div className="product-info">
-              All New Design Hoodie
-            </div>
-
-          </div>
-
-
+            </Link>
+          ))
+        ) : (
+          <div className="no-products-message">
+          <p>No products found matching your filters.</p>
+        </div>
+        )}
         </div>
       </section>
+  
+
+      
 
 
     </>
