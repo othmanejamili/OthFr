@@ -6,7 +6,7 @@
   position: relative;
   overflow: hidden;
 }
-
+footer
 .content-layout {
   display: flex;
   align-items: center;
@@ -1380,7 +1380,7 @@
 }
 
 footer {
-    background: linear-gradient(135deg, #FF5722, #b21f1f, #fdbb2d);
+    background: linear-gradient(135deg, #000000, #292525, #ffffff);
     color: white;
     padding: 3rem 0;
     position: relative;
