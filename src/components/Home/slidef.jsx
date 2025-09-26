@@ -9,57 +9,171 @@ const ClothingHero = () => {
   const metricsRef = useRef(null);
   const imageAreaRef = useRef(null);
   const logosRef = useRef(null);
+  const scrollingLogosRef = useRef(null);
 
   useEffect(() => {
     const timeline = gsap.timeline();
     
-    // Animate main title
-    timeline.fromTo(contentAreaRef.current?.querySelector('.primary-title'), 
-      { y: 50, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1, ease: 'power3.out' }
-    )
-    // Animate description
-    .fromTo(contentAreaRef.current?.querySelector('.description-text'), 
-      { y: 30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' },
-      '-=0.5'
-    )
-    // Animate action button
-    .fromTo(contentAreaRef.current?.querySelector('.action-btn'), 
-      { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' },
+    // Animate main title with split text effect
+    const title = contentAreaRef.current?.querySelector('.primary-title');
+    if (title) {
+      const words = title.textContent.split(' ');
+      title.innerHTML = words.map(word => `<span class="word">${word}</span>`).join(' ');
+      
+      timeline.fromTo(title.querySelectorAll('.word'), 
+        { y: 100, opacity: 0, rotationX: -90 },
+        { 
+          y: 0, 
+          opacity: 1, 
+          rotationX: 0,
+          duration: 1, 
+          stagger: 0.1,
+          ease: 'back.out(1.7)' 
+        }
+      );
+    }
+    
+    // Animate description with typewriter effect
+    const description = contentAreaRef.current?.querySelector('.description-text');
+    if (description) {
+      timeline.fromTo(description, 
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' },
+        '-=0.5'
+      );
+    }
+    
+    // Animate action button with bounce effect
+    timeline.fromTo(contentAreaRef.current?.querySelector('.action-btn'), 
+      { scale: 0, rotation: -180 },
+      { scale: 1, rotation: 0, duration: 0.8, ease: 'back.out(1.7)' },
       '-=0.3'
     )
-    // Animate metrics
+    
+    // Animate metrics with stagger effect
     .fromTo(metricsRef.current?.querySelectorAll('.metric-box'), 
-      { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: 'power2.out' },
-      '-=0.2'
+      { y: 50, opacity: 0, scale: 0.8 },
+      { 
+        y: 0, 
+        opacity: 1, 
+        scale: 1,
+        duration: 0.8, 
+        stagger: 0.2, 
+        ease: 'back.out(1.7)' 
+      },
+      '-=0.4'
     )
-    // Animate image
+    
+    // Animate image with 3D effect
     .fromTo(imageAreaRef.current, 
-      { x: 50, opacity: 0 },
-      { x: 0, opacity: 1, duration: 1, ease: 'power3.out' },
-      '-=0.8'
-    )
-    // Animate brand logos
-    .fromTo(logosRef.current?.querySelectorAll('.company-logo'), 
-      { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: 'power2.out' },
-      '-=0.3'
+      { x: 100, opacity: 0, rotationY: 45 },
+      { x: 0, opacity: 1, rotationY: 0, duration: 1.2, ease: 'power3.out' },
+      '-=1'
     );
 
-    // Add decorative element animation
+    // Enhanced decorative stars animation
     const decorativeElements = document.querySelectorAll('.decorative-star');
     decorativeElements.forEach((element, index) => {
       gsap.to(element, {
         rotation: 360,
-        duration: 3 + index,
+        scale: [1, 1.2, 1],
+        duration: 4 + index * 0.5,
         repeat: -1,
         ease: 'none'
       });
+      
+      // Add floating effect
+      gsap.to(element, {
+        y: [-10, 10],
+        duration: 2 + index * 0.3,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut'
+      });
     });
+
+    // Continuous scrolling animation for brand logos
+    const setupScrollingLogos = () => {
+      const logosContainer = scrollingLogosRef.current;
+      if (!logosContainer) return;
+
+      // Create infinite scrolling effect
+      const logoElements = logosContainer.querySelectorAll('.company-logo');
+      const totalWidth = logosContainer.scrollWidth;
+      
+      gsap.set(logosContainer, { x: 0 });
+      
+      const scrollTween = gsap.to(logosContainer, {
+        x: -totalWidth / 2,
+        duration: 20,
+        ease: 'none',
+        repeat: -1
+      });
+
+      // Add individual logo animations
+      logoElements.forEach((logo, index) => {
+        // Entrance animation with delay
+        gsap.fromTo(logo,
+          { y: 50, opacity: 0, scale: 0 },
+          { 
+            y: 0, 
+            opacity: 1, 
+            scale: 1,
+            duration: 0.6,
+            delay: index * 0.2 + 2,
+            ease: 'back.out(1.7)'
+          }
+        );
+
+        // Hover effects
+        logo.addEventListener('mouseenter', () => {
+          gsap.to(logo, {
+            scale: 1.2,
+            color: '#ff4500',
+            duration: 0.3,
+            ease: 'power2.out'
+          });
+        });
+
+        logo.addEventListener('mouseleave', () => {
+          gsap.to(logo, {
+            scale: 1,
+            color: '#ffffff',
+            duration: 0.3,
+            ease: 'power2.out'
+          });
+        });
+      });
+    };
+
+    // Setup scrolling after initial animations
+    timeline.call(setupScrollingLogos, null, 2);
+
   }, []);
+
+  // Enhanced button hover effect
+  const handleButtonHover = (isEntering) => {
+    const button = contentAreaRef.current?.querySelector('.action-btn');
+    if (!button) return;
+
+    if (isEntering) {
+      gsap.to(button, {
+        scale: 1.05,
+        backgroundColor: '#ff4500',
+        boxShadow: '0 10px 30px rgba(255, 69, 0, 0.4)',
+        duration: 0.3,
+        ease: 'power2.out'
+      });
+    } else {
+      gsap.to(button, {
+        scale: 1,
+        backgroundColor: '#1a1a1a',
+        boxShadow: '0 8px 25px rgba(0,0,0,0.15)',
+        duration: 0.3,
+        ease: 'power2.out'
+      });
+    }
+  };
 
   return (
     <div className="main-wrapper" ref={mainContainerRef}>
@@ -79,11 +193,15 @@ const ClothingHero = () => {
             to bring out your individuality and cater to your sense of style.
           </p>
           
-          <button className="action-btn">
-            <Link to="/product" className="action-btn">
+          <Link to="/product" className="action-btn-link">
+            <button 
+              className="action-btn"
+              onMouseEnter={() => handleButtonHover(true)}
+              onMouseLeave={() => handleButtonHover(false)}
+            >
               Shop Now
-              </Link>
-          </button>
+            </button>
+          </Link>
          
           <div className="metrics-wrapper" ref={metricsRef}>
             <div className="metric-box">
@@ -115,12 +233,22 @@ const ClothingHero = () => {
       </div>
       
       <div className="brands-area" ref={logosRef}>
-        <div className="company-logo">VERSACE</div>
-        <div className="company-logo">ZARA</div>
-        <div className="company-logo">GUCCI</div>
-        <div className="company-logo">PRADA</div>
-        <div className="company-logo">Calvin Klein</div>
+        <div className="scrolling-logos-container" ref={scrollingLogosRef}>
+          <div className="company-logo">Venum</div>
+          <div className="company-logo">ZARA</div>
+          <div className="company-logo">GUCCI</div>
+          <div className="company-logo">PRADA</div>
+          <div className="company-logo">VERSACE</div>
+          {/* Duplicate for seamless loop */}
+          <div className="company-logo">Venum</div>
+          <div className="company-logo">ZARA</div>
+          <div className="company-logo">GUCCI</div>
+          <div className="company-logo">PRADA</div>
+          <div className="company-logo">VERSACE</div>
+        </div>
       </div>
+      
+
     </div>
   );
 };

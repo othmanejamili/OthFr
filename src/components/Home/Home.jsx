@@ -2,7 +2,6 @@ import React, {  useEffect, useRef, useState } from "react";
 import '../../styles/Home.css';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Slider from "./slider";
 import ClothingHero from "./slidef";
 import { Link } from 'react-router-dom';
 import axios from "axios";
@@ -499,7 +498,7 @@ const Home = () => {
 
 
 
-      <div className="main-wrapper1">
+      <div className="main-wrapper1" ref={carouselRef}>
           <div className="content-layout"> 
             {/* Text Section */}
             <div className="text-section">
@@ -563,11 +562,6 @@ const Home = () => {
         )}
         </div>
       </section>
-  
-
-      
-
-
     </>
   )
 }

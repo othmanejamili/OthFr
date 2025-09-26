@@ -730,7 +730,7 @@
   }
   
   .card {
-    background: url('../images/backgrond.jpg') no-repeat center center; 
+    background: url('https://res.cloudinary.com/dsfgsdjgz/image/upload/v1758895826/Photoroom_20250926_150755_mvz3i9.jpg') no-repeat center center; 
     background-size: cover; 
     border-radius: 15px; 
     padding: 30px; 
@@ -739,8 +739,6 @@
     cursor: pointer; 
     backdrop-filter: blur(10px); 
     border: 1px solid rgba(255, 255, 255, 0.2); 
-
-
     min-width: 325px;
     height: auto;
     position: relative;
@@ -749,8 +747,8 @@
 
 .card:hover {
     transform: translateY(-10px) scale(1.05);
-    box-shadow: 0 15px 30px rgba(255, 255, 255, 0.5); 
-    background: url('../images/backgrond.jpg') no-repeat center center; 
+    box-shadow: 0 15px 30px rgba(46, 46, 46, 0.5); 
+    background: url('https://res.cloudinary.com/dsfgsdjgz/image/upload/v1758895826/Photoroom_20250926_150755_mvz3i9.jpg') no-repeat center center; 
 }
 
   
@@ -758,6 +756,7 @@
     font-size: 3rem;
     margin-bottom: 20px;
     transition: transform 0.3s ease;
+    color: #000;
   }
   
   .card:hover .card-icon {
@@ -767,12 +766,12 @@
   .card h3 {
     font-size: 1.5rem;
     margin-bottom: 10px;
-    color: #FFF;
+    color: #000;
   }
 
   .card p {
     font-size: 1rem;
-    color: #d4cfcf;
+    color: #1b1b1b;
   }
   
 
@@ -785,7 +784,7 @@
     left: 0;
     width: 100%;
     height: auto;
-    background: url('../images/backgrond.jpg') no-repeat center center/cover;
+    background: url('https://res.cloudinary.com/dsfgsdjgz/image/upload/v1758895826/Photoroom_20250926_150755_mvz3i9.jpg') no-repeat center center/cover;
     opacity: 0.1;
     z-index: 1;
     pointer-events: none;

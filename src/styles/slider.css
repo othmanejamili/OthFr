@@ -147,21 +147,67 @@
           gap: 60px;
           flex-wrap: wrap;
         }
+
+        
+
+        
+        .word {
+          display: inline-block;
+          margin-right: 0.3em;
+        }
+        
+        .action-btn-link {
+          text-decoration: none;
+        }
+        
+        .brands-area {
+          overflow: hidden;
+          position: relative;
+        }
+        
+        .scrolling-logos-container {
+          display: flex;
+          align-items: center;
+          gap: 60px;
+          white-space: nowrap;
+        }
         
         .company-logo {
+          flex-shrink: 0;
           color: white;
-          font-size: 1.5rem;
+          font-size: 20px;
           font-weight: 700;
           letter-spacing: 0.1em;
           opacity: 0.8;
-          transition: opacity 0.3s ease;
+          transition: all 0.3s ease;
           cursor: pointer;
+          padding: 10px 20px;
         }
         
         .company-logo:hover {
           opacity: 1;
         }
         
+        @media (max-width: 968px) {
+          .scrolling-logos-container {
+            gap: 40px;
+          }
+          
+          .company-logo {
+            font-size: 20px;
+          }
+        }
+        
+        @media (max-width: 640px) {
+          .scrolling-logos-container {
+            gap: 30px;
+          }
+          
+          .company-logo {
+            font-size: 10px;
+          }
+        }
+
         @media (max-width: 968px) {
           .content-layout {
             flex-direction: column;
@@ -177,7 +223,7 @@
             right: 100px;
           }
           .company-logo {
-            font-size: 1rem;
+            font-size: 20px;
             font-weight: 300;
 
           }
@@ -202,9 +248,7 @@
             gap: 30px;
           }
           
-          .company-logo {
-            font-size: 1.2rem;
-          }
+
         }
         
         @media (max-width: 640px) {
@@ -229,7 +273,7 @@
           
           .hero-photo {
             width: 250px;
-            height: 320px;
+            height: auto;
           }
           
           .brands-area {
@@ -237,6 +281,6 @@
           }
           
           .company-logo {
-            font-size: 0rem;
+            font-size: 10px;
           }
         }
