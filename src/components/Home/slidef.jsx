@@ -203,33 +203,9 @@ const ClothingHero = () => {
             </button>
           </Link>
          
-          <div className="metrics-wrapper" ref={metricsRef}>
-            <div className="metric-box">
-              <span className="metric-value">200+</span>
-              <span className="metric-title">International Brands</span>
-            </div>
-            <div className="metric-separator"></div>
-            <div className="metric-box">
-              <span className="metric-value">2,000+</span>
-              <span className="metric-title">High-Quality Products</span>
-            </div>
-            <div className="metric-separator"></div>
-            <div className="metric-box">
-              <span className="metric-value">30,000+</span>
-              <span className="metric-title">Happy Customers</span>
-            </div>
-          </div>
         </div>
         
-        <div className="image-section2" ref={imageAreaRef}>
-          <div className="photo-container">
-            <img 
-              src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1758734137/Photoroom_20250924_173921_iwnx4a.png" 
-              alt="Fashion Models" 
-              className="hero-photo"
-            />
-          </div>
-        </div>
+
       </div>
       
       <div className="brands-area" ref={logosRef}>

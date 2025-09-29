@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import ClothingHero from "./slidef";
 import { Link } from 'react-router-dom';
 import axios from "axios";
+import FeaturesSection from "./FeaturesSection";
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
@@ -502,8 +503,8 @@ const Home = () => {
           <div className="content-layout"> 
             {/* Text Section */}
             <div className="text-section">
-              <h1 className="primary-title">PURE MOTION</h1>
-              <p className="description-text">
+              <h1 className="primary-title1">PURE MOTION</h1>
+              <p className="description-text1">
                 Pure performance. Pure comfort. Pure Motion.
               </p>
               <Link to="/product">
@@ -512,18 +513,11 @@ const Home = () => {
             </div>
 
             {/* Image Section */}
-            <div className="image-section2">
-              <div className="photo-container">
-                <img 
-                  src="https://res.cloudinary.com/dsfgsdjgz/image/upload/v1758818878/Photoroom_20250925_174706_bjmej2.png" 
-                  alt="Fashion Models" 
-                  className="hero-photo"
-                />
-              </div>
-            </div>
+
           </div>
         </div>
 
+        <FeaturesSection />
 
         <section className="product-carousel" ref={carouselRef}>
         <div className="collection-header">

@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import '../../styles/Home.css';
 import { Link } from "react-router-dom";
 
+
 gsap.registerPlugin(ScrollTrigger);
 
 
