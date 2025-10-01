@@ -13,7 +13,7 @@
   gap: 2rem;
   padding: 1rem;
 }
-
+loading-spinner
 /* Left sidebar for categories and filters */
 .sidebar {
   flex: 0 0 280px;
@@ -455,10 +455,13 @@
 
 /* Loading and error states */
 .loading-spinner {
-  text-align: center;
-  padding: 3rem;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   font-size: 1rem;
-  color: #757575;
+  background: url("../../public/logo.png") no-repeat center;
+  background-size: contain;
 }
 
 .no-products-message {

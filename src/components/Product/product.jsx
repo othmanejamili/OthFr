@@ -281,7 +281,9 @@ const Product = () => {
   };
 
   if (loading) return (
-    <div className="loading-spinner">Loading...</div>
+    <div className="product-page">
+      <div className="loading-spinner"></div>
+    </div>
   );
   
   if (error) return (

@@ -4,7 +4,6 @@
   padding: 0;
   box-sizing: border-box;
 }
-
 /* Nike-Style Product Detail Page */
 .product-detail-page {
   max-width: 1440px;
@@ -632,14 +631,6 @@
 }
 
 /* Loading and Error States */
-.loading-spinner {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50vh;
-  font-size: 1rem;
-  color: #757575;
-}
 
 .alert-error {
   background-color: #f5f5f5;
