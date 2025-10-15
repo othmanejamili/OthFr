@@ -56,6 +56,7 @@
   line-height: 1.1;
   color: #000000;
   margin-bottom: 24px;
+  padding-top: 40px;
 }
 
 .decorative-star {
@@ -82,7 +83,6 @@
   margin-bottom: 32px;
   max-width: 90%;
 }
-
 /* Button */
 .action-btn {
   background: #1a1a1a;
@@ -190,7 +190,7 @@
   white-space: nowrap;
 }
 
-.company-logo {
+.companys-logo {
   flex-shrink: 0;
   color: #ffffff;
   font-size: 20px;
@@ -202,7 +202,7 @@
   padding: 10px 20px;
 }
 
-.company-logo:hover {
+.companys-logo:hover {
   opacity: 1;
 }
 
@@ -246,23 +246,18 @@
   }
   
   .brands-area {
-    gap: 30px;
+    gap: 40px; /* Changed from 30px */
   }
   
-  .scrolling-logos-container {
-    gap: 40px;
-  }
-  
-  .company-logo {
-    font-size: 20px;
-    font-weight: 300;
+  .companys-logo {
+    font-size: 1.2rem;
   }
 }
 
-/* Responsive Design - Mobile */
+
 @media (max-width: 640px) {
   .content-layout {
-    padding: 80px 20px 20px;
+    padding: 40px 20px 20px;
   }
   
   .metrics-wrapper {
@@ -282,18 +277,15 @@
   
   .hero-photo {
     width: 250px;
-    height: auto;
+    height: 320px;
   }
   
   .brands-area {
-    gap: 10px;
+    gap: 30px; /* Changed from 20px */
+    padding: 40px 15px; /* Added more horizontal padding */
   }
   
-  .scrolling-logos-container {
-    gap: 30px;
-  }
-  
-  .company-logo {
-    font-size: 10px;
+  .companys-logo {
+    font-size: 1rem;
   }
 }

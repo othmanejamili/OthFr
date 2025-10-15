@@ -407,21 +407,7 @@ const ProductDetail = () => {
             )}
           </div>
 
-          {/* Color Selector */}
-          <div className="color-selector">
-            <h3>Select Color: {productColors[selectedColor]?.name}</h3>
-            <div className="color-options">
-              {productColors.map((color, index) => (
-                <button
-                  key={index}
-                  className={`color-option ${selectedColor === index ? 'selected' : ''}`}
-                  style={{ backgroundColor: color.color }}
-                  onClick={() => handleColorSelect(index)}
-                  aria-label={color.name}
-                />
-              ))}
-            </div>
-          </div>
+
 
           {/* Size Selector */}
           {product.type === 'footwear' && (

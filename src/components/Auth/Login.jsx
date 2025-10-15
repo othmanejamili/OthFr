@@ -55,14 +55,14 @@ const Login = () => {
           </div>
           
           <div className="sidebar-footer">
-            <p>© 2025 Your Company. All rights reserved.</p>
+            <p>© 2025 OJ Company. All rights reserved.</p>
           </div>
         </div>
         
         {/* Right form container */}
         <div className="login-form-container">
           <div className="login-header">
-            <div className="company-logo">U</div>
+            <div className="company-logo">OJ</div>
             <h2>Sign in to Account</h2>
             <p>Enter your credentials to access your profile</p>
           </div>

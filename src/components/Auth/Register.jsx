@@ -231,7 +231,7 @@ const Register = () => {
         {/* Registration form */}
         <div className="registration-form-container">
           <div className="registration-header">
-            <div className="company-logo">P</div>
+            <div className="company-logo">OJ</div>
             <h2>Create your account</h2>
             <p>Fill in the details below to get started</p>
           </div>

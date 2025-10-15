@@ -98,7 +98,7 @@ const ClothingHero = () => {
       if (!logosContainer) return;
 
       // Create infinite scrolling effect
-      const logoElements = logosContainer.querySelectorAll('.company-logo');
+      const logoElements = logosContainer.querySelectorAll('.companys-logo');
       const totalWidth = logosContainer.scrollWidth;
       
       gsap.set(logosContainer, { x: 0 });
@@ -180,8 +180,8 @@ const ClothingHero = () => {
       <div className="content-layout">
         <div className="text-section" ref={contentAreaRef}>
           <h1 className="primary-title">
-            FIND CLOTHES<br />
-            THAT MATCHES<br />
+            FIND CLOTHES
+            THAT MATCHES
             YOUR STYLE
           </h1>
           
@@ -210,17 +210,17 @@ const ClothingHero = () => {
       
       <div className="brands-area" ref={logosRef}>
         <div className="scrolling-logos-container" ref={scrollingLogosRef}>
-          <div className="company-logo">Venum</div>
-          <div className="company-logo">ZARA</div>
-          <div className="company-logo">GUCCI</div>
-          <div className="company-logo">PRADA</div>
-          <div className="company-logo">VERSACE</div>
+          <div className="companys-logo">Venum</div>
+          <div className="companys-logo">ZARA</div>
+          <div className="companys-logo">GUCCI</div>
+          <div className="companys-logo">PRADA</div>
+          <div className="companys-logo">VERSACE</div>
           {/* Duplicate for seamless loop */}
-          <div className="company-logo">Venum</div>
-          <div className="company-logo">ZARA</div>
-          <div className="company-logo">GUCCI</div>
-          <div className="company-logo">PRADA</div>
-          <div className="company-logo">VERSACE</div>
+          <div className="companys-logo">Venum</div>
+          <div className="companys-logo">ZARA</div>
+          <div className="companys-logo">GUCCI</div>
+          <div className="companys-logo">PRADA</div>
+          <div className="companys-logo">VERSACE</div>
         </div>
       </div>
       
