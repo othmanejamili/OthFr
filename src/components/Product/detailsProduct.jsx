@@ -11,8 +11,8 @@ import { useFavourite } from "../../context/FavouriteContext";
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addItem } = useCart();
-  const { addFavourite } = useFavourite();
+  const { addItem, items } = useCart();
+  const { addFavourite, items:favourites  } = useFavourite();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -34,6 +34,12 @@ const ProductDetail = () => {
   const [showLightbox, setShowLightbox] = useState(false);
   const [lightboxImageIndex, setLightboxImageIndex] = useState(0);
   
+
+  const handleGoToCart = () => {
+    navigate('/cart')
+  }
+
+
   // Refs for animations
   const productDetailRef = useRef(null);
   const containerRef = useRef(null);
@@ -43,6 +49,23 @@ const ProductDetail = () => {
   const mainImageRef = useRef(null);
   const shareModalRef = useRef(null);
   const lightboxRef = useRef(null);
+
+
+  useEffect(() =>{
+    if (product && items) {
+      const isInCart = items.some(items => items.id === product.id); 
+      setAddedToCart(isInCart);
+    }
+  },[product,items])
+
+
+  useEffect(() =>{
+    if (product && favourites) {
+      const isInfavourites = favourites.some(fav => fav.id === product.id); 
+      setAddedToFavourite(isInfavourites);
+    }
+  },[product,favourites])
+
 
   // Nike shoe sizes (you can make this dynamic based on product type)
   const shoeSizes = ['7', '7.5', '8', '8.5', '9', '9.5', '10', '10.5', '11', '11.5', '12'];
@@ -455,19 +478,20 @@ const ProductDetail = () => {
           <button
             className="add-to-cart-button"
             onClick={handleAddToCart}
-            disabled={product.type === 'footwear' && !selectedSize}
+            disabled={product.type === 'footwear' && !selectedSize || addedToCart}
           >
             <ShoppingBag size={20} />
-            Add to Bag
+            {addedToCart ? 'Already in Bag' : 'Add To Cart'}
           </button>
 
           {/* Favorite Button */}
           <button
             className="favorite-button"
             onClick={handleAddToFavourite}
+            disabled={addedToFavourite}
           >
-            <Heart size={20} />
-            Favourite
+            <Heart size={20} fill={addedToFavourite ? 'currentColor' : 'none'}/>
+            {addedToFavourite ? 'In Favourites' : 'Favourite'}
           </button>
 
           {/* Share Button */}
@@ -477,6 +501,14 @@ const ProductDetail = () => {
           >
             <Share2 size={16} />
             Share
+          </button>
+
+          <button
+            className="add-to-cart-button"
+            onClick={handleGoToCart}
+          >
+            <ShoppingBag size={20} />
+            See Your Cart
           </button>
 
           {/* Product Features */}

@@ -4,7 +4,10 @@ import "../../styles/product.css";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { useNavigate } from "react-router-dom";
-import { Filter, X, ChevronDown, Plus, Minus } from 'lucide-react';
+import { Filter, X, ChevronDown, Plus, Minus, Heart } from 'lucide-react';
+import { useFavourite } from "../../context/FavouriteContext";
+
+
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,7 +16,38 @@ const Product = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { addFavourite, items:favourites } = useFavourite()
+  const [addedToFavourite, setAddedToFavourite] = useState(false); 
   
+  useEffect(() => {
+    if (products && favourites) {
+      const isInFavourites = favourites.some(fav => fav.id === products.id);
+      setAddedToFavourite(isInFavourites);
+    }
+  },[favourites,products])
+
+  const handleAddToFavourite = (e, product) => {
+    e.stopPropagation(); // Prevent card click
+    
+    const successMessage = document.createElement('div');
+    successMessage.className = 'success-message';
+    successMessage.textContent = `Added to Favourites`;
+    document.body.appendChild(successMessage);
+  
+    setTimeout(() => {
+      successMessage.remove();
+    }, 3000);
+    
+    const favouriteToAdd = {
+      id: product.id,
+      name: product.name,
+      price: parseFloat(product.price.replace(/[^0-9.-]+/g,"")),
+      image: getProductImageUrl(product)
+    };
+  
+    addFavourite(favouriteToAdd);
+  };
+
   // Enhanced filter state
   const [filters, setFilters] = useState({
     searchTerm: '',
@@ -444,52 +478,60 @@ const Product = () => {
           </div>
         )}
 
-        {/* Product Grid */}
-        <div className="product-grid" ref={productGridRef}>
-          {currentProducts.length > 0 ? (
-            currentProducts.map((product, index) => (
-              <div 
-                key={product.id} 
-                className="product-card"
-                data-product-id={product.id}
-                ref={el => productCardsRef.current[index] = el}
-                onClick={() => handleProductClick(product.id)}
-              >
-                <div className="product-image-container">
-                  <img 
-                    src={getProductImageUrl(product)} 
-                    alt={product.name}
-                    className="product-image"
-                    onError={(e) => {
-                      e.target.src = "https://via.placeholder.com/300x400?text=Image+Error";
-                    }}
-                  />
-                </div>
-                
-                <div className="product-info">
-                  <h3 className="product-title">{product.name}</h3>
-                  <p className="product-subtitle">Men's Running Shoe</p>
-                  
-                  {/* Color dots (placeholder) */}
-                  <div className="product-colors">
-                    <div className="color-dot" style={{ backgroundColor: '#8B4513' }}></div>
-                    <div className="color-dot" style={{ backgroundColor: '#f5f5f5' }}></div>
-                    <div className="color-dot" style={{ backgroundColor: '#000' }}></div>
-                    <div className="color-dot" style={{ backgroundColor: '#DC143C' }}></div>
-                    <div className="color-dot" style={{ backgroundColor: '#f5f5f5' }}></div>
-                    <span className="color-count">+1</span>
-                  </div>
-                  
-                  <p className="product-price">DHD {product.price}</p>
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="no-products-message">
-              <p>No products found matching your filters.</p>
-            </div>
-          )}
+{/* Product Grid */}
+<div className="product-grid" ref={productGridRef}>
+  {currentProducts.length > 0 ? (
+    currentProducts.map((product, index) => (
+      <div 
+        key={product.id} 
+        className="product-card"
+        data-product-id={product.id}
+        ref={el => productCardsRef.current[index] = el}
+        onClick={() => handleProductClick(product.id)}
+      >
+        <div className="product-image-container">
+          <img 
+            src={getProductImageUrl(product)} 
+            alt={product.name}
+            className="product-image"
+            onError={(e) => {
+              e.target.src = "https://via.placeholder.com/300x400?text=Image+Error";
+            }}
+          />
+          <button
+            className="favorite-icon-btn"
+            onClick={(e) => handleAddToFavourite(e, product)}
+          >
+            <Heart 
+              size={20} 
+              fill={favourites.some(fav => fav.id === product.id) ? 'currentColor' : 'none'}
+            />
+          </button>
         </div>
+        <div className="product-info">
+          <h3 className="product-title">{product.name}</h3>
+          <p className="product-subtitle">Men's Running Shoe</p>
+          
+          {/* Color dots (placeholder) */}
+          <div className="product-colors">
+            <div className="color-dot" style={{ backgroundColor: '#8B4513' }}></div>
+            <div className="color-dot" style={{ backgroundColor: '#f5f5f5' }}></div>
+            <div className="color-dot" style={{ backgroundColor: '#000' }}></div>
+            <div className="color-dot" style={{ backgroundColor: '#DC143C' }}></div>
+            <div className="color-dot" style={{ backgroundColor: '#f5f5f5' }}></div>
+            <span className="color-count">+1</span>
+          </div>
+          
+          <p className="product-price">DHD {product.price}</p>
+        </div>
+      </div>
+    ))
+  ) : (
+    <div className="no-products-message">
+      <p>No products found matching your filters.</p>
+    </div>
+  )}
+</div>
 
         {/* Pagination */}
         {filteredProducts.length > productsPerPage && (

@@ -252,7 +252,7 @@ const ForgotPassword = () => {
           </div>
           
           <div className="sidebar-footer">
-            <p>© 2025 Your Company. All rights reserved.</p>
+            <p>© 2025 OJ Company. All rights reserved.</p>
           </div>
         </div>
         
